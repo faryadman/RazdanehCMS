@@ -1,0 +1,43 @@
+﻿@model Project.Application.DTOs.Page.UpsertPage
+@{
+    ViewBag.Toolbar = "on";
+}
+@section scripts{
+    <script src="/assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js"></script>
+    <script src="/js/plugins/ckeditor.bundle.min.js"></script>
+    <script src="/js/pages/pages/upsert.js?@DateTime.Now.Ticks"></script>
+}
+
+    @section toolbar{
+    <partial name="_SaveFormToolbar" />
+}
+
+    <div class="row g-5 g-xl-8">
+        <div class="col-12">
+            <div class="card bg-white card-stretch">
+                <div class="card-body">
+                    <form id="form" class="form" action="#">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="row">
+                            <div class="col-md-6 form-group my-3">
+                                <label class="fw-bold fs-6">تیتر</label>
+                                <input type="text" asp-for="Title" class="form-control" />
+                            </div>
+                            <div class="col-md-6 form-group my-3">
+                                <label class="fw-bold fs-6">آدرس</label>
+                                <input type="text" asp-for="Uri" class="form-control" />
+                            </div>
+                            <div class="col-md-12 form-group my-3">
+                                <label class="fw-bold fs-6">کلمات کلیدی</label>
+                                <input type="text" asp-for="Keywords" class="form-control" />
+                            </div>
+                            <div class="col-md-12 form-group my-3">
+                                <label class="fw-bold fs-6">شرح خبر</label>
+                                <textarea asp-for="Content" class="form-control mb-lg-0"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "_Admin";
+}
+
+@section vendors{
+    <script src="~/app-assets/vendors/js/vendors.min.js"></script>
+    <!-- BEGIN Vendor JS-->
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="~/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <!-- END: Page Vendor JS-->
+    <!-- BEGIN: Theme JS-->
+    <script src="~/app-assets/js/core/app-menu.js"></script>
+    <script src="~/app-assets/js/core/app.js"></script>
+    <script src="~/app-assets/js/scripts/components.js"></script>
+    <!-- END: Theme JS-->
+    <!-- BEGIN: Page JS-->
+    <script src="~/adminJs/logs.js"></script>
+}
+
+    @section scripts{
+    <script>
+        getlogs();
+    </script>
+}
+
+    @section vendorstyles{
+    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/vendors-rtl.min.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/tables/datatable/datatables.min.css">
+    <!-- END: Vendor CSS-->
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/colors.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/components.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/semi-dark-layout.css">
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/colors/palette-gradient.css">
+    <!-- END: Page CSS-->
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
+}
+    <div class="content-body">
+        <section id="statistics-card">
+            <div class="card-header">
+                <h4 class="card-title">لیست لاگ ها</h4>
+            </div>
+            <br />
+            <br />
+            <div class="row mb-5" id="logsArea">
+            </div>
+            <hr />
+            <hr />
+            <input type="hidden" hidden id="selectedserverId" value="@ViewBag.ServerId" />
+        </section>
+
+    </div>

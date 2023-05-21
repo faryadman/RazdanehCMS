@@ -1,0 +1,397 @@
+﻿@using Project.Application.Extensions;
+@model Project.Application.DTOs.Dashboard.Statistics
+@{
+    ViewBag.Title = "داشبورد";
+}
+@section styles{
+<style>
+    .apexcharts-text, .apexcharts-title-text, .apexcharts-legend-text {
+        font-family: IRANSansWeb !important;
+    }
+</style>
+}
+@section scripts{
+<script src="/js/pages/home/index.js?@DateTime.Now.Ticks"></script>
+}
+<div class="row g-5 g-lg-8 mb-5 mb-lg-8">
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-success ">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">مشتریان</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalUsers)" data-kt-countup-suffix=" نفر">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-success mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthUsers)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthUsers)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.UsersRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.UsersRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.UsersRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.UsersRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.UsersRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-danger">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">کارت‌ها</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalCards)" data-kt-countup-suffix=" عدد">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-danger mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthCards)" data-kt-countup-suffix=" عدد">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthCards)" data-kt-countup-suffix=" عدد">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.CardsRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.CardsRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.CardsRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.CardsRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.CardsRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-warning">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">نمایندگان</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalAgencies)" data-kt-countup-suffix=" نفر">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-warning mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthAgencies)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthAgencies)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.AgenciesRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.AgenciesRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.AgenciesRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.AgenciesRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.AgenciesRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-info">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">ویزیتورها</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalVisitors)" data-kt-countup-suffix=" نفر">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-info mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthVisitors)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthVisitors)" data-kt-countup-suffix=" نفر">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.VisitorsRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.VisitorsRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.VisitorsRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.VisitorsRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.VisitorsRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-dark">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">تعداد تراکنش ها</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalTransactionCount)" data-kt-countup-suffix=" عدد">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-dark mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthTransactionCount)" data-kt-countup-suffix=" عدد">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthTransactionCount)" data-kt-countup-suffix=" عدد">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.TransactionCountRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionCountRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.TransactionCountRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionCountRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionCountRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-lg-stretch">
+            <div class="card-body p-0">
+                <div class="px-2 pt-7 card-rounded h-225px w-100 bg-primary">
+                    <div class="d-flex flex-stack">
+                        <h3 class="m-0 text-white fw-bolder fs-3">مبلغ تراکنش ها</h3>
+                    </div>
+                    <div class="d-flex text-center flex-column text-white pt-8">
+                        <span class="fw-bolder fs-2x pt-1" data-kt-countup="true" data-kt-countup-value="@(Model.TotalTransactionAmount)" data-kt-countup-suffix=" تومان">0</span>
+                    </div>
+                </div>
+                <div class="shadow-xs card-rounded border border-2 border-primary mx-2 mb-2 p-5 position-relative z-index-1 bg-white" style="margin-top: -100px">
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه جاری</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.ThisMonthTransactionAmount)" data-kt-countup-suffix=" تومان">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3 border-bottom">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">ماه قبل</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Model.LastMonthTransactionAmount)" data-kt-countup-suffix=" تومان">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center my-3">
+                        <div class="d-flex align-items-center flex-wrap w-100">
+                            <div class="mb-1 pe-3 flex-grow-1">
+                                <span class="text-gray-800 fw-bolder">نرخ رشد</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                @if (Model.TransactionAmountRatio > 0)
+                                {
+                                    <div class="fw-bolder text-success pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionAmountRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-up-short text-success"></i>
+                                }
+                                else if (Model.TransactionAmountRatio < 0)
+                                {
+                                    <div class="fw-bolder text-danger pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionAmountRatio))" data-kt-countup-prefix="%">0</div>
+                                    <i class="bi-arrow-down-short text-danger"></i>
+                                }
+                                else
+                                {
+                                    <div class="fw-bolder text-gray-800 pe-1" data-kt-countup="true" data-kt-countup-value="@(Math.Abs(Model.TransactionAmountRatio))" data-kt-countup-prefix="%">0</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-5 g-xxl-8">
+    <div class="col-xl-6">
+        <div class="card mb-5 mb-xxl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bolder fs-3 mb-1">تراکنش‌های 6 ماهه اخیر</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="kt_apexcharts_1" style="height: 350px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-5 mb-xxl-8">
+            <div class="card-header border-0 pt-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bolder fs-3 mb-1">تراکنش‌های هر دسته‌بندی</span>
+                </h3>
+            </div>
+            <div class="card-body">
+                <canvas id="kt_chartjs_3" class="mh-400px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

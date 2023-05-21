@@ -1,0 +1,130 @@
+﻿@model Project.Application.DTOs.BlackList.CreateBlackListDTO
+@{
+    Layout = "_Admin";
+}
+
+@section vendors{
+    <script src="~/app-assets/vendors/js/vendors.min.js"></script>
+    <!-- BEGIN Vendor JS-->
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="~/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="~/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <!-- END: Page Vendor JS-->
+    <!-- BEGIN: Theme JS-->
+    <script src="~/app-assets/js/core/app-menu.js"></script>
+    <script src="~/app-assets/js/core/app.js"></script>
+    <script src="~/app-assets/js/scripts/components.js"></script>
+    <!-- END: Theme JS-->
+    <!-- BEGIN: Page JS-->
+    <script src="~/adminJs/blackList.js"></script>
+}
+
+    @section scripts{
+    <script>
+        getblackLists();
+    </script>
+}
+
+    @section vendorstyles{
+    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/vendors-rtl.min.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/tables/datatable/datatables.min.css">
+    <!-- END: Vendor CSS-->
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/colors.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/components.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/semi-dark-layout.css">
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/colors/palette-gradient.css">
+    <!-- END: Page CSS-->
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
+}
+    <div class="content-body">
+        <section id="horizontal-vertical">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">لیست بلک لیست ها</h4>
+                                    <hr />
+                                    <button class="btn btn-success" onclick="newblackList()">جدید</button>
+                                    <br />
+                                    <button class="btn btn-danger ml-3" onclick="DeleteSelectedItems(blackListsBaseUrl,getblackLists)">حذف آیتم های انتخاب شده</button>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body card-dashboard">
+                                        <div class="table-responsive">
+                                            <table class="table nowrap scroll-horizontal-vertical" style="width:100%!important" id="blackListsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">ServerName</th>
+                                                        <th scope="col">BlackListed Ip</th>
+                                                        <th scope="col">UpdatedAt</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                            <input type="hidden" hidden id="selectedserverId" value="@ViewBag.ServerId" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <div class="modal fade" id="blackListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create server</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="blackListForm">
+                        <div class="form-group">
+                            <label asp-for="Ip"></label>
+                            <input asp-for="Ip" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ServerId"></label>
+                            <select asp-for="ServerId" type="text" class="form-control" required>
+                            @foreach (var item in ViewBag.Servers)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </div>
+                    <input hidden id="itemId" name="itemId" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="submitForm()" type="button" class="btn btn-success">تایید</button>
+            </div>
+        </div>
+    </div>
+</div>

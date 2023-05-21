@@ -1,0 +1,138 @@
+﻿@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
+<html class="loading" lang="fa" data-textdirection="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>@(ViewBag.PageTitle == null ? "پنل مدیریت" : ViewBag.PageTitle)</title>
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/vendors-rtl.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/ui/prism.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/bootstrap-extended.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/colors.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/components.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/themes/dark-layout.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/themes/semi-dark-layout.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/core/menu/menu-types/vertical-menu.min.css">
+    <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/custom-rtl.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style-rtl.css">
+    <link href="~/app-assets/fonts/font.css" rel="stylesheet" />
+    <link href="~/app-assets/jqueryUI/jquery-ui.min.css" rel="stylesheet" />
+
+    <style>
+        .swal2-content > a {
+            color: red !important
+        }
+    </style>
+
+</head>
+<body class="vertical-layout vertical-menu-modern 2-columns  navbar-floating fixed-footer menu-collapsed" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+
+    <input value="@User.Identity.Name" id="username" type="hidden" />
+    <!-- BEGIN: Header-->
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <!-- END: Main Menu-->
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper" id="wrapper">
+            <section id="basic-horizontal-layouts">
+                <div class="row match-height">
+                    <div class="col-md-6 col-12 offset-md-3">
+                        <div class="card" style="height: 419px;">
+                            <div class="card-header">
+                                <h4 class="card-title">ورود</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <form class="form form-horizontal" id="loginForm">
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="col-md-4">
+                                                            <h4>نام کاربری</h4>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" id="username" class="form-control" name="username" placeholder="نام کاربری">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group row">
+                                                        <div class="col-md-4">
+                                                            <h4>رمز عبور</h4>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="password" id="password" class="form-control" name="password" placeholder="رمز عبور">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 offset-md-4">
+                                                    <button type="submit" class="btn btn-primary mr-1 mb-1 waves-effect waves-light">تایید</button>
+                                                    @*<a href="/Admin/ManageStoreRegistrationRequests" class="btn btn-primary mr-1 mb-1 waves-effect waves-light">تایید</a>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <script src="/app-assets/vendors/js/vendors.min.js"></script>
+    <script src="~/app-assets/toastr/toastr.min.js"></script>
+    <script src="~/app-assets/sweetalert/sweetalert2@10.js"></script>
+    <script src="/app-assets/js/core/app-menu.js"></script>
+    <script src="/app-assets/js/core/app.js"></script>
+    <script src="~/app-assets/jqueryUI/jquery-ui.min.js"></script>
+    <script src="~/adminJs/admin.js"></script>
+    <script src="~/jquery.cookie.js"></script>
+    <script>
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
+            loading();
+            let form = $(this);
+            $.ajax({
+                data: form.serialize(),
+                method: 'POST',
+                url: '/Admin/Account/SignIn',
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == '0')
+                        Swal.fire('', data.message, 'error');
+                    else {
+                        location.href = data.data;
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    let error = xhr.responseJSON.message;
+                    toastr.error(error)
+                    swal.close();
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

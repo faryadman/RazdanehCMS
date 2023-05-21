@@ -1,0 +1,87 @@
+﻿@{
+}
+@section styles{
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.rtl.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="/js/pages/roles/bundle.min.js"></script>
+}
+<div class="row g-5 g-xl-8">
+    <div class="col-12">
+        <div class="card bg-white card-stretch">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col d-flex align-items-center position-relative my-1">
+                        <input type="text" data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px form-control-sm" placeholder="جستجو" />
+                    </div>
+                    <div class="col d-flex justify-content-end align-items-center d-none my-1" data-kt-docs-table-toolbar="base">
+                        <button type="button" class="btn btn-primary" data-kt-docs-table-toolbar="add" data-bs-toggle="tooltip" title="">
+                            <i class="bi bi-plus"></i>
+                            <span>رکورد جدید</span>
+                        </button>
+                    </div>
+                    <div class="col d-flex justify-content-end align-items-center d-none my-1" data-kt-docs-table-toolbar="selected">
+                        <div class="fw-light me-5">
+                            <span class="me-2" data-kt-docs-table-select="selected_count"></span>
+                            <span>مورد انتخاب شد</span>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-danger btn-sm" data-kt-docs-table-select="delete_selected">حذف</button>
+                            <button type="reset" class="btn btn-light-dark btn-sm" data-kt-docs-table-select="deselect">انصراف</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center overflow-auto text-nowrap me-5 w-100 d-none" data-kt-docs-table-progress="base">
+                    <div class="progress w-100 h-15px bg-light-success">
+                        <div class="fw-lighter progress-bar rounded bg-success fs-7 fw-bolder" role="progressbar" data-kt-docs-table-progress="progressbar" style="width: 1%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <table id="kt_datatable_example_1" class="table align-middle table-row-dashed table-hover  fs-6 gy-5">
+                    <thead>
+                        <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                            <th class="all">#</th>
+                            <th class="all">نام</th>
+                            <th>توضیحات</th>
+                            <th class="text-end min-w-100px all">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-bold">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="info_modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content">
+            <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <form id="modal_form" class="form" action="#">
+                    <input type="hidden" name="id" value="" />
+                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="modal_scroll" data-kt-scroll="true" data-kt-scroll-max-height="auto" data-kt-scroll-wrappers="#modal_scroll" data-kt-scroll-offset="300px">
+                        <div class="fv-row mb-7">
+                            <label class="fw-bold fs-6 mb-2">نام</label>
+                            <input type="text" name="name" class="form-control mb-3 mb-lg-0 english-nospace" />
+                        </div>
+                        <div class="fv-row mb-7">
+                            <label class="fw-bold fs-6 mb-2">توضیحات</label>
+                            <input type="text" name="description" class="form-control mb-3 mb-lg-0" />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end pt-10">
+                        <button type="reset" class="btn btn-white me-3" data-kt-docs-modal-action="cancel">لغو</button>
+                        <button type="submit" class="btn btn-primary" data-kt-docs-modal-action="submit">
+                            <span class="indicator-label">ثبت</span>
+                            <span class="indicator-progress">
+                                لطفا صبر کنید...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

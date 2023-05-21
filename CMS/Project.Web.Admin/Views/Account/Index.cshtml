@@ -1,0 +1,45 @@
+﻿@model Project.Web.Admin.ViewModels.LoginViewModel
+@{
+    Layout = "_LayoutGeneral";
+    ViewBag.Title = "ورود";
+}
+
+@section scripts{
+    <script src="/js/pages/account/index.min.js"></script>
+}
+
+<div class="d-flex flex-column flex-root">
+    <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-size: 100% ; background-image: url(/assets/media/misc/outdoor.png)">
+        <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+            <a href="/" class="mb-12">
+                <img alt="Logo" src="/assets/media/logos/logo-2.svg" class="h-45px" />
+            </a>
+            <div class="w-lg-500px bg-white rounded shadow-sm p-10 mx-auto">
+                <form class="form w-100" novalidate="novalidate" id="kt_sign_in_form" asp-action="signin">
+                    <input type="hidden" hidden asp-for="ReturnUrl" />
+                    <input type="hidden" hidden asp-for="RememberMe" value="false" />
+                    <div class="text-center mb-10">
+                        <h1 class="text-dark mb-3">@ViewBag.Title</h1>
+                    </div>
+                    <div class="form-floating fv-row mb-10">
+                        <input class="form-control text-center" dir="ltr" type="text" asp-for="Username" autocomplete="off" placeholder="نام کاربری" />
+                        <label class="" asp-for="Username">نام کاربری</label>
+                    </div>
+                    <div class="form-floating fv-row mb-10">
+                        <input class="form-control text-center" dir="ltr" type="password" asp-for="Password" autocomplete="off" placeholder="کلمه عبور" />
+                        <label class="" asp-for="Password">کلمه عبور</label>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" id="kt_sign_in_submit" class="btn btn-lg btn-primary w-100 mb-5">
+                            <span class="indicator-label">ادامه</span>
+                            <span class="indicator-progress">
+                                لطفا صبر کنید...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

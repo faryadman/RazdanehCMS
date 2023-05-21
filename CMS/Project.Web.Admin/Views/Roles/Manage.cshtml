@@ -1,0 +1,80 @@
+﻿@model Project.Web.Admin.Models.DynamicRoleClaimsManagerViewModel
+@{
+}
+@section styles{
+}
+@section scripts{
+}
+<div id="dynamicPermissions">
+    <form method="post" asp-controller="roles" asp-action="manage" role="form">
+        <input name="RoleId" value="@Model.RoleIncludeRoleClaims.Id" type="hidden" />
+        @foreach (var controller in Model.SecuredControllerActions.OrderBy(x => x.ControllerDisplayName))
+        {
+            <div class="card card-custom  gutter-b example example-compact">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        @{
+                            var displayName = controller.ControllerDisplayName;
+                            if (string.IsNullOrWhiteSpace(displayName))
+                            {
+                                displayName = controller.ToString();
+                            }
+                        }
+                        @displayName
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-12 col-form-label">
+                            <div class="row">
+                                @foreach (var action in controller.MvcActions.OrderBy(x =>
+                             x.ActionDisplayName))
+                                {
+                                    var isSelected = Model.RoleIncludeRoleClaims.RoleClaims
+                                    .Any(roleClaim => roleClaim.ClaimType == ConstantPolicies.DynamicPermissionClaimType &&
+                                    roleClaim.ClaimValue == action.ActionId);
+                                    var selected = isSelected ? "checked" : "";
+                                    var selectedClass = isSelected ? "list-group-item-success" : "";
+                                    var actionDisplayName = $"{action.ActionDisplayName}";
+
+                                    @* @if (!string.IsNullOrWhiteSpace(actionDisplayName) && !actionDisplayName.StartsWith("DP-"))
+                                        {
+                                            <label class="checkbox checkbox-outline checkbox-success m-3">
+                                                <input type="checkbox" name="actionIds" value="@action.ActionId" @selected>
+                                                @foreach (var dp in controller.MvcActions
+                                               .OrderBy(x => x.ActionDisplayName)
+                                               .Where(w =>
+                                               !string.IsNullOrWhiteSpace(w.ActionDisplayName)
+                                               && w.ActionDisplayName.StartsWith("DP-")
+                                               && w.ActionDisplayName.Contains(actionDisplayName)))
+                                                {
+                                                    <input type="hidden" name="x[]" value="@dp.ActionId" data-adn="@dp.ActionDisplayName">
+                                                }
+                                                <span class="mx-2"></span>
+                                                @actionDisplayName
+                                            </label>
+                                        } *@
+
+
+                                    @if (!string.IsNullOrWhiteSpace(actionDisplayName))
+                                    {
+                                        <label class="checkbox checkbox-outline checkbox-success m-3">
+                                            <input type="checkbox" name="actionIds" value="@action.ActionId" @selected>
+                                            <span class="mx-2"></span>
+                                            @actionDisplayName
+                                        </label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <button id="submit-form" type="submit" class="btn btn-info top15">
+            <span aria-hidden="true" class="fas fa-thumbs-up"></span>
+            اعمال تغییرات
+        </button>
+    </form>
+</div>

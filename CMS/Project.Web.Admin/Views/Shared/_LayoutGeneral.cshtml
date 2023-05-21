@@ -1,0 +1,14 @@
+﻿<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <title>@ViewData["Title"]</title>
+    <partial name="_LayoutHead" />
+    @await RenderSectionAsync("styles", required: false)
+</head>
+<body id="kt_body" class="bg-dark">
+    @RenderBody()
+    @await RenderSectionAsync("modals", required: false)
+    <partial name="_LayoutScripts" />
+    @await RenderSectionAsync("scripts", required: false)
+</body>
+</html>

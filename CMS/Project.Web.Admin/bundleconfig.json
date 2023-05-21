@@ -1,0 +1,9 @@
+[
+  {
+    "outputFileName": "wwwroot/js/pages/sitesettings/bundle.min.js",
+    "inputFiles": [
+      "wwwroot/js/pages/sitesettings/upsert.js",
+      "wwwroot/js/pages/sitesettings/index.js"
+    ]
+  }
+]

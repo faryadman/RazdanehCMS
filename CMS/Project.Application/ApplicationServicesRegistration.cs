@@ -1,0 +1,34 @@
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Project.Application.Features.Interfaces;
+using Project.Application.Features.Services;
+//using Project.Application.Features.Interfaces;
+//using Project.Application.Features.Services;
+using Project.Application.Profiles;
+using System.Reflection;
+
+namespace Project.Application
+{
+    public static class ApplicationServicesRegistration
+    {
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
+        {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddSingleton(provider => new MapperConfiguration(config =>
+            {
+                config.AddProfile(new MappingProfile());
+            }).CreateMapper());
+
+            services.AddScoped<IAppSettingService, AppSettingService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IServerService, ServerService>();
+            services.AddScoped<IServerLogServie, ServerLogServie>();
+            services.AddScoped<IBlackListService, BlackListService>();
+            services.AddScoped<IApiLogService, ApiLogService>();
+            services.AddScoped<IOperatorIdentificationService, OperatorIdentificationService>();
+            services.AddScoped<ICronJobInfoService, CronJobInfoService>();
+
+            return services;
+        }
+    }
+}

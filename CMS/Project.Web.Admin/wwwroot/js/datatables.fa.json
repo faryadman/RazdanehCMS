@@ -1,0 +1,17 @@
+{
+	"sProcessing":   "درحال پردازش...",
+	"sLengthMenu":   "تعداد _MENU_",
+	"sZeroRecords":  "موردی یافت نشد",
+	"sInfo":         "نمایش _START_ تا _END_",
+	"sInfoEmpty":    "تهی",
+	"sInfoFiltered": "(فیلتر شده از مجموع _MAX_ مورد)",
+	"sInfoPostFix":  "",
+	"sSearch":       "جستجو:",
+	"sUrl":          "",
+	"oPaginate": {
+		"sFirst": "<i class='bi bi-chevron-bar-right'></i>",
+		"sPrevious": "<i class='bi bi-chevron-double-right'></i>",
+		"sNext": "<i class='bi bi-chevron-double-left'></i>",
+		"sLast": "<i class='bi bi-chevron-bar-left'></i>"
+	}
+}

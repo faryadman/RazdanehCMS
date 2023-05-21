@@ -1,0 +1,73 @@
+﻿@font-face {
+    font-family: IRANSansWeb_Black;
+    font-style: normal;
+    font-weight: 900;
+    src: url('IRANSansWeb_Black.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+@font-face {
+    font-family: IRANSansWeb_Bold;
+    font-style: normal;
+    font-weight: bold;
+    src: url('IRANSansWeb_Bold.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+@font-face {
+    font-family: IRANSansWeb_Medium;
+    font-style: normal;
+    font-weight: 500;
+    src: url('IRANSansWeb_Medium.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+@font-face {
+    font-family: IRANSansWeb_Light;
+    font-style: normal;
+    font-weight: 300;
+    src: url('IRANSansWeb_Light.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+@font-face {
+    font-family: IRANSansWeb_UltraLight;
+    font-style: normal;
+    font-weight: 200;
+    src: url('IRANSansWeb_UltraLight.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+@font-face {
+    font-family: IRANSansWeb;
+    font-style: normal;
+    font-weight: normal;
+    src: url('IRANSansWeb.woff2') format('woff2'); /* FF39+,Chrome36+, Opera24+*/
+}
+
+label, a, h1, h2, h3, h4, h5, h6, p, strong, small, button, input, textarea, select, option, optgroupm, table, tr, td, th, thead, tbody, tfoot, li {
+    font-family: IRANSansWeb !important;
+}
+
+.font-regular {
+    font-family: IRANSansWeb !important;
+}
+
+.font-black {
+    font-family: IRANSansWeb_Black !important;
+}
+
+.font-bold {
+    font-family: IRANSansWeb_Bold !important;
+}
+
+.font-medium {
+    font-family: IRANSansWeb_Medium !important;
+}
+
+.font-light {
+    font-family: IRANSansWeb_Light !important;
+}
+
+.font-ultra-light {
+    font-family: IRANSansWeb_UltraLight !important;
+}
+
+textarea {
+    resize: none
+}

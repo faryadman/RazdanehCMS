@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "_LayoutGeneral";
+    ViewBag.Title = ViewBag.Code;
+}
+
+<div class="d-flex flex-column flex-root">
+    <div class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed" style="background-size: 100% ; background-image: url(/assets/media/misc/outdoor.png)">
+        <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+            <a href="/" class="mb-12">
+                <img alt="Logo" src="/assets/media/logos/logo-2.svg" class="h-45px" />
+            </a>
+            <div class="w-lg-500px bg-white rounded shadow-sm p-10 mx-auto">
+                <h1 class="error-title font-weight-boldest mb-12 mt-40">@ViewBag.Code</h1>
+                <p class="display-4 font-weight-bold">
+                    به نظر می رسد مشکلی پیش آمده است.
+                </p>
+                <button onclick="GetBack()" class="btn btn-outline btn-outline-dark my-2"> بازگشت </button>
+            </div>
+        </div>
+    </div>
+</div>

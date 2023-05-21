@@ -1,0 +1,62 @@
+﻿@model Project.Application.DTOs.GalleryImage.UpsertGalleryImage
+@{
+    ViewBag.Toolbar = "on";
+}
+@section styles{
+    <link href="/assets/plugins/custom/cropper/cropper.bundle.rtl.css" rel="stylesheet" type="text/css" />
+}
+    @section scripts{
+    <script src="/assets/plugins/custom/cropper/cropper.bundle.js"></script>
+    <script src="/js/plugins/cropper.min.js"></script>
+    <script src="/js/pages/galleryimages/upsert.js?@DateTime.Now.Ticks"></script>
+}
+
+    @section toolbar{
+    <partial name="_SaveFormToolbar" />
+}
+
+    <div class="row g-5 g-xl-8">
+        <div class="col-12">
+            <div class="card bg-white card-stretch">
+                <div class="card-body">
+                    <form id="form" class="form" action="#">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ImageUrl" />
+                        <div class="row">
+                            <div class="col-md-6 form-group my-3">
+                                <label class="fw-bold fs-6">تیتر</label>
+                                <input type="text" asp-for="Title" class="form-control" />
+                            </div>
+                            <div class="col-md-6 form-group my-3">
+                                <label class="fw-bold fs-6" for="ImageInput">تصویر</label>
+                                <span class="text-muted">طول = 600 و عرض = 400</span>
+                                <div class="mb-3 mb-lg-0" id="cropper-image">
+                                    <div class="img-preview w-100">
+                                        <img data-cropper="thumbimage" class="img img-thumbnail" src="@(Model ==null ? "//via.placeholder.com/600x400" : Model.ImageUrl)" />
+                                    </div>
+                                    <input type="file" class="sr-only" id="ImageInput" data-cropper="input" accept="image/*" />
+                                    <div class="modal fade" data-cropper="image-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-fullscreen1" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="img-container">
+                                                        <img data-cropper="modal-image" class="w-100" src="@(Model ==null ? "//via.placeholder.com/600x400" : Model.ImageUrl)">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                                                    <button type="button" class="btn btn-primary" data-cropper="crop">تایید</button>
+                                                    <button type="button" class="btn btn-outline-info" data-cropper="zoomin"><i class="bi bi-zoom-in"></i></button>
+                                                    <button type="button" class="btn btn-outline-info" data-cropper="zoomout"><i class="bi bi-zoom-out"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
