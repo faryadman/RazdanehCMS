@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Project.Domain.Entities;
 using Project.Domain.Entities.Base;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Project.Persistence
 {
@@ -46,6 +46,7 @@ namespace Project.Persistence
         public DbSet<ApiLog> ApiLogs { get; set; }
         public DbSet<OperatorIdentification> OperatorIdentifications { get; set; }
         public DbSet<CronJobInfo> CronJobInfos { get; set; }
+        public DbSet<Domain.Entities.Domain> Domains { get; set; }
 
     }
 }

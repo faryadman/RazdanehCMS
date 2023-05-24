@@ -66,6 +66,8 @@
                                     <button class="btn btn-danger ml-2" onclick="DeleteSelectedItems(serversBaseUrl,getservers,false)">حذف آیتم های انتخاب شده</button>
                                     <br />
                                     <button class="btn btn-primary ml-2" onclick="filterservers()">فیلتر</button>
+                                    <br />
+                                    <button class="btn btn-warning ml-2" onclick="newDomain()">دامنه های من</button>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
@@ -147,6 +149,12 @@
                             <label asp-for="ConfigValue"></label>
                             <input asp-for="ConfigValue" type="text" class="form-control" required>
                         </div>
+                        <hr/>
+                        <div class="form-group">
+                            <label asp-for="CurrentDomainValue"></label>
+                            <input asp-for="CurrentDomainValue" type="text" class="form-control" required>
+                        </div>
+                        <hr />
                         <div id="groupSelectListArea" class="form-group">
                             <label asp-for="GroupId">Select Group</label>
                             <select class="form-control" asp-for="GroupId"></select>
@@ -179,31 +187,58 @@
     </div>
 
 
-    <div class="modal fade" id="filterserversModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Filter server</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="filterServerForm">
-                        <div class="form-group">
-                            <label>Choose what to show</label>
-                            <select class="form-control" name="filter" id="filterInput">
-                                <option value="0">All</option>
-                                <option value="1">Is Available</option>
-                                <option value="2">Not Available</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                    <button onclick="filter()" type="button" class="btn btn-success">تایید</button>
-                </div>
+<div class="modal fade" id="filterserversModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filter server</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="filterServerForm">
+                    <div class="form-group">
+                        <label>Choose what to show</label>
+                        <select class="form-control" name="filter" id="filterInput">
+                            <option value="0">All</option>
+                            <option value="1">Is Available</option>
+                            <option value="2">Not Available</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="filter()" type="button" class="btn btn-success">تایید</button>
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="domainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Domain (0)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="domainForm">
+                    <div class="form-group">
+                        <label >Domain Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+
+                    <input hidden id="itemId" name="itemId" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="submitDomainForm()" type="button" class="btn btn-success">ثبت</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -95,7 +95,43 @@ function newserver() {
     $('#serversModal').modal();
     swal.close();
 }
-
+function newDomain() {
+    loading();
+    initializeGroupSelectList();
+    formUrl = serversBaseUrl + '/CreateDomain';
+    $('#groupSelectListArea').css('display', 'block');
+    $('#domainModal').modal();
+    swal.close();
+}
+function submitDomainForm() {
+    loading();
+    let form = document.getElementById('domainForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: formUrl,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            if (window.location.pathname.toLowerCase() == '/admin/domain'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('domainForm').reset();
+            $('#domainModal').modal('toggle');
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
 function submitForm() {
     loading();
     let form = document.getElementById('serverForm');

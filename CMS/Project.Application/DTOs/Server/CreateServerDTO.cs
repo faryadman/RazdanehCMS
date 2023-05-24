@@ -1,10 +1,4 @@
-﻿using Project.Application.DTOs.Group;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Project.Application.DTOs.Server
 {
@@ -20,10 +14,12 @@ namespace Project.Application.DTOs.Server
         public string Config { get; set; }
         public string ConfigKey { get; set; }
         public string ConfigValue { get; set; }
+        public string CurrentDomainValue { get; set; }
         public int GroupId { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
         public bool IsAd { get; set; }
+
     }
 }

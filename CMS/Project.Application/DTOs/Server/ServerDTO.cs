@@ -1,11 +1,6 @@
 ﻿using Project.Application.DTOs.Base;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.ServerLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.DTOs.Server
 {
@@ -17,6 +12,7 @@ namespace Project.Application.DTOs.Server
         public string Config { get; set; }
         public string ConfigKey { get; set; }
         public string ConfigValue { get; set; }
+        public string CurrentDomainValue { get; set; }
         public bool IsAd { get; set; }
         public bool IsAvailable { get; set; }
         public GroupDTO Group { get; set; }
