@@ -10,46 +10,39 @@ function getdomains() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
-            console.log(result);
             domainsTable.clear().draw();
             renderdomains(result);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
-            alert(" بروز اشکال در اتصال به اینترنت ");
-
+            alert("بروز اشکال در اتصال به اینترنت");
         }
     });
-
 }
 
 function renderdomains(data) {
+    domainsTable.clear();
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
+        let deleteButton = '<button class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')">Delete</button>';
 
-
-        let deleteButton = '<button class="btn btn-sm btn-danger    " onclick="deletedomain(' + item.id + ')">Delete</button>';
-
-        let addedRow = domainsTable.row.add([
+        domainsTable.row.add([
             item.id,
-            domainName,
-            domainIP,
-            domainType,
+            item.domainName,
+            item.domainIP,
+            item.domainType,
             deleteButton
-        ]).node();
+        ]).node().setAttribute('data-row-id', item.id);
 
-        if (isOdd)
-            $(addedRow).css('background-color', 'rgb(233 233 233)');
-
+        if (isOdd) {
+            domainsTable.row(i).nodes().to$().css('background-color', 'rgb(233 233 233)');
+        }
         isOdd = !isOdd;
-
-        $(addedRow).attr('data-row-id', item.id);
-        $(addedRow).attr('id', item.id);
-        $(addedRow).addClass('domain');
-        domainsTable.rows.add(addedRow).draw();
     }
+    domainsTable.draw();
+    console.log("table", domainsTable)
+    console.log(data)
 }
-
 
 function newDomain() {
     loading();
@@ -58,6 +51,42 @@ function newDomain() {
     $('#domainModal').modal();
     swal.close();
 }
+
+
+function deletedomain(id) {
+    Swal.fire({
+        title: '',
+        text: confirmDeleteQuestion,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-danger ml-1',
+        buttonsStyling: false,
+    }).then(function (result) {
+        if (result.value) {
+            loading();
+            let vm = {
+                id: id
+            };
+            $.ajax({
+                type: "POST",
+                url: serversBaseUrl + '/DeleteDomain',
+                data: vm,
+                success: function (data) {
+                    if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+                        getdomains(false);
+                    } else {
+                        getdomains(true);
+                    }
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                }
+            })
+        }
+    });
+}
+
 function submitDomainForm() {
     loading();
     let form = document.getElementById('domainForm');

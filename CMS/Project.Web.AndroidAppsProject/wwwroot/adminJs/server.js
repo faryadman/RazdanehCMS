@@ -95,7 +95,12 @@ function newserver() {
     $('#serversModal').modal();
     swal.close();
 }
-
+function goDomain() {
+    loading();
+    let url = window.location.pathname.toLowerCase()+'/admin/domains';
+        return this.href == url;
+    swal.close();
+}
 function submitForm() {
     loading();
     let form = document.getElementById('serverForm');
