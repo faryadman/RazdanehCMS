@@ -97,8 +97,8 @@ function newserver() {
 }
 function goDomain() {
     loading();
-    let url = window.location.pathname.toLowerCase()+'/admin/domains';
-        return this.href == url;
+    let url = '/admin/domains';
+    window.location.href = url;
     swal.close();
 }
 function submitForm() {
