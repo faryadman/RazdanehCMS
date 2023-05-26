@@ -2,9 +2,9 @@
 using DNTPersianUtils.Core;
 using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.AppSetting;
-using Project.Application.DTOs.Base;
 using Project.Application.DTOs.BlackList;
 using Project.Application.DTOs.CronJobInfo;
+using Project.Application.DTOs.Domain;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.OperatorIdentification;
 using Project.Application.DTOs.Server;
@@ -66,6 +66,13 @@ namespace Project.Application.Profiles
             CreateMap<CronJobInfo, CronJobInfoDTO>()
                 .ForMember(dest => dest.LastExecutionDateToString, opt => opt.MapFrom(src => src.LastExecutionDate.ToLongPersianDateTimeString(false))).ReverseMap();
             CreateMap<CronJobInfo, UpdateCronJobInfoDTO>().ReverseMap();
+            #endregion
+
+            #region domain
+
+            CreateMap<Domain.Entities.Domain, CreateDomainDTO>().ReverseMap();
+            CreateMap<Domain.Entities.Domain, DomainDTO>().ReverseMap();
+
             #endregion
         }
     }

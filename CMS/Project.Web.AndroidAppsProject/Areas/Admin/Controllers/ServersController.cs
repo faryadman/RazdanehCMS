@@ -1,11 +1,7 @@
-﻿using HarfBuzzSharp;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Project.Application.DTOs.Server;
-using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
-using Project.Application.Features.Services;
-using Project.Persistence.Migrations;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -38,9 +34,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.AppId = appId;
             return View();
         }
-        public async Task<IActionResult> List(int? groupId, int? appId, bool isAd,int filter)
+        public async Task<IActionResult> List(int? groupId, int? appId, bool isAd, int filter)
         {
-            var data = await _serverService.GetWithFilter(groupId, appId, isAd,filter);
+            var data = await _serverService.GetWithFilter(groupId, appId, isAd, filter);
             return Json(data);
         }
         public async Task<IActionResult> Create(CreateServerDTO input)

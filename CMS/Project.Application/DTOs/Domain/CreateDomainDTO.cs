@@ -1,11 +1,14 @@
-﻿using Project.Application.DTOs.Base;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Project.Application.DTOs.Domain
 {
-    public class DomainDTO : BaseDTO
+    public class CreateDomainDTO
     {
+        [Required]
         public string DomainName { get; set; }
+        [Required]
         public string DomainIP { get; set; }
+        [Required]
         public string DomainType { get; set; }
     }
 }

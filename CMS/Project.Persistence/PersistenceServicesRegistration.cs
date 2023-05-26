@@ -27,6 +27,7 @@ namespace Project.Persistence
             services.AddScoped<IApiLogRepository, ApiLogRepository>();
             services.AddScoped<IOperatorIdentificationRepository, OperatorIdentificationRepository>();
             services.AddScoped<ICronJobInfoRepository, CronJobInfoRepository>();
+            services.AddScoped<IDomainRepository, DomainRepository>();
 
 
             return services;

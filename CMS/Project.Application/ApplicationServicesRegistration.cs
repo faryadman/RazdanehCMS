@@ -27,6 +27,7 @@ namespace Project.Application
             services.AddScoped<IApiLogService, ApiLogService>();
             services.AddScoped<IOperatorIdentificationService, OperatorIdentificationService>();
             services.AddScoped<ICronJobInfoService, CronJobInfoService>();
+            services.AddScoped<IDomainService, DomainService>();
 
             return services;
         }
