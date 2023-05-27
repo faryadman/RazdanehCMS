@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Dapper;
+﻿using Dapper;
+using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Project.Domain.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Project.Web.AndroidAppsProject.Controllers
 {
@@ -22,11 +21,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
                 await conn.QueryAsync<bool>(query);
                 conn.Close();
             }
+            RecurringJob.AddOrUpdate("compressjob", () => Compress(), "*/15 * * * *");
+
             return Ok(true);
-        }  
+        }
         public async Task<IActionResult> Compress()
         {
-            
+
             IEnumerable<int> rows;
             string query = "select TOP(100000) id from apilogs order by id desc";
             using (SqlConnection? conn = new SqlConnection(_connectionString))
