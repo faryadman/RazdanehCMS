@@ -116,3 +116,32 @@ function submitDomainForm() {
         }
     })
 }
+
+function uploadFile() {
+    $(document).ready(function () {
+        $('#uploadForm').submit(function (e) {
+            e.preventDefault(); // اجرای عملیات آپلود از طریق JavaScript
+
+            var formData = new FormData();
+            var fileInput = $('#fileInput')[0].files[0];
+
+            formData.append('file', fileInput);
+
+            $.ajax({
+                url: serversBaseUrl+'/Upload/Upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // پاسخ دریافتی از سرور
+                    alert(response);
+                },
+                error: function (error) {
+                    // خطا در آپلود فایل
+                    alert('Error: ' + error.responseText);
+                }
+            });
+        });
+    });
+}
