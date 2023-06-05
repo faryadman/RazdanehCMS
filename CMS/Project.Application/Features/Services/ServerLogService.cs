@@ -113,10 +113,9 @@ namespace Project.Application.Features.Services
         {
             var list = await _serverLogRepository.GetAll();
             if (list.Count <= 0) return;
-            var lastId = list.FirstOrDefault()?.Id;
-            for (var i = 0; i < count && lastId != null; i++)
+            foreach (var log in list.Take(count))
             {
-                await _serverLogRepository.Delete(lastId.Value + i);
+                await _serverLogRepository.Delete(log.Id);
             }
         }
     }
