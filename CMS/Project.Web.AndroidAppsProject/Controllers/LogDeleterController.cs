@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using Project.Application.Features.Interfaces;
 using Project.Persistence;
 
@@ -20,6 +21,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         {
             await _apiLogService.DeleteApiLog();
             await _context.SaveChangesAsync();
+            RecurringJob.AddOrUpdate("deleteApiLogJob", () => Index(), "*/30 * * * *");
             return Ok(true);
             //string query = "DELETE FROM ServerLogs";
             //using (SqlConnection? conn = new SqlConnection(_connectionString))
@@ -34,6 +36,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         {
             await _serverLogService.DeleteServerLogs();
             await _context.SaveChangesAsync();
+            RecurringJob.AddOrUpdate("ServerLogsJob", () => Compress(), "*/15 * * * *");
             return Ok(true);
             //IEnumerable<int> rows;
             //string query = "select TOP(100000) id from apilogs order by id desc";
