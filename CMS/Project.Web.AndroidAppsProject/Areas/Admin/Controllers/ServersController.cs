@@ -10,15 +10,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
     public class ServersController : Controller
     {
         private readonly IServerService _serverService;
-        private readonly IServerLogServie _serverLogServie;
+        private readonly IServerLogService _serverLogService;
         private readonly IBlackListService _blackListService;
         private readonly ICronJobInfoService _cronJobInfoService;
 
-        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogServie serverLogServie, ICronJobInfoService cronJobInfoService)
+        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, ICronJobInfoService cronJobInfoService)
         {
             _serverService = serverService;
             _blackListService = blackListService;
-            _serverLogServie = serverLogServie;
+            _serverLogService = serverLogService;
             _cronJobInfoService = cronJobInfoService;
         }
 
@@ -137,7 +137,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {
-            var data = await _serverLogServie.ListByServer(serverId);
+            var data = await _serverLogService.ListByServer(serverId);
             return Json(data);
         }
 
@@ -148,7 +148,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/getAllLogsStatistics")]
         public async Task<IActionResult> GetAllLogsStatistics()
         {
-            var data = await _serverLogServie.GetAllLogsStatistics();
+            var data = await _serverLogService.GetAllLogsStatistics();
             return Json(data);
         }
     }

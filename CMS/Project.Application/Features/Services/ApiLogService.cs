@@ -4,11 +4,6 @@ using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.ApiLog;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.Features.Services
 {
@@ -31,9 +26,20 @@ namespace Project.Application.Features.Services
 
         public async Task<ApiLogDTO> GetLastLog(int appSettingId)
         {
-            var query = _apiLogRepository.FindQueryable(x => x.AppSettingId == appSettingId).OrderByDescending(x=>x.Id);
+            var query = _apiLogRepository.FindQueryable(x => x.AppSettingId == appSettingId).OrderByDescending(x => x.Id);
             var model = await query.FirstOrDefaultAsync();
             return _mapper.Map<ApiLogDTO>(model);
         }
+
+        public async Task DeleteApiLog(int count = 100000)
+        {
+            var list = await _apiLogRepository.GetAll();
+            foreach (var apiLog in list)
+            {
+                await _apiLogRepository.Delete(apiLog.Id);
+            }
+        }
+
+
     }
 }

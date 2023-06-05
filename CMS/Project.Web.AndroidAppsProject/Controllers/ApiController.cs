@@ -1,22 +1,13 @@
 ﻿using AutoMapper;
-using MailKit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
-using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
-using Project.Application.Features.Services;
 using Project.Application.Responses;
-using Project.Domain.Entities;
 using Project.Persistence;
-using Project.Persistence.Migrations;
 using Project.Web.AndroidAppsProject.Dapper;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Project.Web.AndroidAppsProject.Controllers
 {
@@ -27,19 +18,19 @@ namespace Project.Web.AndroidAppsProject.Controllers
         private readonly IAppSettingService _appSettingService;
         private readonly IGroupService _groupService;
         private readonly IServerService _serverService;
-        private readonly IServerLogServie _serverLogServie;
+        private readonly IServerLogService _serverLogService;
         private readonly IOperatorIdentificationService _operatorIdentificationService;
         private readonly IApiLogService _apiLogService;
         private readonly IMapper _mapper;
         private readonly IDapperQueryService _dapperQueryService;
         private readonly ApplicationDbContext _context;
 
-        public ApiController(IAppSettingService appSettingService, IGroupService groupService, IServerService serverService, IServerLogServie serverLogServie, ApplicationDbContext context, IOperatorIdentificationService operatorIdentificationService, IApiLogService apiLogService, IMapper mapper, IDapperQueryService dapperQueryService)
+        public ApiController(IAppSettingService appSettingService, IGroupService groupService, IServerService serverService, IServerLogService serverLogService, ApplicationDbContext context, IOperatorIdentificationService operatorIdentificationService, IApiLogService apiLogService, IMapper mapper, IDapperQueryService dapperQueryService)
         {
             _appSettingService = appSettingService;
             _groupService = groupService;
             _serverService = serverService;
-            _serverLogServie = serverLogServie;
+            _serverLogService = serverLogService;
             _context = context;
             _operatorIdentificationService = operatorIdentificationService;
             _apiLogService = apiLogService;
@@ -165,7 +156,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var server = await _serverService.Detail(input.ServerId);
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
-            await _serverLogServie.Create(input);
+            await _serverLogService.Create(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
         [HttpPost]
@@ -174,14 +165,14 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var server = await _serverService.Detail(input.ServerId);
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
-            await _serverLogServie.Create(input);
+            await _serverLogService.Create(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
         [HttpGet]
         public async Task<IActionResult> ServerLogs(int serverId)
         {
             await _serverService.Detail(serverId);
-            var data = await _serverLogServie.ListByServer(serverId);
+            var data = await _serverLogService.ListByServer(serverId);
             return new Response<List<ServerLogDTO>>(data).ToJsonResult();
         }
         [HttpGet]

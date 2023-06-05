@@ -3,21 +3,16 @@ using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.Features.Services
 {
-    public class ServerLogServie : IServerLogServie
+    public class ServerLogService : IServerLogService
     {
         private readonly IServerLogRepository _serverLogRepository;
         private readonly IOperatorIdentificationService _operatorIdentificationService;
         private readonly IMapper _mapper;
 
-        public ServerLogServie(IServerLogRepository serverLogRepository, IMapper mapper, IOperatorIdentificationService operatorIdentificationService)
+        public ServerLogService(IServerLogRepository serverLogRepository, IMapper mapper, IOperatorIdentificationService operatorIdentificationService)
         {
             _serverLogRepository = serverLogRepository;
             _mapper = mapper;
@@ -83,14 +78,14 @@ namespace Project.Application.Features.Services
             var logs = await _serverLogRepository.GetAll();
 
             var data = new ServerLogStatisticsDTO();
-            data.AllLogsStatistics= logs.Count() != 0 ? new ServerLogStatistics
+            data.AllLogsStatistics = logs.Count() != 0 ? new ServerLogStatistics
             {
                 Count = logs.Count(),
                 FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed).Count(),
                 SuccessCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful).Count(),
             } : null;
 
-            data.HamraheAvvalLogsStatistics = logs.Where(y =>y.Operator == Domain.Enums.Operator.HamraheAvval).Count() != 0 ? new ServerLogStatistics
+            data.HamraheAvvalLogsStatistics = logs.Where(y => y.Operator == Domain.Enums.Operator.HamraheAvval).Count() != 0 ? new ServerLogStatistics
             {
                 Count = logs.Where(y => y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
                 FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
@@ -112,6 +107,17 @@ namespace Project.Application.Features.Services
             } : null;
 
             return data;
+        }
+
+        public async Task DeleteServerLogs(int count = 100000)
+        {
+            var list = await _serverLogRepository.GetAll();
+            if (list.Count <= 0) return;
+            var lastId = list.FirstOrDefault()?.Id;
+            for (var i = 0; i < count && lastId != null; i++)
+            {
+                await _serverLogRepository.Delete(lastId.Value + i);
+            }
         }
     }
 }
