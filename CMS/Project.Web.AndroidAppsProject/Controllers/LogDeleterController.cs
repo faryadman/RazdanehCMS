@@ -36,7 +36,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         {
             await _serverLogService.DeleteServerLogs();
             await _context.SaveChangesAsync();
-            RecurringJob.AddOrUpdate("ServerLogsJob", () => Compress(), "*/15 * * * *");
+            RecurringJob.AddOrUpdate("deleteServerLogsJob", () => Compress(), "*/15 * * * *");
             return Ok(true);
             //IEnumerable<int> rows;
             //string query = "select TOP(100000) id from apilogs order by id desc";
