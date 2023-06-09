@@ -113,9 +113,9 @@ namespace Project.Application.Features.Services
         {
             var list = await _serverLogRepository.GetAll();
             if (list.Count <= 0) return;
-            foreach (var log in list.Take(count))
+            foreach (var log in list)
             {
-                await _serverLogRepository.Delete(log.Id);
+                await _serverLogRepository.Remove(log.Id);
             }
         }
     }

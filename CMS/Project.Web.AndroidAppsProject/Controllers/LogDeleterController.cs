@@ -19,7 +19,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            RecurringJob.AddOrUpdate("deleteApiLogJob", () => Index(), "*/30 * * * *");
+            RecurringJob.AddOrUpdate("deleteApiLogJob", () => Index(), "*/10 * * * *");
             await _apiLogService.DeleteApiLog();
             await _context.SaveChangesAsync();
             return Ok(true);
@@ -34,7 +34,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         }
         public async Task<IActionResult> Compress()
         {
-            RecurringJob.AddOrUpdate("deleteServerLogsJob", () => Compress(), "*/15 * * * *");
+            RecurringJob.AddOrUpdate("deleteServerLogsJob", () => Compress(), "*/10 * * * *");
             await _serverLogService.DeleteServerLogs();
             await _context.SaveChangesAsync();
             return Ok(true);
