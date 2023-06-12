@@ -15,6 +15,8 @@ namespace Project.Domain.Entities
         public int GroupId { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsAd { get; set; }
+        public string CurrentDomainValue { get; set; }
+        public bool IsNewDomain { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
         public ICollection<ServerLog> Logs { get; set; }

@@ -29,8 +29,7 @@ function renderdomains(data) {
         domainsTable.row.add([
             item.id,
             item.domainName,
-            item.domainIP,
-            item.domainType,
+            item.fileName,
             deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 

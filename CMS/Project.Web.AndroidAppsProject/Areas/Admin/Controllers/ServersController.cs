@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Server;
 using Project.Application.Features.Interfaces;
 
@@ -13,13 +14,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private readonly IServerLogServie _serverLogServie;
         private readonly IBlackListService _blackListService;
         private readonly ICronJobInfoService _cronJobInfoService;
+        private readonly IDomainService _domainService;
 
-        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogServie serverLogServie, ICronJobInfoService cronJobInfoService)
+        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogServie serverLogServie, ICronJobInfoService cronJobInfoService, IDomainService domainService)
         {
             _serverService = serverService;
             _blackListService = blackListService;
             _serverLogServie = serverLogServie;
             _cronJobInfoService = cronJobInfoService;
+            _domainService = domainService;
         }
 
         public IActionResult Index(int? groupId, int? appId)
@@ -133,6 +136,47 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             ViewBag.ServerId = serverId;
             return View();
+        }
+        public async Task<IActionResult> ChangeDomain(int serverId)
+        {
+            ViewBag.ServerId = serverId;
+            var domains = await _domainService.GetAll();
+            if (domains == null) return Json(new { status = "2", message = "domain don't exist!" });
+            var server = await _serverService.Detail(serverId);
+            var config = server.Config;
+            var currentDomainValue = domains?[0].DomainName;
+
+
+            JObject jsonObject = JObject.Parse(config);
+            // تغییر مقدار serverName
+            var serverNameJson = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"];
+            var serverNameSplit = serverNameJson?.ToString().Split(".");
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = $"{serverNameSplit?[0]}.{currentDomainValue}";
+
+            // تغییر مقدار Host
+            var hostJson = jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"];
+            var hostSplit = hostJson?.ToString().Split(".");
+            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = $"{hostSplit?[0]}.{currentDomainValue}";
+
+            var updatedJsonString = jsonObject.ToString();
+            server.Config = updatedJsonString;
+
+            await _serverService.Edit(new EditServerDTO()
+            {
+                Config = server.Config,
+                ServerName = server.ServerName,
+                CurrentDomainValue = currentDomainValue,
+                ConfigValue = server.ConfigValue,
+                ConfigKey = server.ConfigKey,
+                Ip = server.Ip,
+                IsForHamraheAvval = server.IsForHamraheAvval,
+                IsForIrancell = server.IsForIrancell,
+                ItemId = server.Id,
+                Location = server.Location
+            });
+            await _domainService.Delete(domains[0].Id);
+
+            return RedirectToAction("Index");
         }
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)

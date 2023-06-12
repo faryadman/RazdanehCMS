@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.Persistence;
 
@@ -11,9 +12,10 @@ using Project.Persistence;
 namespace Project.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612170932_updateTableDomain1")]
+    partial class updateTableDomain1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -494,9 +496,6 @@ namespace Project.Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CurrentDomainValue")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -516,9 +515,6 @@ namespace Project.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsForIrancell")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsNewDomain")
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")

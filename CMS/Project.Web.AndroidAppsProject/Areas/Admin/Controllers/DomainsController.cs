@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
-using System.Text;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -13,11 +11,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
     {
         private readonly IDomainService _domainService;
         private readonly ICronJobInfoService _cronJobInfoService;
+        private readonly IWebHostEnvironment _env;
 
-        public DomainsController(IDomainService domainService, ICronJobInfoService cronJobInfoService)
+        public DomainsController(IDomainService domainService, ICronJobInfoService cronJobInfoService, IWebHostEnvironment env)
         {
             _domainService = domainService;
             _cronJobInfoService = cronJobInfoService;
+            _env = env;
         }
         public IActionResult Index()
         {
@@ -38,50 +38,36 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _domainService.Delete(id);
             return Json(new { status = "1", message = "done successfully" });
         }
-
         [HttpPost]
-        public IActionResult Upload(IFormFile file)
+        public async Task<IActionResult> UploadFile(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                ModelState.AddModelError("File", "Please select a file to upload.");
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                using (StreamReader reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
+                if (file.Length <= 0) return RedirectToAction("Index");
+                var _FileName = Path.GetFileName(file.FileName);
+                var filePath = Path.Combine(_env.WebRootPath, "UploadedFiles", _FileName);
+                await using (var stream = System.IO.File.Create(filePath))
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        string[] data = line.Split(',');
-
-                        string domain = data[0];
-                        InsertDataIntoDatabase(domain);
-                    }
+                    await file.CopyToAsync(stream);
                 }
-
-                return Ok("File uploaded successfully.");
+                List<string> lines = new List<string>();
+                // واکشی خط‌های موجود در فایل متنی
+                if (System.IO.File.Exists(filePath))
+                {
+                    lines = System.IO.File.ReadAllLines(filePath).ToList();
+                }
+                // جدا سازی داده‌ها از هر خط با استفاده از کاراکتر اسپیس (Space)
+                foreach (string line in lines)
+                {
+                    // ذخیره داده‌های جدا ساخته شده در لیستی یا در دیتابیس 
+                    await _domainService.Create(new CreateDomainDTO() { DomainName = line, FileName = _FileName });
+                }
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+                return Json(new { status = "2", message = "File upload failed!!" });
             }
-        }
-        private const string ConnectionString = "Data Source=168.119.140.221,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True";
-
-        private static void InsertDataIntoDatabase(string domain)
-        {
-            string query = "INSERT INTO Domains (Domain) VALUES (@Domain)";
-
-            using SqlConnection connection = new SqlConnection(ConnectionString);
-            using SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@domain", domain);
-
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Project.Application.DTOs.Server
         public string ConfigValue { get; set; }
         public string CurrentDomainValue { get; set; }
         public bool IsAd { get; set; }
+        public bool IsNewDomain { get; set; }
         public bool IsAvailable { get; set; }
         public GroupDTO Group { get; set; }
         public int GroupId { get; set; }

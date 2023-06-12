@@ -66,6 +66,7 @@ namespace Project.Application.Features.Services
                 Id = x.Id,
                 Ip = x.Ip,
                 IsAd = x.IsAd,
+                IsNewDomain = x.IsNewDomain,
                 Location = x.Location,
                 ServerName = x.ServerName,
                 UpdatedAt = x.UpdatedAt,

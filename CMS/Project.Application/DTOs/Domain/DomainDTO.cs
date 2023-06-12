@@ -5,7 +5,7 @@ namespace Project.Application.DTOs.Domain
     public class DomainDTO : BaseDTO
     {
         public string DomainName { get; set; }
-        public string DomainIP { get; set; }
-        public string DomainType { get; set; }
+        public string FileName { get; set; }
+
     }
 }
