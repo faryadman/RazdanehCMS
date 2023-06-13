@@ -29,12 +29,30 @@ namespace Project.Application.Features
             }
 
             CloudflareZoneResponse zoneResponse = await response.Content.ReadFromJsonAsync<CloudflareZoneResponse>();
-            if (zoneResponse.ResultInfo.Count == 0)
+            if (zoneResponse != null && zoneResponse.Result.Count == 0)
             {
                 throw new Exception($"No zone found for domain '{domainName}'.");
             }
 
             return zoneResponse.Result[0].Id;
+        }
+        public async Task<List<CloudflareZone>> GetZones()
+        {
+            var endpoint = $"zones";
+            var response = await _httpClient.GetAsync(endpoint);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to retrieve zones. Status code: {response.StatusCode}");
+            }
+
+            var zoneResponse = await response.Content.ReadFromJsonAsync<CloudflareZoneResponse>();
+            if (zoneResponse != null && zoneResponse.Result.Count == 0)
+            {
+                throw new Exception($"No zone found.");
+            }
+
+            return zoneResponse.Result;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CloudFlare.NET;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Server;
@@ -175,9 +176,31 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 Location = server.Location
             });
             await _domainService.Delete(domains[0].Id);
+            //string domainName = "aadolli.sbs";
+            string domainName = "idolli.sbs";
+
+            string apiKey = "c31b2d5ee16f7a7a3d092fc5a5755768cff1a";
+            string email = "hamednadarkhani1993@gmail.com";
+            //var client = new CloudflareApiClient(apiKey, email);
+            var auth = new CloudFlareAuth(email, apiKey);
+            var client = new CloudFlareClient(auth);
+            var zones = await client.GetAllZonesAsync();
+            string zoneId = string.Empty;
+            foreach (var zone1 in zones)
+            {
+                if (zone1.Name == domainName)
+                    zoneId = new IdentifierTag(zone1.Id);
+
+            }
+            var zone = await client.GetZoneAsync(zoneId);
+            var zoneDns = await client.GetDnsRecordsAsync(zoneId);
+
+            var recordId = "record-id"; // شناسه رکورد مورد نظر
+            var cname = "new-cname-value"; // مقدار جدید CNAME
+            var value = "new-value"; // مقدار جدید VALUE
 
 
-
+            //client.UpdateDnsRecordAsync(zone.Id, recordId, cname, value);
             return RedirectToAction("Index");
         }
         [Route("/admin/[controller]/Logs/list")]

@@ -23,9 +23,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(int filter)
         {
-            var data = await _domainService.GetAll();
+            var data = await _domainService.GetByFilter(filter);
             return Json(data);
         }
         public async Task<IActionResult> CreateDomain(CreateDomainDTO input)

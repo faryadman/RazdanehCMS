@@ -3,10 +3,11 @@
 let serversBaseUrl = "/admin/domains";
 let formUrl;
 
-function getdomains() {
+function getdomains(filter) {
+    filter = filter == undefined ? 0 : filter;
     $.ajax({
         type: "GET",
-        url: serversBaseUrl + '/list',
+        url: serversBaseUrl + '/list?filter=' + filter,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
@@ -155,9 +156,9 @@ function filter() {
     loading();
     let result = $('#filterInput').val();
     if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
-        getdomains(false, result);
+        getdomains(result);
     } else {
-        getdomains(true, result);
+        getdomains(result);
     }
     setTimeout(function () {
         swal.close();

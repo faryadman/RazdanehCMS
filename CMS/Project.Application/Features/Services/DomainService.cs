@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
@@ -26,6 +27,26 @@ namespace Project.Application.Features.Services
             var list = await _domainRepository.GetAll();
             var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list);
             return model;
+        }
+
+        public async Task<List<DomainDTO>> GetByFilter(int filter)
+        {
+            var query = _domainRepository.GetAllQueryable();
+            if (filter != 0)
+            {
+                if (filter == 1)
+                {
+                    query = query.Where(x => x.IsActive);
+                }
+                else
+                {
+                    query = query.Where(x => !x.IsActive);
+                }
+            }
+
+            var data = await query.ToListAsync();
+            var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
+            return list;
         }
 
         public async Task Create(CreateDomainDTO input)
