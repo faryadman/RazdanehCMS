@@ -144,3 +144,23 @@ function uploadFile() {
         });
     });
 }
+
+function filterservers() {
+    loading();
+    $('#filterdomainsModal').modal();
+    swal.close();
+}
+
+function filter() {
+    loading();
+    let result = $('#filterInput').val();
+    if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+        getdomains(false, result);
+    } else {
+        getdomains(true, result);
+    }
+    setTimeout(function () {
+        swal.close();
+        $('#filterdomainsModal').modal('toggle');
+    }, 4000);
+}

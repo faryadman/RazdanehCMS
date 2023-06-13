@@ -176,6 +176,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             });
             await _domainService.Delete(domains[0].Id);
 
+
+
             return RedirectToAction("Index");
         }
         [Route("/admin/[controller]/Logs/list")]
