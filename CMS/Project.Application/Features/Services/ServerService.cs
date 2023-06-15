@@ -225,11 +225,11 @@ namespace Project.Application.Features.Services
                     }
                 }
             }
-            await _apiLogService.Create(new ApiLogDTO
-            {
-                AppSettingId = app.Id,
-                ServerId = server.Id
-            });
+            //await _apiLogService.Create(new ApiLogDTO
+            //{
+            //    AppSettingId = app.Id,
+            //    ServerId = server.Id
+            //});
 
             ServerDTO dto = _mapper.Map<ServerDTO>(server);
             dto.Config = dto.Config.Replace("@" + dto.ConfigKey, DateTime.Now.Ticks.ToString() + "." + dto.ConfigValue);

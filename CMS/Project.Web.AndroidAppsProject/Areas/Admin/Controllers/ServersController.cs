@@ -1,20 +1,11 @@
-﻿using CloudFlare.NET;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using Project.Application.DTOs.Server;
-using Project.Application.Extensions;
-using Project.Application.Features;
-using Project.Application.Features.Interfaces;
-
-namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
+﻿namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "admin")]
     public class ServersController : Controller
     {
         private readonly IServerService _serverService;
-        private readonly IServerLogServie _serverLogServie;
+        private readonly IServerLogService _serverLogService;
         private readonly IBlackListService _blackListService;
         private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IDomainService _domainService;
@@ -23,7 +14,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             _serverService = serverService;
             _blackListService = blackListService;
-            _serverLogServie = serverLogServie;
+            _serverLogService = serverLogService;
             _cronJobInfoService = cronJobInfoService;
             _domainService = domainService;
         }
@@ -223,7 +214,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {
-            var data = await _serverLogServie.ListByServer(serverId);
+            var data = await _serverLogService.ListByServer(serverId);
             return Json(data);
         }
 
@@ -234,7 +225,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/getAllLogsStatistics")]
         public async Task<IActionResult> GetAllLogsStatistics()
         {
-            var data = await _serverLogServie.GetAllLogsStatistics();
+            var data = await _serverLogService.GetAllLogsStatistics();
             return Json(data);
         }
     }

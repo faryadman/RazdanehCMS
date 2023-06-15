@@ -1,9 +1,4 @@
 ﻿using Project.Application.DTOs.ApiLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -11,5 +6,6 @@ namespace Project.Application.Features.Interfaces
     {
         Task Create(ApiLogDTO input);
         Task<ApiLogDTO> GetLastLog(int appSettingId);
+        Task DeleteApiLog(int count = 100000);
     }
 }

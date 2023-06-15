@@ -22,7 +22,7 @@ namespace Project.Application
             services.AddScoped<IAppSettingService, AppSettingService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IServerService, ServerService>();
-            services.AddScoped<IServerLogServie, ServerLogServie>();
+            services.AddScoped<IServerLogService, ServerLogService>();
             services.AddScoped<IBlackListService, BlackListService>();
             services.AddScoped<IApiLogService, ApiLogService>();
             services.AddScoped<IOperatorIdentificationService, OperatorIdentificationService>();

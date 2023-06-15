@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{8B9810CB-C017-4CDD-9AA8-A0EF6A1DAD07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.Web.AndroidAppsProject", "CMS\Project.Web.AndroidAppsProject\Project.Web.AndroidAppsProject.csproj", "{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Web.AndroidAppsProject", "CMS\Project.Web.AndroidAppsProject\Project.Web.AndroidAppsProject.csproj", "{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
