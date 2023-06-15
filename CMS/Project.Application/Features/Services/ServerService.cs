@@ -122,6 +122,7 @@ namespace Project.Application.Features.Services
             model.Location = input.Location;
             model.IsForHamraheAvval = input.IsForHamraheAvval;
             model.IsForIrancell = input.IsForIrancell;
+            model.CurrentDomainValue = input.CurrentDomainValue;
             await _serverRepository.Update(model);
         }
         public async Task Delete(int id)

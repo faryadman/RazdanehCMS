@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using CloudFlare.NET;
+using System.Text;
 
 namespace Project.Application.Features
 {
@@ -12,48 +13,75 @@ namespace Project.Application.Features
         {
             _apiKey = apiKey;
             _email = email;
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://api.cloudflare.com/client/v4/");
-            _httpClient.DefaultRequestHeaders.Add("X-Auth-Email", _email);
-            _httpClient.DefaultRequestHeaders.Add("X-Auth-Key", _apiKey);
         }
-
-        public async Task<string> GetZoneId(string domainName)
+        public CloudflareApiClient()
         {
-            string endpoint = $"zones?name={domainName}";
-            HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to retrieve zone ID. Status code: {response.StatusCode}");
-            }
-
-            CloudflareZoneResponse zoneResponse = await response.Content.ReadFromJsonAsync<CloudflareZoneResponse>();
-            if (zoneResponse != null && zoneResponse.Result.Count == 0)
-            {
-                throw new Exception($"No zone found for domain '{domainName}'.");
-            }
-
-            return zoneResponse.Result[0].Id;
         }
-        public async Task<List<CloudflareZone>> GetZones()
+
+
+        public async Task UpdateDnsRecordAsync(string zoneId, string recordId, string newCname, string cnameContent, string apiKey, string email)
         {
-            var endpoint = $"zones";
-            var response = await _httpClient.GetAsync(endpoint);
 
-            if (!response.IsSuccessStatusCode)
+            var apiUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordId}";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("X-Auth-Email", email);
+            httpClient.DefaultRequestHeaders.Add("X-Auth-Key", apiKey);
+
+            var requestBody = new
             {
-                throw new Exception($"Failed to retrieve zones. Status code: {response.StatusCode}");
-            }
+                type = DnsRecordType.CNAME,
+                name = newCname,
+                content = cnameContent,
+                ttl = 1,
+                proxied = false
+            };
 
-            var zoneResponse = await response.Content.ReadFromJsonAsync<CloudflareZoneResponse>();
-            if (zoneResponse != null && zoneResponse.Result.Count == 0)
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PutAsync(apiUrl, content);
+            if (response.IsSuccessStatusCode)
             {
-                throw new Exception($"No zone found.");
+                Console.WriteLine("DNS record updated successfully.");
             }
-
-            return zoneResponse.Result;
+            else
+            {
+                Console.WriteLine("Failed to update DNS record. Status code: " + response.StatusCode);
+            }
         }
+
+        public async Task CreateDnsRecordAsync(string zoneId, string newCname, string cnameContent, string apiKey, string email)
+        {
+            var apiUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records";
+
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("X-Auth-Email", email);
+            httpClient.DefaultRequestHeaders.Add("X-Auth-Key", apiKey);
+
+            var requestBody = new
+            {
+                type = DnsRecordType.CNAME,
+                name = newCname,
+                content = "@",
+                ttl = 1,
+                proxied = false
+            };
+
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(apiUrl, content);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("DNS record created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create DNS record. Status code: " + response.StatusCode);
+            }
+        }
+
     }
 
     public class CloudflareZoneResponse
