@@ -1,4 +1,13 @@
-﻿namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
+﻿using CloudFlare.NET;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using Project.Application.DTOs.Server;
+using Project.Application.Extensions;
+using Project.Application.Features;
+using Project.Application.Features.Interfaces;
+
+namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "admin")]
@@ -10,7 +19,8 @@
         private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IDomainService _domainService;
 
-        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogServie serverLogServie, ICronJobInfoService cronJobInfoService, IDomainService domainService)
+        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, ICronJobInfoService cronJobInfoService, IDomainService domainService)
+
         {
             _serverService = serverService;
             _blackListService = blackListService;
@@ -132,6 +142,19 @@
             ViewBag.ServerId = serverId;
             return View();
         }
+
+        //public async Task<bool> ChangeDomainJob()
+        //{
+        //    var logServices = await _serverLogService.GetAllLogsStatistics();
+
+        //    foreach (var logService in logServices)
+        //    {
+        //        if (logService.ConnectionStatus == ConnectionStatus.Failed)
+        //    }
+        //    if ()
+        //        RecurringJob.AddOrUpdate("changeDomainJob", () => ChangeDomainJob(), "*/10 * * * *");
+        //}
+
         public async Task<IActionResult> ChangeDomain(int serverId, bool deleteDomain = true)
         {
 
@@ -211,6 +234,7 @@
             }
             return RedirectToAction("Index");
         }
+
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {
