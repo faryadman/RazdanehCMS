@@ -156,7 +156,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 var failConnection = server.AllLogsStatistics.FailCount;
                 var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
                 var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
-                if (percentFailConnection > percentSuccessConnection)
+
+                if (percentFailConnection <= percentSuccessConnection) continue;
+                if (percentFailConnection <= 70) continue;
+                if (failConnection <= 10) continue;
+                DateTime start = server.DomainDateTime;
+                DateTime now = DateTime.UtcNow;
+                TimeSpan ts = now.Subtract(start);
+                if (ts.TotalMinutes > 15) //Time now is after 10:30
                 {
                     await ChangeDomain(id);
                 }
