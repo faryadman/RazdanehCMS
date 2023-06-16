@@ -147,10 +147,15 @@
                             <label asp-for="ConfigValue"></label>
                             <input asp-for="ConfigValue" type="text" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                        <label asp-for="CurrentDomainValue"></label>
+                        <input asp-for="CurrentDomainValue" type="text" class="form-control" required>
+                        </div>
                         <div id="groupSelectListArea" class="form-group">
                             <label asp-for="GroupId">Select Group</label>
                             <select class="form-control" asp-for="GroupId"></select>
                         </div>
+
                           <div class="form-group">
                             <label asp-for="IsForHamraheAvval"></label>
                             <select class="form-control" asp-for="IsForHamraheAvval">

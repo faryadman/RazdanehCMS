@@ -5,7 +5,6 @@ using Microsoft.Data.SqlClient;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.CronJobInfo;
 using Project.Application.Features.Interfaces;
-using System.Data;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -21,7 +20,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             _cronJobInfoService = cronJobInfoService;
             _cronJobInfoRepository = cronJobInfoRepository;
-            _connectionString = "Data Source=168.119.140.221,1433;Initial Catalog=database;Persist Security Info=True;User ID=db;Password=6y2w~Kx10;TrustServerCertificate=True";
+            _connectionString = "Data Source=163.172.117.78,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True";
         }
         public async Task<IActionResult> Get()
         {

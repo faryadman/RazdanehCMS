@@ -49,7 +49,7 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewDomain = !item.isNewDomain ? '<a class="btn btn-success"  href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">create new domain</button>' : '<button class="btn btn-danger" onclick="location.reload()">Reload</button>';
+        let isNewDomain = !item.isNewDomain ? '<a class="btn btn-success"  href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">new('+item.currentDomainValue+')</button>' : '<button class="btn btn-danger" onclick="location.reload()">Reload</button>';
 
 
         let addedRow = serversTable.row.add([
@@ -211,7 +211,7 @@ $('#serversTable').on('click', '.edit', function () {
             $('#ConfigValue').val(data.configValue);
             $('#ServerName').val(item.attr('data-item-serverName'));
             $('#Location').val(item.attr('data-item-location'));
-            $('#CurrentDomainValue').val(item.attr('data-item-currentDomainValue'));
+            $('#CurrentDomainValue').val(data.currentDomainValue);
             $('#Ip').val(item.attr('data-item-ip'));
             formUrl = serversBaseUrl + '/Edit';
             $('#groupSelectListArea').css('display', 'none');

@@ -15,6 +15,7 @@ namespace Project.Application.DTOs.Server
         public string Config { get; set; }
         public string ConfigKey { get; set; }
         public string ConfigValue { get; set; }
+        [Required]
         public string CurrentDomainValue { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }

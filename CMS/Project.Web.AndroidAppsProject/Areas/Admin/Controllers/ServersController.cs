@@ -205,12 +205,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, cfApiKey, cfEmail); ;
             }
 
-
+            var dnsRecord = await cfClient.GetDnsRecordsAsync(cfZoneId);
+            var record = dnsRecord.Result.FirstOrDefault(record => record.Type == DnsRecordType.CNAME);
             // Change value serverName
-            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = cnameRecord?.Name;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = record?.Name;
 
             // Change value Host
-            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = cnameRecord?.Name;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = record?.Name;
 
             var updatedJsonString = jsonObject.ToString();
             server.Config = updatedJsonString;
