@@ -73,6 +73,7 @@ namespace Project.Application.Features.Services
                 IsForIrancell = x.IsForIrancell,
                 IsForHamraheAvval = x.IsForHamraheAvval,
                 IsAvailable = x.IsAvailable,
+                CurrentDomainValue = x.CurrentDomainValue,
                 AllLogsStatistics = x.Logs.Where(y => y.IsActive).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Where(y => y.IsActive).Count(),
