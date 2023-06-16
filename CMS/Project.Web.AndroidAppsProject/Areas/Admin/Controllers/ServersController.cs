@@ -150,6 +150,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             foreach (var id in serverIds)
             {
                 var server = await _serverService.GetServerStatistics(id);
+                if (server?.AllLogsStatistics == null) break;
                 var totalSuccessConnection = server.AllLogsStatistics.Count;
                 var successConnection = server.AllLogsStatistics.SuccessCount;
                 var failConnection = server.AllLogsStatistics.FailCount;
