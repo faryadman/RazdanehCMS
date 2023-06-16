@@ -216,10 +216,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
             var cnameValue = $"{newCnameValue}.{cfDomain}";
             // Change value serverName
-            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = cnameRecord?.Name;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = cnameValue;
 
             // Change value Host
-            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = cnameRecord?.Name;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = cnameValue;
 
             var updatedJsonString = jsonObject.ToString();
             server.Config = updatedJsonString;
