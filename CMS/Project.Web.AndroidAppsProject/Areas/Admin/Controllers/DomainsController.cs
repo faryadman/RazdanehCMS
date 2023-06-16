@@ -64,9 +64,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(new { status = "2", message = "File upload failed!!" });
+                return Json(new { status = "2", message = ex.Message });
             }
         }
     }
