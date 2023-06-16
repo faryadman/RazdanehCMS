@@ -49,7 +49,8 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewDomain = item.isNewDomain ? '<a class="btn btn-success"  href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">new(' + item.currentDomainValue + ')</button>' : '<a class="btn btn-success"  href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">Get New Domain!</button>';
+        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">new domain</a></div>' :
+            '<div>Create New Domain<br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >new domain</a></div>'
 
 
         let addedRow = serversTable.row.add([
