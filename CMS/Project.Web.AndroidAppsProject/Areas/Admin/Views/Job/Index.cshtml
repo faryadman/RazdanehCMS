@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Project.Application.DTOs.Job.CreateDomainJobDTO
+@{
     Layout = "_Admin";
 }
 
@@ -44,27 +45,72 @@
     <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
     <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
 }
-    <div class="content-body">
-        <section id="horizontal-vertical">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">مدیریت جاب ها</h4>
-                                </div>
-                                <div class="card-body">
-                                    <hr />
-                                    <button class="btn btn-success ml-lg-3" onclick="jobDomain()">جاب دامنه ها</button>
-                                    <button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>
-                                </div>
-
+<div class="content-body">
+    <section id="horizontal-vertical">
+        <div class="row">
+            <div class="col-12">
+                <div class="card row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">مدیریت جاب ها</h4>
                             </div>
+                            <div class="card-body">
+                                <hr />
+                                <button class="btn btn-success ml-lg-3" onclick="jobDomain()">جاب دامنه ها</button>
+                                <button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-
             </div>
-        </section>
+
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="jobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="jobForm">
+                    <div class="form-group">
+                        <label asp-for="IsActiveJob"></label>
+                        <select id="IsActiveJob" asp-for="IsActiveJob" class="form-control" required>
+                            <option value="true">Start</option>
+                            <option value="false">Stop</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RunDuringTimeJob"></label>
+                        <input id="RunDuringTimeJob" asp-for="RunDuringTimeJob" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FailConnectionCount"></label>
+                        <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FailConnectionPercent"></label>
+                        <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MinuteCheckTime"></label>
+                        <input id="MinuteCheckTime" asp-for="MinuteCheckTime" type="text" class="form-control">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="submitForm()" type="button" class="btn btn-success">تایید</button>
+            </div>
+        </div>
     </div>
+</div>

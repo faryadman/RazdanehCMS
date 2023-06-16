@@ -6,6 +6,7 @@ namespace Project.Application.Features.Interfaces
     {
         Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 0);
         Task<List<int>> GetAllIds();
+        Task<List<int>> GetActiveIds();
         Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator);
         Task<ServerDTO> GetServerStatistics(int serverId);
         Task Create(CreateServerDTO input);

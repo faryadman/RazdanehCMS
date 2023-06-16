@@ -146,20 +146,20 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
         public async Task CheckDomainJob()
         {
-            var serverIds = await _serverService.GetAllIds();
+            var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
                 var server = await _serverService.GetServerStatistics(id);
-                if (server?.AllLogsStatistics == null) break;
+                if (server?.AllLogsStatistics == null) continue;
                 var totalSuccessConnection = server.AllLogsStatistics.Count;
                 var successConnection = server.AllLogsStatistics.SuccessCount;
                 var failConnection = server.AllLogsStatistics.FailCount;
                 var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
                 var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
 
-                if (percentFailConnection <= percentSuccessConnection) continue;
-                if (percentFailConnection <= 70) continue;
-                if (failConnection <= 10) continue;
+                if (percentFailConnection < percentSuccessConnection) continue;
+                if (percentFailConnection < 70) continue;
+                if (failConnection < 10) continue;
                 DateTime start = server.DomainDateTime;
                 DateTime now = DateTime.UtcNow;
                 TimeSpan ts = now.Subtract(start);
