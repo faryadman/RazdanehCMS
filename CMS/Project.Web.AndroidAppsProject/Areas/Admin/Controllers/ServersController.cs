@@ -1,4 +1,5 @@
 ﻿using CloudFlare.NET;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -65,7 +66,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(EditServerDTO input)
         {
             await _serverService.Edit(input);
-            //await ChangeDomain(input.ItemId, false);
+            await ChangeDomain(input.ItemId, false);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> EditAd(EditServerDTO input)
@@ -143,24 +144,31 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return View();
         }
 
-        //public async Task<bool> ChangeDomainJob()
-        //{
-        //    var logServices = await _serverLogService.GetAllLogsStatistics();
-
-        //    foreach (var logService in logServices)
-        //    {
-        //        if (logService.ConnectionStatus == ConnectionStatus.Failed)
-        //    }
-        //    if ()
-        //        RecurringJob.AddOrUpdate("changeDomainJob", () => ChangeDomainJob(), "*/10 * * * *");
-        //}
+        public async Task CheckDomainJob()
+        {
+            var serverIds = await _serverService.GetAllIds();
+            foreach (var id in serverIds)
+            {
+                var server = await _serverService.GetServerStatistics(id);
+                var totalSuccessConnection = server.AllLogsStatistics.Count;
+                var successConnection = server.AllLogsStatistics.SuccessCount;
+                var failConnection = server.AllLogsStatistics.FailCount;
+                var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
+                var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
+                if (percentFailConnection > percentSuccessConnection)
+                {
+                    await ChangeDomain(id);
+                }
+            }
+            RecurringJob.AddOrUpdate("CheckDomainJob", () => CheckDomainJob(), "*/5 * * * *");
+        }
 
         public async Task<IActionResult> ChangeDomain(int serverId, bool deleteDomain = true)
         {
 
             ViewBag.ServerId = serverId;
             var domains = await _domainService.GetAll();
-            if (domains == null) return Json(new { status = "2", message = "domain don't exist!" });
+            if (domains is not { Count: > 0 }) return Json(new { status = "2", message = "domain don't exist!" });
             var server = await _serverService.Detail(serverId);
             var config = server.Config;
             var currentDomainValue = domains?[0].DomainName;
@@ -227,7 +235,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 IsForIrancell = server.IsForIrancell,
                 ItemId = server.Id,
                 Location = server.Location,
-                CurrentDomainValue = server.CurrentDomainValue
+                CurrentDomainValue = server.CurrentDomainValue,
+                IsNewDomain = true,
+                DomainDateTime = DateTime.UtcNow
             });
             if (deleteDomain)
             {

@@ -20,6 +20,7 @@ namespace Project.Application.DTOs.Server
         public int GroupId { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
+        public DateTime DomainDateTime { get; set; }
         public ServerLogStatistics AllLogsStatistics { get; set; }
         public ServerLogStatistics IrancellLogsStatistics { get; set; }
         public ServerLogStatistics HamraheAvvalLogsStatistics { get; set; }

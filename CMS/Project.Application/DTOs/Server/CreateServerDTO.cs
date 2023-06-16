@@ -21,6 +21,8 @@ namespace Project.Application.DTOs.Server
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
         public bool IsAd { get; set; }
+        public bool IsNewDomain { get; set; } = false;
+        public DateTime DomainDateTime { get; set; }
 
     }
 }

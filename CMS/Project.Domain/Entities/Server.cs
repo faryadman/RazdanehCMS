@@ -20,5 +20,6 @@ namespace Project.Domain.Entities
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
         public ICollection<ServerLog> Logs { get; set; }
+        public DateTime DomainDateTime { get; set; } = DateTime.UtcNow;
     }
 }
