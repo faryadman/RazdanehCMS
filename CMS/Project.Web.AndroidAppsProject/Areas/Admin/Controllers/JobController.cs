@@ -41,7 +41,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return View();
         }
 
-        private async Task AddOrUpdateJob(CreateJobDTO input, Action action)
+        private async Task AddOrUpdateJob(CreateJobDTO input)
         {
             var list = await _jobService.List();
             var id = 0;
@@ -63,7 +63,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task CreateDomainJob(CreateDomainJobDTO input)
         {
-            RecurringJob.AddOrUpdate("DomainJob", () => Test(), $"*/{input.JobPeriodTime} * * * *");
+            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
             await AddOrUpdateJob(new CreateJobDTO()
             {
                 ApiKey = input.ApiKey,
@@ -73,7 +73,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 Email = input.Email,
                 JobConfig = JsonConvert.SerializeObject(input),
                 JobExpireMinuteTime = input.JobExpireMinuteTime
-            }, Test);
+            });
         }
         public async Task CheckDomainJob()
         {
