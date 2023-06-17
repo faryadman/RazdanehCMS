@@ -5,20 +5,6 @@ namespace Project.Application.Features
 {
     public class CloudflareApiClient
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
-        private readonly string _email;
-
-        public CloudflareApiClient(string apiKey, string email)
-        {
-            _apiKey = apiKey;
-            _email = email;
-        }
-        public CloudflareApiClient()
-        {
-
-        }
-
 
         public async Task UpdateDnsRecordAsync(string zoneId, string recordId, string newCname, string cnameContent, string apiKey, string email)
         {
@@ -63,7 +49,7 @@ namespace Project.Application.Features
             {
                 type = DnsRecordType.CNAME,
                 name = newCname,
-                content = "@",
+                content = cnameContent,
                 ttl = 1,
                 proxied = false
             };

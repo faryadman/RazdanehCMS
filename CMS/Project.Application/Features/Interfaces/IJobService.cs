@@ -1,0 +1,12 @@
+﻿using Project.Application.DTOs.Job;
+
+namespace Project.Application.Features.Interfaces
+{
+    public interface IJobService
+    {
+        Task<List<JobDTO>> List();
+        Task<JobDTO> Detail(int id);
+        Task Delete(int id);
+        Task CreateJob(CreateJobDTO input);
+    }
+}

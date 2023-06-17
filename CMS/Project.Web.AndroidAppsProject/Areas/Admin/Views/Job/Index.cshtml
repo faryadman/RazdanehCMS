@@ -1,4 +1,5 @@
-﻿@model Project.Application.DTOs.Job.CreateDomainJobDTO
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO
 @{
     Layout = "_Admin";
 }
@@ -89,8 +90,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label asp-for="RunDuringTimeJob"></label>
-                        <input id="RunDuringTimeJob" asp-for="RunDuringTimeJob" type="text" class="form-control" required>
+                        <label asp-for="ApiKey"></label>
+                            <input id="ApiKey" asp-for="ApiKey" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input id="Email" asp-for="Email" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JobPeriodTime"></label>
+                        <input id="MinuteCheckTime" asp-for="JobPeriodTime" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JobExpireMinuteTime"></label>
+                            <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control">
                     </div>
                     <div class="form-group">
                         <label asp-for="FailConnectionCount"></label>
@@ -100,11 +113,6 @@
                         <label asp-for="FailConnectionPercent"></label>
                         <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label asp-for="MinuteCheckTime"></label>
-                        <input id="MinuteCheckTime" asp-for="MinuteCheckTime" type="text" class="form-control">
-                    </div>
-
                 </form>
             </div>
             <div class="modal-footer">

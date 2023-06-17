@@ -34,16 +34,20 @@ function submitForm() {
 
 $('#IsActiveJob').on('change', function () {
         var isActiveJob = $("#IsActiveJob").val();
-        // بررسی مقدار IsActiveJob و اعمال تغییرات
+        // check IsActiveJob for value
         if (isActiveJob === "true") {
-            $("#RunDuringTimeJob").prop("disabled", false);
+            $("#ApiKey").prop("disabled", false);
+            $("#Email").prop("disabled", false);
             $("#FailConnectionCount").prop("disabled", false);
             $("#FailConnectionPercent").prop("disabled", false);
-            $("#MinuteCheckTime").prop("disabled", false);
+            $("#JobPeriodTime").prop("disabled", false);
+            $("#JobExpireMinuteTime").prop("disabled", false);
         } else {
-            $("#RunDuringTimeJob").prop("disabled", true);
+            $("#ApiKey").prop("disabled", true);
+            $("#Email").prop("disabled", true);
             $("#FailConnectionCount").prop("disabled", true);
             $("#FailConnectionPercent").prop("disabled", true);
-            $("#MinuteCheckTime").prop("disabled", true);
+            $("#JobPeriodTime").prop("disabled", true);
+            $("#JobExpireMinuteTime").prop("disabled", true);
         }
 });

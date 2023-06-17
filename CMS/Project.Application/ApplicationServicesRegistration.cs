@@ -28,6 +28,7 @@ namespace Project.Application
             services.AddScoped<IOperatorIdentificationService, OperatorIdentificationService>();
             services.AddScoped<ICronJobInfoService, CronJobInfoService>();
             services.AddScoped<IDomainService, DomainService>();
+            services.AddScoped<IJobService, JobService>();
 
             return services;
         }

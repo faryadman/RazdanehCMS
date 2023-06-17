@@ -6,6 +6,7 @@ using Project.Application.DTOs.BlackList;
 using Project.Application.DTOs.CronJobInfo;
 using Project.Application.DTOs.Domain;
 using Project.Application.DTOs.Group;
+using Project.Application.DTOs.Job;
 using Project.Application.DTOs.OperatorIdentification;
 using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
@@ -72,6 +73,13 @@ namespace Project.Application.Profiles
 
             CreateMap<Domain.Entities.Domain, CreateDomainDTO>().ReverseMap();
             CreateMap<Domain.Entities.Domain, DomainDTO>().ReverseMap();
+
+            #endregion
+
+            #region job
+
+            CreateMap<Job, CreateJobDTO>().ReverseMap();
+            CreateMap<Job, JobDTO>().ReverseMap();
 
             #endregion
         }
