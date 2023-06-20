@@ -9,6 +9,5 @@ namespace Project.Application.DTOs.Domain
         [Required]
         public string FileName { get; set; }
 
-        public List<string> ListServer { get; set; } = new List<string>();
     }
 }

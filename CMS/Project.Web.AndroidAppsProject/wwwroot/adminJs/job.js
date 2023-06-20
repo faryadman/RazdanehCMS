@@ -49,5 +49,5 @@ $('#IsActiveJob').on('change', function () {
             $("#FailConnectionPercent").prop("disabled", true);
             $("#JobPeriodTime").prop("disabled", true);
             $("#JobExpireMinuteTime").prop("disabled", true);
-        }
+    }
 });

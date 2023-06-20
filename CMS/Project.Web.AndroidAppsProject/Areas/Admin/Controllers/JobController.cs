@@ -35,9 +35,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             _domainService = domainService;
             _jobService = jobService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
+            var list = await _jobService.List();
+            var id = 0;
+            foreach (var job in list)
+            {
+                ViewBag.Job = job;
+            }
             return View();
         }
 
