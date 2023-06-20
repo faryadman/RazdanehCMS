@@ -32,18 +32,14 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
             var query = _domainRepository.GetAllQueryable();
-            if (filter != 0)
+            if (filter == 1)
             {
-                if (filter == 1)
-                {
-                    query = query.Where(x => x.IsActive);
-                }
-                else
-                {
-                    query = query.Where(x => !x.IsActive);
-                }
+                query = query.Where(x => x.IsActive);
             }
-
+            else
+            {
+                query = query.Where(x => !x.IsActive);
+            }
             var data = await query.ToListAsync();
             var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
             return list;
@@ -58,6 +54,15 @@ namespace Project.Application.Features.Services
         public async Task Delete(int id)
         {
             await _domainRepository.Delete(id);
+        }
+
+        public async Task DeleteInactiveDomain()
+        {
+            var listInactive = await GetByFilter(0);
+            foreach (var domain in listInactive)
+            {
+                await _domainRepository.Remove(domain.Id);
+            }
         }
     }
 }

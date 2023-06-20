@@ -25,7 +25,13 @@ function renderdomains(data) {
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
-        let deleteButton = '<button class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')">Delete</button>';
+        let deleteButton;
+        if (item.isActive == 1) {
+             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
+        }
+        else {
+            deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" disabled>Delete</button>';
+        }
 
         domainsTable.row.add([
             item.id,
@@ -40,8 +46,6 @@ function renderdomains(data) {
         isOdd = !isOdd;
     }
     domainsTable.draw();
-    console.log("table", domainsTable)
-    console.log(data)
 }
 
 function newDomain() {
@@ -151,6 +155,65 @@ function filterservers() {
     $('#filterdomainsModal').modal();
     swal.close();
 }
+
+function getInactiveDomains() {
+    $.ajax({
+        type: "GET",
+        url: serversBaseUrl + '/listInactive',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            renderInactiveDomains(result);
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("بروز اشکال در اتصال به اینترنت");
+        }
+    });
+}
+
+function renderInactiveDomains(data) {
+    let inactiveDomainsList = $('#inactiveDomainsList');
+    inactiveDomainsList.empty();
+    for (var i = 0; i < data.length; i++) {
+        let item = data[i];
+        inactiveDomainsList.append('<li>' + item.domainName + '</li>');
+    }
+    $('#inactiveDomainsModal').modal();
+}
+
+
+
+function deleteInactiveDomain() {
+    Swal.fire({
+        title: '',
+        text: confirmDeleteQuestion,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-danger ml-1',
+        buttonsStyling: false,
+    }).then(function (result) {
+        if (result.value) {
+            loading();
+
+            $.ajax({
+                type: "POST",
+                url: serversBaseUrl + '/DeleteInactiveDomain',
+                success: function (data) {
+                    if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+                        getdomains(false);
+                    } else {
+                        getdomains(true);
+                    }
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                }
+            })
+        }
+    });
+}
+
 
 function filter() {
     loading();

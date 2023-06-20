@@ -21,9 +21,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
+
             return View();
         }
         public async Task<IActionResult> List(int filter)
+        {
+            var data = await _domainService.GetByFilter(filter);
+            return Json(data);
+        }
+        public async Task<IActionResult> listInactive(int filter = 0)
         {
             var data = await _domainService.GetByFilter(filter);
             return Json(data);
@@ -36,6 +42,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteDomain(int id)
         {
             await _domainService.Delete(id);
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> DeleteInactiveDomain()
+        {
+            await _domainService.DeleteInactiveDomain();
             return Json(new { status = "1", message = "done successfully" });
         }
         [HttpPost]
