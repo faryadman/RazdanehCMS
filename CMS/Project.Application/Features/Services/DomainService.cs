@@ -32,14 +32,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
             var query = _domainRepository.GetAllQueryable();
-            if (filter == 1)
-            {
-                query = query.Where(x => x.IsActive);
-            }
-            else
-            {
-                query = query.Where(x => !x.IsActive);
-            }
+            query = filter == 1 ? query.Where(x => x.IsActive) : query.Where(x => !x.IsActive);
             var data = await query.ToListAsync();
             var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
             return list;

@@ -51,7 +51,9 @@ function renderservers(data) {
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
         let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">new domain</a></div>' :
             '<div>Create New Domain<br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >new domain</a></div>'
-
+        let config = item.config;
+        let configObject = JSON.parse(config);
+        var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
 
         let addedRow = serversTable.row.add([
             deleteChekbox,
@@ -62,7 +64,7 @@ function renderservers(data) {
             '<span class="badge badge-dark">' + item.serverName + '</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
-            item.config.length > 30 ? item.config.substring(0, 30) + "..." : item.config,
+            serverName,
             '<span class="badge badge-dark">' + item.group.title + '</span>',
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
             item.isForHamraheAvval,
@@ -205,7 +207,6 @@ $('#serversTable').on('click', '.edit', function () {
         method: 'GET',
         success: function (data) {
             $('#itemId').val(item.attr('data-item-id'));
-            $('#Config').val(data.config);
             setSelectListData('IsForHamraheAvval', data.isForHamraheAvval);
             setSelectListData('IsForIrancell', data.isForIrancell);
             $('#ConfigKey').val(data.configKey);

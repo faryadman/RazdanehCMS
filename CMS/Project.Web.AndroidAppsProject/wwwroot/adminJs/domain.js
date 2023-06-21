@@ -173,10 +173,26 @@ function getInactiveDomains() {
 function renderInactiveDomains(data) {
     let inactiveDomainsList = $('#inactiveDomainsList');
     inactiveDomainsList.empty();
+    let domainNames = [];
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
         inactiveDomainsList.append('<li>' + item.domainName + '</li>');
+        domainNames.push(item.domainName);
     }
+    inactiveDomainsList.wrap('<ol></ol>');
+
+    // تبدیل آرایه نام دامنه‌ها به رشته JSON
+    let jsonString = JSON.stringify(domainNames);
+
+    // کپی کردن رشته JSON به کلیپ بورد
+    navigator.clipboard.writeText(jsonString)
+        .then(function () {
+            console.log('نام دامنه‌ها به کلیپ بورد کپی شد.');
+        })
+        .catch(function (error) {
+            console.error('خطا در کپی کردن نام دامنه‌ها به کلیپ بورد:', error);
+        });
+
     $('#inactiveDomainsModal').modal();
 }
 

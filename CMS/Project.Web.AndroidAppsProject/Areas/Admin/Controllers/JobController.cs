@@ -38,7 +38,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var list = await _jobService.List();
-            var id = 0;
+            ViewBag.Email = "";
+            ViewBag.ApiKey = "";
+            ViewBag.JobPeriodTime = "";
+            ViewBag.JobExpireMinuteTime = "";
+            ViewBag.FailConnectionPercent = "";
+            ViewBag.FailConnectionCount = "";
+            ViewBag.IsActiveJob = false;
             foreach (var job in list.Where(job => job.JobName == "DomainJob"))
             {
                 var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
@@ -56,9 +62,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private async Task InsertJob(CreateJobDTO input)
         {
             var job = _jobService.List().Result.Find(j => j.JobName == input.JobName)!;
-            await _jobService.Delete(job.Id);
+            if (job != null)
+            {
 
-            if (!input.IsActive)
+                await _jobService.Delete(job.Id);
+            }
+
+            if ((bool)!input.IsActive)
             {
                 RecurringJob.RemoveIfExists(input.JobName);
                 return;
