@@ -6,5 +6,6 @@ namespace Project.Domain.Entities
     {
         public string DomainName { get; set; }
         public string FileName { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

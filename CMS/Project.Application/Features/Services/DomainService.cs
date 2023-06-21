@@ -25,7 +25,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list);
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted));
             return model;
         }
 
@@ -59,9 +59,11 @@ namespace Project.Application.Features.Services
         public async Task DeleteInactiveDomain()
         {
             var listInactive = await GetByFilter(0);
-            foreach (var domain in listInactive)
+            var list = _mapper.Map<IEnumerable<DomainDTO>, List<Domain.Entities.Domain>>(listInactive);
+            foreach (var domain in list)
             {
-                await _domainRepository.Remove(domain.Id);
+                domain.IsDeleted = true;
+                await _domainRepository.Update(domain);
             }
         }
     }

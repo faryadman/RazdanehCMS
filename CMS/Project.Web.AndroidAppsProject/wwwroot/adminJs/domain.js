@@ -4,10 +4,9 @@ let serversBaseUrl = "/admin/domains";
 let formUrl;
 
 function getdomains(filter) {
-    filter = filter == undefined ? 0 : filter;
     $.ajax({
         type: "GET",
-        url: serversBaseUrl + '/list?filter=' + filter,
+        url: serversBaseUrl + '/list?filter=1',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {

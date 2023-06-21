@@ -2,7 +2,6 @@
 @model Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO
 @{
     Layout = "_Admin";
-    var job = ViewBag.Job.Email;
 }
 
 @section vendors{
@@ -83,36 +82,50 @@
             </div>
             <div class="modal-body">
                 <form id="jobForm">
+                    <label class="custom-control-label mr-2" for="customSwitch"> 
+                        @{
+                            if (ViewBag.IsActiveJob)
+                            {
+                                <text>وضعیت فعلی جاب : فعال</text>
+                            }
+                            else
+                            {
+                                <text>وضعیت قعلی جاب : غیرفعال</text>
+                            }
+                        }
+                    </label>
                     <div class="form-group">
-                        <label asp-for="IsActiveJob"></label>
-                        <select id="IsActiveJob" asp-for="IsActiveJob" class="form-control" required>
-                            <option value="true">Start</option>
-                            <option value="false">Stop</option>
-                        </select>
+                        <div class="custom-control custom-switch mr-2 mb-1">
+
+                            <input type="checkbox" class="custom-control-input" id="customSwitch" asp-for="IsActiveJob" value="true" data-val="true" data-val-required="The IsActiveJob field is required."/>
+                            
+                            <label class="custom-control-label mr-2" for="customSwitch"></label>
+                        </div>
+                        <hr />
                     </div>
                     <div class="form-group">
                         <label asp-for="ApiKey"></label>
-                            <input id="ApiKey" asp-for="ApiKey" type="text" class="form-control" required>
+                        <input id="ApiKey" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
                     </div>
                     <div class="form-group">
                         <label asp-for="Email"></label>
-                        <input id="Email" asp-for="Email" type="text" class="form-control" required>
+                        <input id="Email" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
                     </div>
                     <div class="form-group">
                         <label asp-for="JobPeriodTime"></label>
-                        <input id="JobPeriodTime" asp-for="JobPeriodTime" type="text" class="form-control">
+                        <input id="JobPeriodTime" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
                     </div>
                     <div class="form-group">
                         <label asp-for="JobExpireMinuteTime"></label>
-                            <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control">
+                        <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
                     </div>
                     <div class="form-group">
                         <label asp-for="FailConnectionCount"></label>
-                        <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control">
+                        <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control" value="@ViewBag.FailConnectionCount">
                     </div>
                     <div class="form-group">
                         <label asp-for="FailConnectionPercent"></label>
-                        <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control">
+                        <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control" value="@ViewBag.FailConnectionPercent">
                     </div>
                 </form>
             </div>
@@ -123,3 +136,4 @@
         </div>
     </div>
 </div>
+

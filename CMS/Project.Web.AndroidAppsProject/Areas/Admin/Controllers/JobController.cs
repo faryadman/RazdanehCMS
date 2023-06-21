@@ -39,37 +39,38 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             var list = await _jobService.List();
             var id = 0;
-            foreach (var job in list)
+            foreach (var job in list.Where(job => job.JobName == "DomainJob"))
             {
-                ViewBag.Job = job;
+                var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
+                ViewBag.Email = jobDto.Email;
+                ViewBag.ApiKey = jobDto.ApiKey;
+                ViewBag.JobPeriodTime = jobDto.JobPeriodTime;
+                ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime;
+                ViewBag.FailConnectionPercent = jobDto.FailConnectionPercent;
+                ViewBag.FailConnectionCount = jobDto.FailConnectionCount;
+                ViewBag.IsActiveJob = jobDto.IsActiveJob;
             }
             return View();
         }
 
-        private async Task AddOrUpdateJob(CreateJobDTO input)
+        private async Task InsertJob(CreateJobDTO input)
         {
-            var list = await _jobService.List();
-            var id = 0;
-            foreach (var job in list.Where(job => job.JobName == input.JobName))
-            {
-                id = job.Id;
-            }
-            if (id > 0)
-            {
-                await _jobService.Delete(id);
-            }
+            var job = _jobService.List().Result.Find(j => j.JobName == input.JobName)!;
+            await _jobService.Delete(job.Id);
+
             if (!input.IsActive)
             {
                 RecurringJob.RemoveIfExists(input.JobName);
                 return;
             }
-            await _jobService.CreateJob(input);
 
+            await _jobService.CreateJob(input);
         }
+
         public async Task CreateDomainJob(CreateDomainJobDTO input)
         {
-            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
-            await AddOrUpdateJob(new CreateJobDTO()
+            //Insert job to db
+            await InsertJob(new CreateJobDTO
             {
                 ApiKey = input.ApiKey,
                 IsActive = input.IsActiveJob,
@@ -79,36 +80,43 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 JobConfig = JsonConvert.SerializeObject(input),
                 JobExpireMinuteTime = input.JobExpireMinuteTime
             });
+            //create job into hangfire
+            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
         }
         public async Task CheckDomainJob()
         {
+            //TODO: Just Get Active Domain
             var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
-            var jobDto = new CreateDomainJobDTO();
-            foreach (var job in list.Where(job => job.JobName == "DomainJob"))
-            {
-                jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
-            }
+
+            var jobDto = list.FirstOrDefault(job => job.JobName == "DomainJob")?.JobConfig;
+            if (jobDto == null)
+                return;
+
+            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto);
+
             foreach (var id in serverIds)
             {
-                if (jobDto == null) continue;
                 var server = await _serverService.GetServerStatistics(id);
-                if (server?.AllLogsStatistics == null) continue;
+                if (server?.AllLogsStatistics == null)
+                    continue;
+                //TODO: IF Success Result Convert to extention method!
                 var totalSuccessConnection = server.AllLogsStatistics.Count;
                 var successConnection = server.AllLogsStatistics.SuccessCount;
                 var failConnection = server.AllLogsStatistics.FailCount;
                 var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
                 var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
 
-                if (percentFailConnection < percentSuccessConnection) continue;
-                if (percentFailConnection < jobDto.FailConnectionPercent) continue;
-                if (failConnection < jobDto.FailConnectionCount) continue;
-                DateTime start = server.DomainDateTime;
-                DateTime now = DateTime.UtcNow;
-                TimeSpan ts = now.Subtract(start);
-                if (ts.TotalMinutes > jobDto.JobExpireMinuteTime) //Time now is after 0:30 minute
+                if (percentFailConnection >= percentSuccessConnection || percentFailConnection >= domainJobDto.FailConnectionPercent || failConnection >= domainJobDto.FailConnectionCount)
                 {
-                    await ChangeDomain(id);
+                    //TODO: IF Success Result Convert to extention method
+                    DateTime start = server.DomainDateTime;
+                    DateTime now = DateTime.UtcNow;
+                    TimeSpan ts = now.Subtract(start);
+                    if (ts.TotalMinutes > domainJobDto.JobExpireMinuteTime)
+                    {
+                        await ChangeDomain(id);
+                    }
                 }
             }
         }

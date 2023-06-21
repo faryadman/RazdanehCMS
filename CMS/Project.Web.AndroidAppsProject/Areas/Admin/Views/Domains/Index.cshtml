@@ -27,7 +27,7 @@
 
     @section scripts{
     <script>
-        getdomains(undefined);
+        getdomains(true);
     </script>
 }
 
@@ -60,13 +60,12 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">لیست دامنه ها</h4>
-                                    <br />
+
+                                    <hr />
                                     <button class="btn btn-primary ml-2" onclick="getInactiveDomains()">دریافت دامنه های غیرفعال</button>
-                                    <br />
-                                    <button class="btn btn-primary ml-2" onclick="filterservers()">فیلتر</button>
-                                    <br />
+                                    <hr/>
                                     <button class="btn btn-success" onclick="newDomain()">آپلود فایل جدید</button>
-                                    <br />
+
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
@@ -121,36 +120,6 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="filterdomainsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Filter domain</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="filterDomainForm">
-                    <div class="form-group">
-                        <label>Choose what to show</label>
-                        <select class="form-control" name="filter" id="filterInput">
-                            <option value="0">All</option>
-                            <option value="1">Is Available</option>
-                            <option value="2">Not Available</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                <button onclick="filter()" type="button" class="btn btn-success">تایید</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="modal fade" id="inactiveDomainsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

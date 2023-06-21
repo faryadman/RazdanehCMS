@@ -29,7 +29,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var data = await _domainService.GetByFilter(filter);
             return Json(data);
         }
-        public async Task<IActionResult> listInactive(int filter = 0)
+        public async Task<IActionResult> ListInactive(int filter = 0)
         {
             var data = await _domainService.GetByFilter(filter);
             return Json(data);
