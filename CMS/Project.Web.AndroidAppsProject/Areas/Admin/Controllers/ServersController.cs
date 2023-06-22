@@ -171,10 +171,73 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             RecurringJob.AddOrUpdate("CheckDomainJob", () => CheckDomainJob(), "*/5 * * * *");
         }
 
+        public async Task<IActionResult> ChangeSubDomain(int serverId)
+        {
+            var server = await _serverService.Detail(serverId);
+            var config = server.Config;
+            var jsonObject = JObject.Parse(config);
+            var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
+            var hostString = jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"]?.ToString().Split(".");
+            var subName = GenerateWordExtention.GenerateWords(4)[0];
+            var serverName = $"{subName}.{serverNameString?[1]}.{serverNameString?[2]}";
+            var host = $"{subName}.{hostString?[1]}.{hostString?[2]}";
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = serverName;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = host;
+            var updatedJsonString = jsonObject.ToString();
+            server.Config = updatedJsonString;
+            await _serverService.Edit(new EditServerDTO()
+            {
+                Config = server.Config,
+                ServerName = server.ServerName,
+                ConfigValue = server.ConfigValue,
+                ConfigKey = server.ConfigKey,
+                Ip = server.Ip,
+                IsForHamraheAvval = server.IsForHamraheAvval,
+                IsForIrancell = server.IsForIrancell,
+                ItemId = server.Id,
+                Location = server.Location,
+                CurrentDomainValue = server.CurrentDomainValue,
+                IsNewDomain = true,
+                DomainDateTime = DateTime.UtcNow
+            });
+            var currentDomainValue = serverNameString;
+            // Your Cloudflare API credentials
+            var cfEmail = "hamednadarkhani1993@gmail.com";
+            var cfApiKey = "c31b2d5ee16f7a7a3d092fc5a5755768cff1a";
+
+            // Your Cloudflare zone ID and domain name
+            var cfZoneId = string.Empty;
+            var cfDomain = $"{currentDomainValue?[1]}.{currentDomainValue?[2]}";
+            var auth = new CloudFlareAuth(cfEmail, cfApiKey);
+            var cfClient = new CloudFlareClient(auth);
+            var zones = await cfClient.GetAllZonesAsync();
+            foreach (var zone in zones)
+            {
+                if (zone.Name == cfDomain)
+                    cfZoneId = new IdentifierTag(zone.Id);
+            }
+            // Get the list of DNS records in the zone
+            var dnsRecords = await cfClient.GetDnsRecordsAsync(cfZoneId);
+
+            // Find the CNAME record based on its name
+            var cnameRecord = dnsRecords.Result.FirstOrDefault(record => record.Type == DnsRecordType.CNAME);
+            var cloudflare = new CloudflareApiClient();
+            if (cnameRecord != null)
+            {
+                // Update the CNAME record with the new value
+                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, serverName, server.CurrentDomainValue, cfApiKey, cfEmail);
+            }
+            else
+            {
+                // Create the CNAME record with the new value
+                await cloudflare.CreateDnsRecordAsync(cfZoneId, serverName, server.CurrentDomainValue, cfApiKey, cfEmail); ;
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public async Task<IActionResult> ChangeDomain(int serverId, bool deleteDomain = true)
         {
-
-            ViewBag.ServerId = serverId;
             var domains = await _domainService.GetAll();
             if (domains is not { Count: > 0 }) return Json(new { status = "2", message = "domain don't exist!" });
             var server = await _serverService.Detail(serverId);

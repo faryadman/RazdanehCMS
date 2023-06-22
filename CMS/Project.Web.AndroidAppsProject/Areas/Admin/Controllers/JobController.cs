@@ -38,13 +38,16 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var list = await _jobService.List();
-            ViewBag.Email = "";
-            ViewBag.ApiKey = "";
-            ViewBag.JobPeriodTime = "";
-            ViewBag.JobExpireMinuteTime = "";
-            ViewBag.FailConnectionPercent = "";
-            ViewBag.FailConnectionCount = "";
-            ViewBag.IsActiveJob = false;
+            if (!list.Any())
+            {
+                ViewBag.Email = "";
+                ViewBag.ApiKey = "";
+                ViewBag.JobPeriodTime = "";
+                ViewBag.JobExpireMinuteTime = "";
+                ViewBag.FailConnectionPercent = "";
+                ViewBag.FailConnectionCount = "";
+                ViewBag.IsActiveJob = false;
+            }
             foreach (var job in list.Where(job => job.JobName == "DomainJob"))
             {
                 var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);

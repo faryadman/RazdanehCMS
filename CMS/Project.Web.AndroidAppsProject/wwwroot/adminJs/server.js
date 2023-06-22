@@ -49,8 +49,9 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">system online</a></div>' :
-            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >get new domain</a></div>'
+        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">Refresh Domain</a></div>' :
+            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >Refresh Domain</a></div>';
+        let isNewSubDomain = '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeSubDomain?serverId=' + item.id + '" >Refresh SubDomain</a></div>'
         let config = item.config;
         let configObject = JSON.parse(config);
         var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
@@ -60,7 +61,7 @@ function renderservers(data) {
             item.id,
             isAdServer,
             isNewDomain,
-            item.isNewDomain,
+            isNewSubDomain,
             '<span class="badge badge-dark">' + item.serverName + '</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
