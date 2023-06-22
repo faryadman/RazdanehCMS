@@ -82,7 +82,7 @@
             </div>
             <div class="modal-body">
                 <form id="jobForm">
-                    <label class="custom-control-label mr-2" for="customSwitch"> 
+                    <label> 
                         @{
                             if (ViewBag.IsActiveJob)
                             {
@@ -90,14 +90,14 @@
                             }
                             else
                             {
-                                <text>وضعیت قعلی جاب : غیرفعال</text>
+                                <text>وضعیت فعلی جاب : غیرفعال</text>
                             }
                         }
                     </label>
                     <div class="form-group">
                         <div class="custom-control custom-switch mr-2 mb-1">
 
-                            <input type="checkbox" class="custom-control-input" id="customSwitch" asp-for="IsActiveJob" value="@ViewBag.IsActiveJob" data-val="true" data-val-required="The IsActiveJob field is required."/>
+                            <input type="checkbox" class="custom-control-input" id="customSwitch" asp-for="IsActiveJob" value="true" data-val="true" data-val-required="The IsActiveJob field is required."/>
                             
                             <label class="custom-control-label mr-2" for="customSwitch"></label>
                         </div>

@@ -49,8 +49,8 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">new domain</a></div>' :
-            '<div>Create New Domain<br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >new domain</a></div>'
+        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">system online</a></div>' :
+            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >get new domain</a></div>'
         let config = item.config;
         let configObject = JSON.parse(config);
         var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
@@ -212,6 +212,7 @@ $('#serversTable').on('click', '.edit', function () {
             $('#ConfigKey').val(data.configKey);
             $('#ConfigValue').val(data.configValue);
             $('#ServerName').val(item.attr('data-item-serverName'));
+            $('#Config').val(data.config);
             $('#Location').val(item.attr('data-item-location'));
             $('#CurrentDomainValue').val(data.currentDomainValue);
             $('#Ip').val(item.attr('data-item-ip'));

@@ -246,10 +246,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow
             });
-            if (deleteDomain)
-            {
-                if (domains != null) await _domainService.Delete(domains[0].Id);
-            }
+            if (!deleteDomain) return RedirectToAction("Index");
+            if (domains != null) await _domainService.Delete(domains[0].Id);
             return RedirectToAction("Index");
         }
 
