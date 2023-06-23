@@ -23,7 +23,12 @@ namespace Project.Application.Features.Services
             var models = _mapper.Map<List<JobDTO>>(jobs);
             return models;
         }
-
+        public Task<JobDTO> LastDetail()
+        {
+            var job = _jobRepository.GetAllQueryable().OrderBy(x => x.Id).LastOrDefault();
+            var model = _mapper.Map<JobDTO>(job);
+            return Task.FromResult(model);
+        }
         public async Task<JobDTO> Detail(int id)
         {
             var job = await _jobRepository.GetNoTracking(id);

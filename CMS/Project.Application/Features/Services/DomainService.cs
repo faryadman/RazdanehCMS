@@ -55,8 +55,7 @@ namespace Project.Application.Features.Services
             var list = _mapper.Map<IEnumerable<DomainDTO>, List<Domain.Entities.Domain>>(listInactive);
             foreach (var domain in list)
             {
-                domain.IsDeleted = true;
-                await _domainRepository.Update(domain);
+                await _domainRepository.Remove(domain);
             }
         }
     }

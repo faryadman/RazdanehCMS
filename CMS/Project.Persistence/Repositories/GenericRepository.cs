@@ -117,5 +117,13 @@ namespace Project.Persistence.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+        public async Task Remove(T ob)
+        {
+            if (ob != null)
+            {
+                _dbContext.Remove(ob);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ function renderdomains(data) {
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
+        console.log(item)
         let deleteButton;
         if (item.isActive == 1) {
              deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
@@ -33,9 +34,10 @@ function renderdomains(data) {
         }
 
         domainsTable.row.add([
+            (i+1),
             item.id,
             item.domainName,
-            item.fileName,
+            '<div>  ' + item.fileName +'  <hr/> ' + item.updatedAtFormatted +' </div>',
             deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 

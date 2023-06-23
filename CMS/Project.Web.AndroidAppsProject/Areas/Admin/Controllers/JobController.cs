@@ -37,28 +37,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var list = await _jobService.List();
-            if (!list.Any())
-            {
-                ViewBag.Email = "";
-                ViewBag.ApiKey = "";
-                ViewBag.JobPeriodTime = "";
-                ViewBag.JobExpireMinuteTime = "";
-                ViewBag.FailConnectionPercent = "";
-                ViewBag.FailConnectionCount = "";
-                ViewBag.IsActiveJob = false;
-            }
-            foreach (var job in list.Where(job => job.JobName == "DomainJob"))
-            {
-                var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
-                ViewBag.Email = jobDto.Email;
-                ViewBag.ApiKey = jobDto.ApiKey;
-                ViewBag.JobPeriodTime = jobDto.JobPeriodTime;
-                ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime;
-                ViewBag.FailConnectionPercent = jobDto.FailConnectionPercent;
-                ViewBag.FailConnectionCount = jobDto.FailConnectionCount;
-                ViewBag.IsActiveJob = jobDto.IsActiveJob;
-            }
+            var job = await _jobService.LastDetail();
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
+            ViewBag.Email = job.Email ?? "";
+            ViewBag.ApiKey = job.ApiKey ?? "";
+            ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
+            ViewBag.JobExpireMinuteTime = job.JobExpireMinuteTime ?? 0;
+            ViewBag.FailConnectionPercent = jobDto?.FailConnectionPercent ?? 0;
+            ViewBag.FailConnectionCount = jobDto?.FailConnectionCount ?? 0;
+            ViewBag.IsActiveJob = job?.IsActive ?? false;
             return View();
         }
 
