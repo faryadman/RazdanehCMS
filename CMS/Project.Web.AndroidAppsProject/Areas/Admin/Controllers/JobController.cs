@@ -52,19 +52,20 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private async Task InsertJob(CreateJobDTO input)
         {
             var job = _jobService.List().Result.Find(j => j.JobName == input.JobName)!;
-            if (job != null)
-            {
-
-                await _jobService.Delete(job.Id);
-            }
-
             if ((bool)!input.IsActive)
             {
                 RecurringJob.RemoveIfExists(input.JobName);
                 return;
             }
+            if (job != null)
+            {
 
+                await _jobService.Delete(job.Id);
+                //create job into hangfire
+            }
             await _jobService.CreateJob(input);
+            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+
         }
 
         public async Task CreateDomainJob(CreateDomainJobDTO input)
@@ -80,8 +81,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 JobConfig = JsonConvert.SerializeObject(input),
                 JobExpireMinuteTime = input.JobExpireMinuteTime
             });
-            //create job into hangfire
-            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+
         }
         public async Task CheckDomainJob()
         {

@@ -21,6 +21,7 @@ function submitForm() {
             document.getElementById('jobForm').reset();
             $('#jobModal').modal('toggle');
             data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+            window.location.reload();
         },
         error: function (xhr, ajaxOptions, thrownError) {
             let errors = xhr.responseJSON.errors;
@@ -30,7 +31,7 @@ function submitForm() {
             swal.close();
         }
     });
-    window.location.reload();
+   
 
 }
 
