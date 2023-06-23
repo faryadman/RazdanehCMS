@@ -28,7 +28,7 @@ namespace Project.Application.Features.Services
         {
             var job = await _jobRepository.GetAllQueryable().OrderByDescending(x => x.Id).FirstOrDefaultAsync();
             var model = _mapper.Map<JobDTO>(job);
-            return Task.FromResult(model);
+            return model;
         }
         public async Task<JobDTO> Detail(int id)
         {
