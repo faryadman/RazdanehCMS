@@ -29,7 +29,9 @@ function submitForm() {
             }
             swal.close();
         }
-    })
+    });
+    window.location.reload();
+
 }
 
 $('#IsActiveJob').on('change', function () {
