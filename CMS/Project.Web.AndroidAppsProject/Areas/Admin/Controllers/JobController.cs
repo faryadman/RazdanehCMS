@@ -42,10 +42,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.Email = job.Email ?? "";
             ViewBag.ApiKey = job.ApiKey ?? "";
             ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
-            ViewBag.JobExpireMinuteTime = job.JobExpireMinuteTime ?? 0;
+            ViewBag.JobExpireMinuteTime = jobDto?.JobExpireMinuteTime ?? 0;
             ViewBag.FailConnectionPercent = jobDto?.FailConnectionPercent ?? 0;
             ViewBag.FailConnectionCount = jobDto?.FailConnectionCount ?? 0;
-            ViewBag.IsActiveJob = job?.IsActive ?? false;
+            ViewBag.IsActiveJob = job.IsActive;
             return View();
         }
 
