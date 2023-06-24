@@ -106,17 +106,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 var failConnection = server.AllLogsStatistics.FailCount;
                 var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
                 var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
-
-                if (percentFailConnection >= percentSuccessConnection || percentFailConnection >= domainJobDto.FailConnectionPercent || failConnection >= domainJobDto.FailConnectionCount)
+                //TODO: IF Success Result Convert to extention method
+                var start = server.DomainDateTime;
+                var now = DateTime.UtcNow;
+                var ts = now.Subtract(start);
+                if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime &&
+                    percentFailConnection >= domainJobDto.FailConnectionPercent &&
+                    failConnection >= domainJobDto.FailConnectionCount)
                 {
-                    //TODO: IF Success Result Convert to extention method
-                    DateTime start = server.DomainDateTime;
-                    DateTime now = DateTime.UtcNow;
-                    TimeSpan ts = now.Subtract(start);
-                    if (ts.TotalMinutes > domainJobDto.JobExpireMinuteTime)
-                    {
-                        await ChangeDomain(id);
-                    }
+                    await ChangeDomain(id);
                 }
             }
         }
