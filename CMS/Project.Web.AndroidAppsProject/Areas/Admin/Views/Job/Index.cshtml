@@ -45,6 +45,11 @@
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
     <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
+    }
+@section scripts{
+    <script>
+        disableFields();
+    </script>
 }
 <div class="content-body">
     <section id="horizontal-vertical">
@@ -97,9 +102,9 @@
                     <div class="form-group">
                         <div class="custom-control custom-switch mr-2 mb-1">
 
-                            <input type="checkbox" class="custom-control-input" id="customSwitch" asp-for="IsActiveJob" value="true" data-val="true" data-val-required="The IsActiveJob field is required."/>
+                            <input type="checkbox" class="custom-control-input" id="IsActiveJob" asp-for="IsActiveJob" value="true" data-val="true" data-val-required="The IsActiveJob field is required." />
                             
-                            <label class="custom-control-label mr-2" for="customSwitch"></label>
+                            <label class="custom-control-label mr-2" for="IsActiveJob"></label>
                         </div>
                         <hr />
                     </div>

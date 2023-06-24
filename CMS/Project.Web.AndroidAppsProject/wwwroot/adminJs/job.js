@@ -36,21 +36,29 @@ function submitForm() {
 }
 
 $('#IsActiveJob').on('change', function () {
-        var isActiveJob = $("#IsActiveJob").val();
-        // check IsActiveJob for value
-        if (isActiveJob === "true") {
-            $("#ApiKey").prop("disabled", false);
-            $("#Email").prop("disabled", false);
-            $("#FailConnectionCount").prop("disabled", false);
-            $("#FailConnectionPercent").prop("disabled", false);
-            $("#JobPeriodTime").prop("disabled", false);
-            $("#JobExpireMinuteTime").prop("disabled", false);
-        } else {
-            $("#ApiKey").prop("disabled", true);
-            $("#Email").prop("disabled", true);
-            $("#FailConnectionCount").prop("disabled", true);
-            $("#FailConnectionPercent").prop("disabled", true);
-            $("#JobPeriodTime").prop("disabled", true);
-            $("#JobExpireMinuteTime").prop("disabled", true);
+    if ($(this).is(":checked")) {
+        enableFields();
+    } else {
+        disableFields();
     }
 });
+
+// تابع تنظیم وضعیت غیرفعال بودن فیلدها
+function disableFields() {
+    $("#ApiKey").prop("disabled", true);
+    $("#Email").prop("disabled", true);
+    $("#FailConnectionCount").prop("disabled", true);
+    $("#FailConnectionPercent").prop("disabled", true);
+    $("#JobPeriodTime").prop("disabled", true);
+    $("#JobExpireMinuteTime").prop("disabled", true);
+}
+
+// تابع تنظیم وضعیت فعال بودن فیلدها
+function enableFields() {
+    $("#ApiKey").prop("disabled", false);
+    $("#Email").prop("disabled", false);
+    $("#FailConnectionCount").prop("disabled", false);
+    $("#FailConnectionPercent").prop("disabled", false);
+    $("#JobPeriodTime").prop("disabled", false);
+    $("#JobExpireMinuteTime").prop("disabled", false);
+}
