@@ -27,17 +27,17 @@ function renderdomains(data) {
         console.log(item)
         let deleteButton;
         if (item.isActive == 1) {
-             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
+            deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
         }
         else {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" disabled>Delete</button>';
         }
 
         domainsTable.row.add([
-            (i+1),
+            (i + 1),
             item.id,
             item.domainName,
-            '<div>  ' + item.fileName +'  <hr/> ' + item.updatedAtFormatted +' </div>',
+            '<div>  ' + item.fileName + '  <hr/> ' + item.updatedAtFormatted + ' </div>',
             deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 
@@ -133,7 +133,7 @@ function uploadFile() {
             formData.append('file', fileInput);
 
             $.ajax({
-                url: serversBaseUrl+'/Upload/Upload',
+                url: serversBaseUrl + '/Upload/Upload',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -187,18 +187,21 @@ function renderInactiveDomains(data) {
     let jsonString = JSON.stringify(domainNames);
 
     // کپی کردن رشته JSON به کلیپ بورد
-    navigator.clipboard.writeText(jsonString)
-        .then(function () {
-            console.log('نام دامنه‌ها به کلیپ بورد کپی شد.');
-        })
-        .catch(function (error) {
-            console.error('خطا در کپی کردن نام دامنه‌ها به کلیپ بورد:', error);
-        });
+    copyToClipboard(jsonString);
 
     $('#inactiveDomainsModal').modal();
 }
 
-
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+}
 
 function deleteInactiveDomain() {
     Swal.fire({
