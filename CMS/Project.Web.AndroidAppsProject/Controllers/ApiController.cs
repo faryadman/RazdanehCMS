@@ -96,11 +96,10 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var server = await _ipService.Detail(input.Ip);
             if (server != null)
             {
-                server.Ip = input.Ip;
-                server.Tcp = input.Tcp;
-                await _ipService.Update(input);
+                await _ipService.Delete(server.Id);
             }
             await _ipService.Create(input);
+
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
 

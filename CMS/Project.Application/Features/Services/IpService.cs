@@ -32,7 +32,7 @@ namespace Project.Application.Features.Services
 
         public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            await _ipRepository.Delete(id);
         }
 
         public async Task Create(CreateIpDTO input)
@@ -40,7 +40,7 @@ namespace Project.Application.Features.Services
             var model = _mapper.Map<SaveIP>(input);
             await _ipRepository.Add(model);
         }
-        public async Task Update(CreateIpDTO input)
+        public async Task Update(IpDTO input)
         {
             var model = _mapper.Map<SaveIP>(input);
             await _ipRepository.Update(model);

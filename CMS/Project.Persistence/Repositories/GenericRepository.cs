@@ -43,10 +43,9 @@ namespace Project.Persistence.Repositories
 
         public async Task Update(T entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Update(entity);
             await _dbContext.SaveChangesAsync();
         }
-
         public async Task Delete(int id)
         {
             var find = await Get(id);

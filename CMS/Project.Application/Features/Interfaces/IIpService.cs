@@ -8,6 +8,6 @@ namespace Project.Application.Features.Interfaces
         Task<IpDTO> Detail(string ipName);
         Task Delete(int id);
         Task Create(CreateIpDTO input);
-        Task Update(CreateIpDTO input);
+        Task Update(IpDTO input);
     }
 }
