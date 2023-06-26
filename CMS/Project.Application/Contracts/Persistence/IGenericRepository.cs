@@ -19,6 +19,6 @@ namespace Project.Application.Contracts.Persistence
         Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
         Task Remove(int id);
-        Task Remove(T ob);
+        Task RemoveDomain(T ob);
     }
 }

@@ -29,8 +29,7 @@ namespace Project.Persistence
             services.AddScoped<ICronJobInfoRepository, CronJobInfoRepository>();
             services.AddScoped<IDomainRepository, DomainRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
-
-
+            services.AddScoped<IIpRepository, IpRepository>();
             return services;
         }
     }

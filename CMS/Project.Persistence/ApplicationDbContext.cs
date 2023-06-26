@@ -48,7 +48,6 @@ namespace Project.Persistence
         public DbSet<CronJobInfo> CronJobInfos { get; set; }
         public DbSet<Domain.Entities.Domain> Domains { get; set; }
         public DbSet<Job> Jobs { get; set; }
-
-
+        public DbSet<SaveIP> SaveIps { get; set; }
     }
 }
