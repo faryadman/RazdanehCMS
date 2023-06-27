@@ -6,5 +6,6 @@ namespace Project.Domain.Entities
     {
         public string Ip { get; set; }
         public string Tcp { get; set; }
+        public string UserAgent { get; set; }
     }
 }

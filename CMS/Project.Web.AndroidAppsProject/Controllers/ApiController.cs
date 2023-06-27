@@ -91,14 +91,22 @@ namespace Project.Web.AndroidAppsProject.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddIp(CreateIpDTO input)
+        public async Task<IActionResult> AddIp(string tcp)
         {
-            var server = await _ipService.Detail(input.Ip);
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers["User-Agent"].ToString();
+
+            var server = await _ipService.Detail(clientIp);
             if (server != null)
             {
                 await _ipService.Delete(server.Id);
             }
-            await _ipService.Create(input);
+            await _ipService.Create(new CreateIpDTO()
+            {
+                Ip = clientIp,
+                Tcp = tcp,
+                UserAgent = userAgent
+            });
 
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
