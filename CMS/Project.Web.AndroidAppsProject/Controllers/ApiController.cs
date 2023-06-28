@@ -90,9 +90,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> AddIp(string tcp)
+        [HttpGet]
+        public async Task<IActionResult> AddIp([FromQuery] int tcp)
         {
+            if (!int.TryParse(tcp.ToString(), out var tcpId))
+            {
+                return new JsonResult(new { status = 3, message = "Invalid TCP" });
+            }
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             var userAgent = Request.Headers["User-Agent"].ToString();
 
@@ -104,12 +108,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
             await _ipService.Create(new CreateIpDTO()
             {
                 Ip = clientIp,
-                Tcp = tcp,
+                Tcp = tcpId.ToString(),
                 UserAgent = userAgent
             });
 
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
+
 
         [HttpGet]
         public async Task<IActionResult> ListIp()

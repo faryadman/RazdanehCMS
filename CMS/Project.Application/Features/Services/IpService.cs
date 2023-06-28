@@ -19,7 +19,7 @@ namespace Project.Application.Features.Services
         public async Task<List<IpDTO>> List()
         {
             var ips = await _ipRepository.GetAll();
-            var models = _mapper.Map<List<IpDTO>>(ips);
+            var models = _mapper.Map<List<IpDTO>>(ips.OrderByDescending(i => i.Id).ToList());
             return models;
         }
 
