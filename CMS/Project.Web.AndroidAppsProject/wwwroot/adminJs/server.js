@@ -49,15 +49,21 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
+        let isNewSubDomain = '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeSubDomain?serverId=' + item.id + '" >Refresh SubDomain</a></div>'
+        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">Refresh Domain</a><br/>' + isNewSubDomain + '</div>' :
+            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >Refresh Domain</a><br/>' + isNewSubDomain + '</div>';
+        let config = item.config;
+        let configObject = JSON.parse(config);
+        var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
 
         let addedRow = serversTable.row.add([
             deleteChekbox,
             item.id,
             isAdServer,
-            '<span class="badge badge-dark">' + item.serverName + '</span>',
+            isNewDomain,
+            '<span class="badge badge-dark">' + serverName + '<hr/>' + item.updatedAtFormatted +'</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
-            item.config.length > 30 ? item.config.substring(0, 30) + "..." : item.config,
             '<span class="badge badge-dark">' + item.group.title + '</span>',
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
             item.isForHamraheAvval,
@@ -66,7 +72,6 @@ function renderservers(data) {
             irancellLogsStatistics,
             hamraheAvvalLogsStatistics,
             unknownLogsStatistics,
-            item.updatedAtFormatted,
             blackListButton,
             logsButton,
             duplicateButton,
@@ -200,13 +205,14 @@ $('#serversTable').on('click', '.edit', function () {
         method: 'GET',
         success: function (data) {
             $('#itemId').val(item.attr('data-item-id'));
-            $('#Config').val(data.config);
             setSelectListData('IsForHamraheAvval', data.isForHamraheAvval);
             setSelectListData('IsForIrancell', data.isForIrancell);
             $('#ConfigKey').val(data.configKey);
             $('#ConfigValue').val(data.configValue);
             $('#ServerName').val(item.attr('data-item-serverName'));
+            $('#Config').val(data.config);
             $('#Location').val(item.attr('data-item-location'));
+            $('#CurrentDomainValue').val(data.currentDomainValue);
             $('#Ip').val(item.attr('data-item-ip'));
             formUrl = serversBaseUrl + '/Edit';
             $('#groupSelectListArea').css('display', 'none');

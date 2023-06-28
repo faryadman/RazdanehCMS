@@ -7,8 +7,7 @@ namespace Project.Application.DTOs.Domain
         [Required]
         public string DomainName { get; set; }
         [Required]
-        public string DomainIP { get; set; }
-        [Required]
-        public string DomainType { get; set; }
+        public string FileName { get; set; }
+
     }
 }

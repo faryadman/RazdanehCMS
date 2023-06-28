@@ -3,10 +3,10 @@
 let serversBaseUrl = "/admin/domains";
 let formUrl;
 
-function getdomains() {
+function getdomains(filter) {
     $.ajax({
         type: "GET",
-        url: serversBaseUrl + '/list',
+        url: serversBaseUrl + '/list?filter=1',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
@@ -24,13 +24,20 @@ function renderdomains(data) {
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
-        let deleteButton = '<button class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')">Delete</button>';
+        console.log(item)
+        let deleteButton;
+        if (item.isActive == 1) {
+            deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
+        }
+        else {
+            deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" disabled>Delete</button>';
+        }
 
         domainsTable.row.add([
+            (i + 1),
             item.id,
             item.domainName,
-            item.domainIP,
-            item.domainType,
+            '<div>  ' + item.fileName + '  <hr/> ' + item.updatedAtFormatted + ' </div>',
             deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 
@@ -40,8 +47,6 @@ function renderdomains(data) {
         isOdd = !isOdd;
     }
     domainsTable.draw();
-    console.log("table", domainsTable)
-    console.log(data)
 }
 
 function newDomain() {
@@ -115,4 +120,131 @@ function submitDomainForm() {
             swal.close();
         }
     })
+}
+
+function uploadFile() {
+    $(document).ready(function () {
+        $('#uploadForm').submit(function (e) {
+            e.preventDefault(); // اجرای عملیات آپلود از طریق JavaScript
+
+            var formData = new FormData();
+            var fileInput = $('#fileInput')[0].files[0];
+
+            formData.append('file', fileInput);
+
+            $.ajax({
+                url: serversBaseUrl + '/Upload/Upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // پاسخ دریافتی از سرور
+                    alert(response);
+                },
+                error: function (error) {
+                    // خطا در آپلود فایل
+                    alert('Error: ' + error.responseText);
+                }
+            });
+        });
+    });
+}
+
+function filterservers() {
+    loading();
+    $('#filterdomainsModal').modal();
+    swal.close();
+}
+
+function getInactiveDomains() {
+    $.ajax({
+        type: "GET",
+        url: serversBaseUrl + '/listInactive',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            renderInactiveDomains(result);
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("بروز اشکال در اتصال به اینترنت");
+        }
+    });
+}
+
+function renderInactiveDomains(data) {
+    let inactiveDomainsList = $('#inactiveDomainsList');
+    inactiveDomainsList.empty();
+    let domainNames = [];
+    for (var i = 0; i < data.length; i++) {
+        let item = data[i];
+        inactiveDomainsList.append('<li>' + item.domainName + '</li>');
+        domainNames.push(item.domainName);
+    }
+    inactiveDomainsList.wrap('<ol></ol>');
+
+    // تبدیل آرایه نام دامنه‌ها به رشته JSON
+    let jsonString = JSON.stringify(domainNames);
+
+    // کپی کردن رشته JSON به کلیپ بورد
+    copyToClipboard(jsonString);
+
+    $('#inactiveDomainsModal').modal();
+}
+
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+}
+
+function deleteInactiveDomain() {
+    Swal.fire({
+        title: '',
+        text: confirmDeleteQuestion,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-danger ml-1',
+        buttonsStyling: false,
+    }).then(function (result) {
+        if (result.value) {
+            loading();
+
+            $.ajax({
+                type: "POST",
+                url: serversBaseUrl + '/DeleteInactiveDomain',
+                success: function (data) {
+                    if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+                        getdomains(false);
+                    } else {
+                        getdomains(true);
+                    }
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                }
+            })
+        }
+    });
+}
+
+
+function filter() {
+    loading();
+    let result = $('#filterInput').val();
+    if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+        getdomains(result);
+    } else {
+        getdomains(result);
+    }
+    setTimeout(function () {
+        swal.close();
+        $('#filterdomainsModal').modal('toggle');
+    }, 4000);
 }

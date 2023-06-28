@@ -49,7 +49,7 @@
     <!-- END: Page CSS-->
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
-    <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
+    <link rel="stylesheet" type="text/css" href="~/app-assets/fontawesome/font-awesome.min.css">
 }
     <div class="content-body">
         <section id="horizontal-vertical">
@@ -59,14 +59,34 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">لیست سرور ها</h4>
-                                    <hr />
-                                    <button class="btn btn-success" onclick="newserver()">جدید</button>
                                     <br />
-                                    <button class="btn btn-danger ml-3" onclick="DeleteSelectedItems(serversBaseUrl,getservers,true)">حذف آیتم های انتخاب شده</button>
+                                    <h4 class="card-title">
+                                        لیست سرور ها
+                                    </h4>
                                     <br />
-                                    <button class="btn btn-primary ml-2" onclick="filterservers()">فیلتر</button>
+                                    <br />
+
+                                    <button class="btn btn-success" onclick="newserver()">
+                                        جدید
+                                    </button>
+                                    <br />
+
+                                    <button class="btn btn-danger ml-2" onclick="DeleteSelectedItems(serversBaseUrl, getservers, false)">
+                                        حذف
+                                    </button>
+                                    <br />
+
+                                    <button class="btn btn-primary ml-2" onclick="filterservers()">
+                                        فیلتر
+                                    </button>
+                                    <br />
+
+                                    <button class="btn btn-warning" onclick="goDomain()">
+                                        دامنه ها
+                                    </button>
+                                    <br />
                                 </div>
+
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
                                         <div class="table-responsive">
@@ -76,10 +96,10 @@
                                                         <th scope="col"></th>
                                                         <th scope="col">Id</th>
                                                         <th scope="col">isAdServer</th>
-                                                        <th scope="col">ServerName</th>
+                                                        <th scope="col">Domain</th>
+                                                        <th scope="col">HostName</th>
                                                         <th scope="col">Location</th>
                                                         <th scope="col">Ip</th>
-                                                        <th scope="col">Config</th>
                                                         <th scope="col">GroupTitle</th>
                                                         <th scope="col">IsAvailable</th>
                                                         <th scope="col">isForHamraheAvval</th>
@@ -88,7 +108,6 @@
                                                         <th scope="col">IrancellLogsStatistics</th>
                                                         <th scope="col">HamraheAvvalLogsStatistics</th>
                                                         <th scope="col">UnknownLogsStatistics</th>
-                                                        <th scope="col">UpdatedAt</th>
                                                         <th></th>
                                                         <th></th>
                                                         <th></th>
@@ -147,11 +166,16 @@
                             <label asp-for="ConfigValue"></label>
                             <input asp-for="ConfigValue" type="text" class="form-control" required>
                         </div>
+                        <div class="form-group">
+                            <label asp-for="CurrentDomainValue"></label>
+                            <input asp-for="CurrentDomainValue" type="text" class="form-control" required>
+                        </div>
                         <div id="groupSelectListArea" class="form-group">
                             <label asp-for="GroupId">Select Group</label>
                             <select class="form-control" asp-for="GroupId"></select>
                         </div>
-                          <div class="form-group">
+
+                        <div class="form-group">
                             <label asp-for="IsForHamraheAvval"></label>
                             <select class="form-control" asp-for="IsForHamraheAvval">
                                 <option value="false">false</option>
@@ -166,13 +190,40 @@
                                 <option value="true">true</option>
                             </select>
                         </div>
-
                         <input hidden id="itemId" name="itemId" />
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
                     <button onclick="submitAdForm()" type="button" class="btn btn-success">تایید</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="filterserversModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Filter server</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="filterServerForm">
+                        <div class="form-group">
+                            <label>Choose what to show</label>
+                            <select class="form-control" name="filter" id="filterInput">
+                                <option value="0">All</option>
+                                <option value="1">Is Available</option>
+                                <option value="2">Not Available</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                    <button onclick="filter()" type="button" class="btn btn-success">تایید</button>
                 </div>
             </div>
         </div>
@@ -206,3 +257,5 @@
             </div>
         </div>
     </div>
+
+

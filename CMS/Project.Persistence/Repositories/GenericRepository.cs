@@ -117,5 +117,12 @@ namespace Project.Persistence.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+        public async Task RemoveDomain(T ob)
+        {
+            ((ob as Domain.Entities.Domain)!).IsDeleted = true;
+            _dbContext.Set<T>().Update(ob);
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }

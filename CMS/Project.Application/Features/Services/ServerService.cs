@@ -8,6 +8,7 @@ using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 
 namespace Project.Application.Features.Services
 {
@@ -66,12 +67,14 @@ namespace Project.Application.Features.Services
                 Id = x.Id,
                 Ip = x.Ip,
                 IsAd = x.IsAd,
+                IsNewDomain = x.IsNewDomain,
                 Location = x.Location,
                 ServerName = x.ServerName,
                 UpdatedAt = x.UpdatedAt,
                 IsForIrancell = x.IsForIrancell,
                 IsForHamraheAvval = x.IsForHamraheAvval,
                 IsAvailable = x.IsAvailable,
+                CurrentDomainValue = x.CurrentDomainValue,
                 AllLogsStatistics = x.Logs.Where(y => y.IsActive).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Where(y => y.IsActive).Count(),
@@ -105,6 +108,62 @@ namespace Project.Application.Features.Services
             return _mapper.Map<List<ServerDTO>>(data);
         }
 
+        public async Task<ServerDTO> GetServerStatistics(int serverId)
+        {
+            var query = _serverRepository.GetAllQueryable();
+            query = query.Where(x => x.IsActive && x.Id == serverId);
+            query = query.Include(x => x.Logs);
+            var data = query.Select(x => new ServerDTO
+            {
+                Config = x.Config,
+                Group = _mapper.Map<GroupDTO>(x.Group),
+                GroupId = x.GroupId,
+                Id = x.Id,
+                Ip = x.Ip,
+                IsAd = x.IsAd,
+                IsNewDomain = x.IsNewDomain,
+                Location = x.Location,
+                ServerName = x.ServerName,
+                UpdatedAt = x.UpdatedAt,
+                IsForIrancell = x.IsForIrancell,
+                IsForHamraheAvval = x.IsForHamraheAvval,
+                IsAvailable = x.IsAvailable,
+                CurrentDomainValue = x.CurrentDomainValue,
+                DomainDateTime = x.DomainDateTime,
+                AllLogsStatistics = x.Logs.Count(y => y.IsActive) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                {
+                    Count = x.Logs.Count(y => y.IsActive),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful),
+                } : null,
+
+                HamraheAvvalLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                {
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
+                } : null,
+
+                IrancellLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                {
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
+                } : null,
+
+                UnknownLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                {
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
+                } : null,
+
+            }).SingleOrDefault();
+
+            return _mapper.Map<ServerDTO>(data);
+        }
+
+
         public async Task Create(CreateServerDTO input)
         {
             var model = _mapper.Map<Server>(input);
@@ -121,6 +180,9 @@ namespace Project.Application.Features.Services
             model.Location = input.Location;
             model.IsForHamraheAvval = input.IsForHamraheAvval;
             model.IsForIrancell = input.IsForIrancell;
+            model.CurrentDomainValue = input.CurrentDomainValue;
+            model.IsNewDomain = input.IsNewDomain;
+            model.DomainDateTime = input.DomainDateTime;
             await _serverRepository.Update(model);
         }
         public async Task Delete(int id)
@@ -261,6 +323,11 @@ namespace Project.Application.Features.Services
             return data.Select(x => x.Id).ToList();
         }
 
+        public async Task<List<int>> GetActiveIds()
+        {
+            var data = await _serverRepository.GetAll();
+            return data.Where(x => x.IsActive == true).Select(x => x.Id).ToList();
+        }
         public async Task ToggleIsAvailableInput(int id)
         {
             var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == id);

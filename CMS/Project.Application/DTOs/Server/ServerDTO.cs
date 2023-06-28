@@ -14,11 +14,13 @@ namespace Project.Application.DTOs.Server
         public string ConfigValue { get; set; }
         public string CurrentDomainValue { get; set; }
         public bool IsAd { get; set; }
+        public bool IsNewDomain { get; set; }
         public bool IsAvailable { get; set; }
         public GroupDTO Group { get; set; }
         public int GroupId { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
+        public DateTime DomainDateTime { get; set; }
         public ServerLogStatistics AllLogsStatistics { get; set; }
         public ServerLogStatistics IrancellLogsStatistics { get; set; }
         public ServerLogStatistics HamraheAvvalLogsStatistics { get; set; }

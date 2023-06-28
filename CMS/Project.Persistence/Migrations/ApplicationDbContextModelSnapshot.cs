@@ -380,16 +380,16 @@ namespace Project.Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DomainIP")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DomainName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DomainType")
+                    b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -400,7 +400,7 @@ namespace Project.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Domains", "dbo");
+                    b.ToTable("Domains");
                 });
 
             modelBuilder.Entity("Project.Domain.Entities.Group", b =>
@@ -435,6 +435,49 @@ namespace Project.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Project.Domain.Entities.Job", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApiKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobConfig")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("JobPeriodTime")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("Project.Domain.Entities.OperatorIdentification", b =>
@@ -474,6 +517,43 @@ namespace Project.Persistence.Migrations
                     b.ToTable("OperatorIdentifications");
                 });
 
+            modelBuilder.Entity("Project.Domain.Entities.SaveIP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Tcp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SaveIps");
+                });
+
             modelBuilder.Entity("Project.Domain.Entities.Server", b =>
                 {
                     b.Property<int>("Id")
@@ -497,6 +577,12 @@ namespace Project.Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CurrentDomainValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DomainDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -516,6 +602,9 @@ namespace Project.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsForIrancell")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsNewDomain")
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")

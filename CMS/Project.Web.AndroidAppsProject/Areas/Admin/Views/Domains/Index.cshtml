@@ -27,7 +27,7 @@
 
     @section scripts{
     <script>
-        getdomains(false);
+        getdomains(true);
     </script>
 }
 
@@ -60,9 +60,12 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">لیست دامنه ها</h4>
+
                                     <hr />
-                                    <button class="btn btn-success" onclick="newDomain()">جدید</button>
-                                    <br />
+                                    <button class="btn btn-primary ml-2" onclick="getInactiveDomains()">دریافت دامنه های غیرفعال</button>
+                                    <hr/>
+                                    <button class="btn btn-success" onclick="newDomain()">آپلود فایل جدید</button>
+
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
@@ -70,10 +73,10 @@
                                             <table class="table nowrap scroll-horizontal-vertical" style="width:100%!important" id="domainsTable">
                                                 <thead>
                                                     <tr>
+                                                        <th></th>
                                                         <th>ID</th>
                                                         <th>Domain Name</th>
-                                                        <th>Domain IP</th>
-                                                        <th>Domain Type</th>
+                                                        <th>File Name</th>
                                                         <th>Delete</th>
                                                     </tr>
                                                 </thead>
@@ -91,35 +94,51 @@
         </section>
     </div>
 
-    <div class="modal fade" id="domainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create Domain</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+
+
+<div class="modal fade" id="domainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("UploadFile", "domains", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
                 <div class="modal-body">
-                    <form id="domainForm">
-                        <div class="form-group">
-                            <label asp-for="DomainName"></label>
-                            <input asp-for="DomainName" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="DomainIP"></label>
-                            <input asp-for="DomainIP" type="text" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="DomainType"></label>
-                            <input asp-for="DomainType" type="text" class="form-control" required>
-                        </div>
-                    </form>
+                    <div>
+                        @Html.TextBox("file", "", new {  type= "file"}) <br />
+                        @ViewBag.Message
+                    </div>              
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                    <button onclick="submitDomainForm()" type="button" class="btn btn-success">ثبت</button>
+                    <button onclick="submitDomainForm()" type="submit" class="btn btn-success">ثبت</button>
                 </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="inactiveDomainsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Fail domains</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id = "inactiveDomainsList">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="deleteInactiveDomain()" type="button" class="btn btn-danger">حذف همه</button>
             </div>
         </div>
     </div>
+</div>
+

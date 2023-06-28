@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Project.Application.DTOs.AppSetting;
+using Project.Application.DTOs.IP;
 using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
@@ -23,9 +23,10 @@ namespace Project.Web.AndroidAppsProject.Controllers
         private readonly IApiLogService _apiLogService;
         private readonly IMapper _mapper;
         private readonly IDapperQueryService _dapperQueryService;
+        private readonly IIpService _ipService;
         private readonly ApplicationDbContext _context;
 
-        public ApiController(IAppSettingService appSettingService, IGroupService groupService, IServerService serverService, IServerLogService serverLogService, ApplicationDbContext context, IOperatorIdentificationService operatorIdentificationService, IApiLogService apiLogService, IMapper mapper, IDapperQueryService dapperQueryService)
+        public ApiController(IAppSettingService appSettingService, IGroupService groupService, IServerService serverService, IServerLogService serverLogService, ApplicationDbContext context, IOperatorIdentificationService operatorIdentificationService, IApiLogService apiLogService, IMapper mapper, IDapperQueryService dapperQueryService, IIpService ipService)
         {
             _appSettingService = appSettingService;
             _groupService = groupService;
@@ -36,6 +37,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             _apiLogService = apiLogService;
             _mapper = mapper;
             _dapperQueryService = dapperQueryService;
+            _ipService = ipService;
         }
 
         [HttpGet]
@@ -50,95 +52,6 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetServer(string apiRoute, string isp, string Operator)
         {
-            //var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
-
-            //AppSettingDTO app = await _appSettingService.DetailByApiRoute(apiRoute);
-
-            //if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
-            //    throw new BadRequestException("this app has no server");
-
-            //string[] groups = app.GroupsThatAppIsJoinedIn.Split("_");
-
-            //IEnumerable<Server> query = await _serverRepository.FindAsync(x =>
-            //groups.Contains(x.GroupId.ToString())
-            //&& x.IsAd == isAd
-            //&& x.IsAvailable);
-
-            //query = query.OrderByDescending(x => x.Id);
-
-            //if (operatorType != Domain.Enums.Operator.Unknown)
-            //{
-            //    if (operatorType == Domain.Enums.Operator.Irancell)
-            //    {
-            //        query = query.Where(x => x.IsForIrancell).AsQueryable();
-            //    }
-            //    if (operatorType == Domain.Enums.Operator.HamraheAvval)
-            //    {
-            //        query = query.Where(x => x.IsForHamraheAvval).AsQueryable();
-            //    }
-            //}
-
-            //var query = await _dapperQueryService.GetServerByApp(app.GroupsThatAppIsJoinedIn, false, operatorType);
-
-            //int dataCount = query.Count();
-
-            //if (query == null || dataCount == 0)
-            //    throw new BadRequestException("this app has no server");
-
-            //if (dataCount == 1)
-            //{
-            //    return new Response<ServerDTO>(_mapper.Map<ServerDTO>(query.FirstOrDefault())).ToJsonResult();
-            //}
-
-            //ApiLogDTO lastLog = await _apiLogService.GetLastLog(app.Id);
-
-
-            //Server server = new Server();
-
-            //if (app.SendRandomServer)
-            //{
-            //    int serverNotToReturnId = lastLog == null ? 0 : lastLog.ServerId;
-
-            //    Random random = new Random();
-
-            //    IEnumerable<Server> allowedServers = query.Where(x => x.Id != serverNotToReturnId);
-
-            //    int index = random.Next(allowedServers.Count());
-
-            //    server = allowedServers.ElementAt(index);
-            //}
-            //else
-            //{
-            //    if (lastLog == null)
-            //    {
-            //        Random random = new Random();
-            //        int index = random.Next(query.Count());
-            //        server = query.ElementAt(index);
-            //    }
-            //    else
-            //    {
-            //        int lastServerIndex = query.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-
-            //        if (lastServerIndex == dataCount - 1)
-            //        {
-            //            server = query.FirstOrDefault();
-            //        }
-            //        else
-            //        {
-            //            int index = lastServerIndex == -1 ? 0 : lastServerIndex;
-            //            server = query.ElementAt(index + 1);
-            //        }
-            //    }
-            //}
-            //await _apiLogService.Create(new ApiLogDTO
-            //{
-            //    AppSettingId = app.Id,
-            //    ServerId = server.Id
-            //});
-
-            //ServerDTO dto = _mapper.Map<ServerDTO>(server);
-            //dto.Config = dto.Config.Replace("@" + dto.ConfigKey, DateTime.Now.Ticks.ToString() + "." + dto.ConfigValue);
-
             var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
@@ -175,18 +88,39 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var data = await _serverLogService.ListByServer(serverId);
             return new Response<List<ServerLogDTO>>(data).ToJsonResult();
         }
-        [HttpGet]
-        [NonAction]
-        private IActionResult Test()
-        {
-            var logs = _context.ServerLogs.Include(x => x.Server).ToList();
 
-            foreach (var item in logs)
+
+        [HttpGet]
+        public async Task<IActionResult> AddIp([FromQuery] int tcp)
+        {
+            if (!int.TryParse(tcp.ToString(), out var tcpId))
             {
-                item.Ip = item.Server.Ip;
+                return new JsonResult(new { status = 3, message = "Invalid TCP" });
             }
-            _context.SaveChanges();
-            return Ok(logs);
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers["User-Agent"].ToString();
+
+            var server = await _ipService.Detail(clientIp);
+            if (server != null)
+            {
+                await _ipService.Delete(server.Id);
+            }
+            await _ipService.Create(new CreateIpDTO()
+            {
+                Ip = clientIp,
+                Tcp = tcpId.ToString(),
+                UserAgent = userAgent
+            });
+
+            return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ListIp()
+        {
+            var data = await _ipService.List();
+            return new Response<List<IpDTO>>(data).ToJsonResult();
         }
     }
 }
