@@ -138,6 +138,22 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             }
             return Json(new { status = "1", message = "done successfully" });
         }
+        public async Task<IActionResult> RefreshSubdomain(string ids)
+        {
+            foreach (var item in ids.Split("_"))
+            {
+                await ChangeSubDomain(item);
+            }
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> RefreshDomain(string ids)
+        {
+            foreach (var item in ids.Split("_"))
+            {
+                await ChangeDomain(item);
+            }
+            return Json(new { status = "1", message = "done successfully" });
+        }
         public IActionResult Logs(int serverId)
         {
             ViewBag.ServerId = serverId;

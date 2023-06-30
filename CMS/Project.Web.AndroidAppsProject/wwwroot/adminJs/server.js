@@ -483,3 +483,10 @@ function duplicate(id) {
         }
     });
 }
+$('#selectAllCheckbox').change(function () {
+    var isChecked = $(this).prop('checked');
+    $('.deleteCheckbox').prop('checked', isChecked).each(function () {
+        var itemId = $(this).attr('data-item-id');
+        $(this).val(itemId);
+    });
+});

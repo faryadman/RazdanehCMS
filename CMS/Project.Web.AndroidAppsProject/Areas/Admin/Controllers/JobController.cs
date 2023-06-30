@@ -80,9 +80,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             }
             if (job != null)
             {
-
                 await _jobService.Delete(job.Id);
-                //create job into hangfire
             }
             await _jobService.CreateJob(input);
             switch (input.JobName)
