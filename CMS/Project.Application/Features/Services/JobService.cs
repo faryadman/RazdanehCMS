@@ -36,7 +36,12 @@ namespace Project.Application.Features.Services
             var model = _mapper.Map<JobDTO>(job);
             return model;
         }
-
+        public async Task<JobDTO> Detail(string jobName)
+        {
+            var job = await _jobRepository.FindQueryable(i => i.JobName == jobName).OrderByDescending(i => i.Id).FirstOrDefaultAsync();
+            var model = _mapper.Map<JobDTO>(job);
+            return model;
+        }
         public async Task Delete(int id)
         {
             await _jobRepository.Delete(id);

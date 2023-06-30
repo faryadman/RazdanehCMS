@@ -49,9 +49,8 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewSubDomain = '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeSubDomain?serverId=' + item.id + '" >Refresh SubDomain</a></div>'
-        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">Refresh Domain</a><br/>' + isNewSubDomain + '</div>' :
-            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >Refresh Domain</a><br/>' + isNewSubDomain + '</div>';
+        let isNewSubDomain = '<div><br><button class="btn btn-primary btn-sm" onclick="subdomainRefresh('+item.id+')">Refresh SubDomain</button></div>'
+        let isNewDomain = '<div>' + item.currentDomainValue + '<br><button class="btn btn-success btn-sm" onclick="domainRefresh(' + item.id +')">Refresh Domain</button><br/>' + isNewSubDomain + '</div>' 
         let config = item.config;
         let configObject = JSON.parse(config);
         var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
@@ -136,6 +135,64 @@ function submitForm() {
     })
 }
 
+function subdomainRefresh(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/changeSubDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function domainRefresh(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/changeDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
 function submitAdForm() {
     loading();
     let form = document.getElementById('serverForm');

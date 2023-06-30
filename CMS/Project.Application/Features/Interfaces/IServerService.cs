@@ -11,6 +11,7 @@ namespace Project.Application.Features.Interfaces
         Task<ServerDTO> GetServerStatistics(int serverId);
         Task Create(CreateServerDTO input);
         Task<ServerDTO> Detail(int id);
+        Task<ServerDTO> Detail(string id);
         Task Delete(int id);
         Task Duplicate(int id);
         Task DeleteByGroupId(int groupId);

@@ -6,6 +6,7 @@ namespace Project.Application.Features.Interfaces
     {
         Task<List<JobDTO>> List();
         Task<JobDTO> Detail(int id);
+        Task<JobDTO> Detail(string jobName);
         Task<JobDTO> LastDetail();
         Task Delete(int id);
         Task CreateJob(CreateJobDTO input);

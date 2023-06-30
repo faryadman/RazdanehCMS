@@ -1,5 +1,4 @@
 ﻿using CloudFlare.NET;
-using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -66,12 +65,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(EditServerDTO input)
         {
             await _serverService.Edit(input);
-            await ChangeDomain(input.ItemId, false);
+            await ChangeDomain(input.ItemId.ToString(), false);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> EditAd(EditServerDTO input)
         {
             await _serverService.Edit(input);
+            await ChangeDomain(input.ItemId.ToString(), false);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> ToggleIsAvailableInput(int id)
@@ -143,37 +143,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.ServerId = serverId;
             return View();
         }
-
-        public async Task CheckDomainJob()
+        public async Task<IActionResult> ChangeSubDomain(string id)
         {
-            var serverIds = await _serverService.GetActiveIds();
-            foreach (var id in serverIds)
-            {
-                var server = await _serverService.GetServerStatistics(id);
-                if (server?.AllLogsStatistics == null) continue;
-                var totalSuccessConnection = server.AllLogsStatistics.Count;
-                var successConnection = server.AllLogsStatistics.SuccessCount;
-                var failConnection = server.AllLogsStatistics.FailCount;
-                var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
-                var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
-
-                if (percentFailConnection < percentSuccessConnection) continue;
-                if (percentFailConnection < 70) continue;
-                if (failConnection < 10) continue;
-                DateTime start = server.DomainDateTime;
-                DateTime now = DateTime.UtcNow;
-                TimeSpan ts = now.Subtract(start);
-                if (ts.TotalMinutes > 15) //Time now is after 10:30
-                {
-                    await ChangeDomain(id);
-                }
-            }
-            RecurringJob.AddOrUpdate("CheckDomainJob", () => CheckDomainJob(), "*/5 * * * *");
-        }
-
-        public async Task<IActionResult> ChangeSubDomain(int serverId)
-        {
-            var server = await _serverService.Detail(serverId);
+            var server = await _serverService.Detail(id);
             var config = server.Config;
             var jsonObject = JObject.Parse(config);
             var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
@@ -233,14 +205,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 await cloudflare.CreateDnsRecordAsync(cfZoneId, serverName, server.CurrentDomainValue, cfApiKey, cfEmail); ;
             }
 
-            return RedirectToAction("Index");
+            return Json(new { status = "1", message = "Done Subdomain !" });
         }
 
-        public async Task<IActionResult> ChangeDomain(int serverId, bool deleteDomain = true)
+        public async Task<IActionResult> ChangeDomain(string id, bool deleteDomain = true)
         {
             var domains = await _domainService.GetAll();
             if (domains is not { Count: > 0 }) return Json(new { status = "2", message = "domain don't exist!" });
-            var server = await _serverService.Detail(serverId);
+            var server = await _serverService.Detail(id);
             var config = server.Config;
             var currentDomainValue = domains?[0].DomainName;
             var jsonObject = JObject.Parse(config);
@@ -311,7 +283,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             });
             if (!deleteDomain) return RedirectToAction("Index");
             if (domains != null) await _domainService.Delete(domains[0].Id);
-            return RedirectToAction("Index");
+            return Json(new { status = "1", message = "Done Domain !" });
         }
 
         [Route("/admin/[controller]/Logs/list")]

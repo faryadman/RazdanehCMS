@@ -306,6 +306,15 @@ namespace Project.Application.Features.Services
             return _mapper.Map<ServerDTO>(model);
         }
 
+        public async Task<ServerDTO> Detail(string id)
+        {
+            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id.ToString() == id);
+            if (model == null || !model.IsActive)
+                throw new NotFoundException("سرور یافت نشد");
+
+            return _mapper.Map<ServerDTO>(model);
+        }
+
         public async Task DeleteByGroupId(int groupId)
         {
             var data = await _serverRepository.FindAsync(x => x.GroupId == groupId);

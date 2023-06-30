@@ -1,11 +1,51 @@
-﻿let groupsBaseUrl = "/admin/job";
+﻿let jobBaseUrl = "/admin/job";
 let formUrl;
 
 function jobDomain() {
-    formUrl = groupsBaseUrl + '/CreateDomainJob';
-    $('#jobModal').modal();
+    formUrl = jobBaseUrl + '/CreateDomainJob';
+    var modal = $('#jobModal');
+    modal.on('show.bs.modal', function (event) {
+        $.ajax({
+            url: '/admin/job/getJobDomainData',
+            method: 'GET',
+            success: function (data) {
+                modal.find('#IsActiveJob').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey').val(data.apiKey);
+                modal.find('#Email').val(data.email);
+                modal.find('#JobPeriodTime').val(data.jobPeriodTime);
+                modal.find('#JobExpireMinuteTime').val(data.jobExpireMinuteTime);
+                modal.find('#FailConnectionCount').val(data.failConnectionCount);
+                modal.find('#FailConnectionPercent').val(data.failConnectionPercent);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              
+                swal.close();
+            }
+        });
+    });
+    modal.modal();
 }
-
+function jobSubDomain() {
+    formUrl = jobBaseUrl + '/CreateSubDomainJob';
+    var modal = $('#jobSubdomainModal');
+    $('#jobSubdomainModal').on('show.bs.modal', function (event) {
+        var modal = $(this);
+        $.ajax({
+            url: '/admin/job/getJobSubdomainData',
+            method: 'GET',
+            success: function (data) {
+                modal.find('#IsActiveJob').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey').val(data.apiKey);
+                modal.find('#Email').val(data.email);
+                modal.find('#JobPeriodTime').val(data.jobPeriodTime);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal.close();
+            }
+        });
+    });
+    modal.modal();
+}
 
 function submitForm() {
     loading();
@@ -31,10 +71,32 @@ function submitForm() {
             swal.close();
         }
     });
-   
-
 }
-
+function submitFormSubdomain() {
+    loading();
+    let form = document.getElementById('jobSubdomainForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: formUrl,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            document.getElementById('jobSubdomainForm').reset();
+            $('#jobSubdomainModal').modal('toggle');
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+            window.location.reload();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    });
+}
 $('#IsActiveJob').on('change', function () {
     if ($(this).is(":checked")) {
         enableFields();
@@ -42,7 +104,13 @@ $('#IsActiveJob').on('change', function () {
         disableFields();
     }
 });
-
+$('#IsActiveJob_subdomain').on('change', function () {
+    if ($(this).is(":checked")) {
+        enableFields();
+    } else {
+        disableFields();
+    }
+});
 // تابع تنظیم وضعیت غیرفعال بودن فیلدها
 function disableFields() {
     $("#ApiKey").prop("disabled", true);
@@ -51,6 +119,11 @@ function disableFields() {
     $("#FailConnectionPercent").prop("disabled", true);
     $("#JobPeriodTime").prop("disabled", true);
     $("#JobExpireMinuteTime").prop("disabled", true);
+
+    $("#ApiKey_subdomain").prop("disabled", true);
+    $("#Email_subdomain").prop("disabled", true);
+    $("#JobPeriodTime_subdomain").prop("disabled", true);
+
 }
 
 // تابع تنظیم وضعیت فعال بودن فیلدها
@@ -61,4 +134,11 @@ function enableFields() {
     $("#FailConnectionPercent").prop("disabled", false);
     $("#JobPeriodTime").prop("disabled", false);
     $("#JobExpireMinuteTime").prop("disabled", false);
+
+    $("#ApiKey_subdomain").prop("disabled", false);
+    $("#Email_subdomain").prop("disabled", false);
+    $("#JobPeriodTime_subdomain").prop("disabled", false);
 }
+
+
+
