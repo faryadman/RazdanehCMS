@@ -65,13 +65,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(EditServerDTO input)
         {
             await _serverService.Edit(input);
-            await ChangeDomain(input.ItemId.ToString(), false);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> EditAd(EditServerDTO input)
         {
             await _serverService.Edit(input);
-            await ChangeDomain(input.ItemId.ToString(), false);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> ToggleIsAvailableInput(int id)

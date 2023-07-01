@@ -34,10 +34,11 @@ function jobSubDomain() {
             url: '/admin/job/getJobSubdomainData',
             method: 'GET',
             success: function (data) {
-                modal.find('#IsActiveJob').prop('checked', data.isActiveJob);
-                modal.find('#ApiKey').val(data.apiKey);
-                modal.find('#Email').val(data.email);
-                modal.find('#JobPeriodTime').val(data.jobPeriodTime);
+                console.log("data", data);
+                modal.find('#IsActiveJob_subdomain').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey_subdomain').val(data.apiKey);
+                modal.find('#Email_subdomain').val(data.email);
+                modal.find('#JobPeriodTime_subdomain').val(data.jobPeriodTime);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 swal.close();
