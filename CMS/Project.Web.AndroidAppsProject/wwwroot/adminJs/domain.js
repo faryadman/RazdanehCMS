@@ -26,14 +26,17 @@ function renderdomains(data) {
         let item = data[i];
         console.log(item)
         let deleteButton;
+
         if (item.isActive == 1) {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
         }
         else {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" disabled>Delete</button>';
         }
+        let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
 
         domainsTable.row.add([
+            deleteChekbox,
             (i + 1),
             item.id,
             item.domainName,

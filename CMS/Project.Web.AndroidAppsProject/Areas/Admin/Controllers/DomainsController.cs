@@ -49,6 +49,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _domainService.DeleteInactiveDomain();
             return Json(new { status = "1", message = "done successfully" });
         }
+        public async Task<IActionResult> MassDelete(string ids)
+        {
+            foreach (var item in ids.Split("_"))
+            {
+                await DeleteDomain(int.Parse(item));
+            }
+            return Json(new { status = "1", message = "done successfully" });
+        }
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {

@@ -171,7 +171,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 return;
             foreach (var id in serverIds)
             {
-                await ChangeDomain(id, jobDto.Email, jobDto.ApiKey);
+                await ChangeSubDomain(id, jobDto.Email, jobDto.ApiKey);
             }
         }
         public async Task<IActionResult> ChangeDomain(int serverId, string email, string apiKey, bool deleteDomain = true)
@@ -252,7 +252,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             {
                 if (domains != null) await _domainService.Delete(domains[0].Id);
             }
-            return RedirectToAction("Index");
+            return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> ChangeSubDomain(int serverId, string email, string apiKey)
         {
@@ -316,7 +316,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 await cloudflare.CreateDnsRecordAsync(cfZoneId, serverName, server.CurrentDomainValue, cfApiKey, cfEmail); ;
             }
 
-            return RedirectToAction("Index");
+            return Json(new { status = "1", message = "done successfully" });
         }
 
     }

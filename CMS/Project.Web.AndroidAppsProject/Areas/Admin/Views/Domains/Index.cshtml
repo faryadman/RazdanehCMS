@@ -61,11 +61,13 @@
                                 <div class="card-header">
                                     <h4 class="card-title">لیست دامنه ها</h4>
 
-                                    <hr />
+                                    <br />
                                     <button class="btn btn-primary ml-2" onclick="getInactiveDomains()">دریافت دامنه های غیرفعال</button>
-                                    <hr/>
-                                    <button class="btn btn-success" onclick="newDomain()">آپلود فایل جدید</button>
-
+                                    <br/>
+                                    <button class="btn btn-success ml-2" onclick="newDomain()">آپلود فایل جدید</button>
+                                    <br/>
+                                    <button class="btn btn-danger ml-2" onclick="DeleteSelectedItems('/admin/domains',getdomains,false)">حذف</button>
+                                    <br/>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
