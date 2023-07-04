@@ -16,12 +16,12 @@ namespace Project.Web.AndroidAppsProject.Controllers
             _context = context;
             _apiLogService = apiLogService;
             _serverLogService = serverLogService;
+            RecurringJob.AddOrUpdate("deleteApiLogJob", () => Index(), "*/10 * * * *");
+            RecurringJob.AddOrUpdate("deleteServerLogsJob", () => Compress(), "*/10 * * * *");
         }
         public async Task<IActionResult> Index()
         {
-            RecurringJob.AddOrUpdate("deleteApiLogJob", () => Index(), "*/10 * * * *");
             await _apiLogService.DeleteApiLog();
-            await _context.SaveChangesAsync();
             return Ok(true);
             //string query = "DELETE FROM ServerLogs";
             //using (SqlConnection? conn = new SqlConnection(_connectionString))
@@ -34,8 +34,12 @@ namespace Project.Web.AndroidAppsProject.Controllers
         }
         public async Task<IActionResult> Compress()
         {
-            RecurringJob.AddOrUpdate("deleteServerLogsJob", () => Compress(), "*/10 * * * *");
-            await _serverLogService.DeleteServerLogs();
+            var list = _context.ServerLogs.ToList();
+            foreach (var log in list)
+            {
+                _context.ServerLogs.Remove(log);
+            }
+
             await _context.SaveChangesAsync();
             return Ok(true);
             //IEnumerable<int> rows;

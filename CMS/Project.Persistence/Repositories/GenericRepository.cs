@@ -112,7 +112,6 @@ namespace Project.Persistence.Repositories
             var find = await Get(id);
             if (find != null)
             {
-
                 _dbContext.Remove(find);
                 await _dbContext.SaveChangesAsync();
             }

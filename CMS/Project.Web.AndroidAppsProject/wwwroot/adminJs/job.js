@@ -28,7 +28,7 @@ function jobDomain() {
 function jobSubDomain() {
     formUrl = jobBaseUrl + '/CreateSubDomainJob';
     var modal = $('#jobSubdomainModal');
-    $('#jobSubdomainModal').on('show.bs.modal', function (event) {
+    modal.on('show.bs.modal', function (event) {
         var modal = $(this);
         $.ajax({
             url: '/admin/job/getJobSubdomainData',
@@ -39,6 +39,29 @@ function jobSubDomain() {
                 modal.find('#ApiKey_subdomain').val(data.apiKey);
                 modal.find('#Email_subdomain').val(data.email);
                 modal.find('#JobPeriodTime_subdomain').val(data.jobPeriodTime);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal.close();
+            }
+        });
+    });
+    modal.modal();
+}
+
+function jobHostDomain() {
+    formUrl = jobBaseUrl + '/CreateHostDomainJob';
+    var modal = $('#jobHostDomainModal');
+    modal.on('show.bs.modal', function (event) {
+        var modal = $(this);
+        $.ajax({
+            url: '/admin/job/GetJobHostDomainData',
+            method: 'GET',
+            success: function (data) {
+                console.log("data", data);
+                modal.find('#IsActiveJob_hostdomain').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey_hostdomain').val(data.apiKey);
+                modal.find('#Email_hostdomain').val(data.email);
+                modal.find('#JobPeriodTime_hostdomain').val(data.jobPeriodTime);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 swal.close();
@@ -98,6 +121,32 @@ function submitFormSubdomain() {
         }
     });
 }
+
+function submitFormHostdomain() {
+    loading();
+    let form = document.getElementById('jobHostDomainForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: formUrl,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            document.getElementById('jobHostDomainForm').reset();
+            $('#jobHostDomainModal').modal('toggle');
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+            window.location.reload();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    });
+}
 $('#IsActiveJob').on('change', function () {
     if ($(this).is(":checked")) {
         enableFields();
@@ -106,6 +155,13 @@ $('#IsActiveJob').on('change', function () {
     }
 });
 $('#IsActiveJob_subdomain').on('change', function () {
+    if ($(this).is(":checked")) {
+        enableFields();
+    } else {
+        disableFields();
+    }
+});
+$('#IsActiveJob_hostdomain').on('change', function () {
     if ($(this).is(":checked")) {
         enableFields();
     } else {
