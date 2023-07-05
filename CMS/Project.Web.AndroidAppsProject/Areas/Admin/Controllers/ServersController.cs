@@ -242,7 +242,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
             // The new CNAME value
             var newCnameValue = !deleteDomain ?
-                jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString() : GenerateWordExtention.GenerateWords(5)[0]; // create new word VALUE
+                jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"]?.ToString() : GenerateWordExtention.GenerateWords(5)[0]; // create new word VALUE
             var cnameContent = server.CurrentDomainValue;
             // Set up Cloudflare API client
             var auth = new CloudFlareAuth(cfEmail, cfApiKey);
