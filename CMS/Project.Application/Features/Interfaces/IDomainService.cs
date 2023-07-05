@@ -8,6 +8,6 @@ namespace Project.Application.Features.Interfaces
         Task<List<DomainDTO>> GetByFilter(int filter);
         Task Create(CreateDomainDTO input);
         Task Delete(int id);
-        Task DeleteInactiveDomain();
+        Task<List<Domain.Entities.Domain>> ListInactiveDomain();
     }
 }

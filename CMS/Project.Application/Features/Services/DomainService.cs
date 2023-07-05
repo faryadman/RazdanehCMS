@@ -49,14 +49,11 @@ namespace Project.Application.Features.Services
             await _domainRepository.Delete(id);
         }
 
-        public async Task DeleteInactiveDomain()
+        public async Task<List<Domain.Entities.Domain>> ListInactiveDomain()
         {
             var listInactive = await GetByFilter(0);
             var list = _mapper.Map<IEnumerable<DomainDTO>, List<Domain.Entities.Domain>>(listInactive);
-            foreach (var domain in list)
-            {
-                await _domainRepository.RemoveDomain(domain);
-            }
+            return list;
         }
     }
 }

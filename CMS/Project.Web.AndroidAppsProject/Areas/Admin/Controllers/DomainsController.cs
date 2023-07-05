@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
+using Project.Persistence;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -12,12 +13,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private readonly IDomainService _domainService;
         private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IWebHostEnvironment _env;
-
-        public DomainsController(IDomainService domainService, ICronJobInfoService cronJobInfoService, IWebHostEnvironment env)
+        private readonly ApplicationDbContext _context;
+        public DomainsController(IDomainService domainService, ICronJobInfoService cronJobInfoService, IWebHostEnvironment env, ApplicationDbContext context)
         {
             _domainService = domainService;
             _cronJobInfoService = cronJobInfoService;
             _env = env;
+            _context = context;
         }
         public IActionResult Index()
         {
@@ -46,7 +48,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task<IActionResult> DeleteInactiveDomain()
         {
-            await _domainService.DeleteInactiveDomain();
+            //TODO: Refactor into service
+            var list = await _domainService.ListInactiveDomain();
+            foreach (var domain in list)
+            {
+                _context.Remove(domain);
+            }
+            await _context.SaveChangesAsync();
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> MassDelete(string ids)
@@ -69,7 +77,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
-                List<string> lines = new List<string>();
+                List<string> lines = new();
                 // واکشی خط‌های موجود در فایل متنی
                 if (System.IO.File.Exists(filePath))
                 {
@@ -78,8 +86,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 // جدا سازی داده‌ها از هر خط با استفاده از کاراکتر اسپیس (Space)
                 foreach (string line in lines)
                 {
-                    // ذخیره داده‌های جدا ساخته شده در لیستی یا در دیتابیس 
-                    await _domainService.Create(new CreateDomainDTO() { DomainName = line, FileName = _FileName });
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        // ذخیره داده‌های جدا ساخته شده در لیستی یا در دیتابیس 
+                        await _domainService.Create(new CreateDomainDTO() { DomainName = line, FileName = _FileName });
+                    }
                 }
                 return RedirectToAction("Index");
             }
