@@ -272,7 +272,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             }
 
             var cnameValue = $"{newCnameValue}.{cfDomain}";
-            var subServerName = $"{GenerateWordExtention.GenerateWords(6)[0]}.{cfDomain}";
+            var subServerName = $"{GenerateWordExtention.GenerateWords(3)[0]}.{cfDomain}";
 
 
             // Change value serverName
@@ -299,10 +299,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow
             });
-            if (deleteDomain)
-            {
-                if (domains != null) await _domainService.Delete(domains[0].Id);
-            }
+            if (!deleteDomain) return RedirectToAction("Index");
+            if (domains != null) await _domainService.Delete(domains[0].Id);
             return Json(new { status = "1", message = "done successfully" });
             //var domains = await _domainService.GetAll();
             //if (domains is not { Count: > 0 }) return Json(new { status = "2", message = "domain don't exist!" });
