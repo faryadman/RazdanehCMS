@@ -165,7 +165,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
             var hostString = jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"]?.ToString().Split(".");
             var subName = GenerateWordExtention.GenerateWords(4)[0];
-            var serverName = $"{subName}.{serverNameString?[1]}.{serverNameString?[2]}";
+            var subServerName = GenerateWordExtention.GenerateWords(3)[0];
+            var serverName = $"{subServerName}.{serverNameString?[1]}.{serverNameString?[2]}";
             var host = $"{subName}.{hostString?[1]}.{hostString?[2]}";
             jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = serverName;
             jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = host;
@@ -211,12 +212,12 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             if (cnameRecord != null)
             {
                 // Update the CNAME record with the new value
-                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, serverName, server.CurrentDomainValue, cfApiKey, cfEmail);
+                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, host, server.CurrentDomainValue, cfApiKey, cfEmail);
             }
             else
             {
                 // Create the CNAME record with the new value
-                await cloudflare.CreateDnsRecordAsync(cfZoneId, serverName, server.CurrentDomainValue, cfApiKey, cfEmail); ;
+                await cloudflare.CreateDnsRecordAsync(cfZoneId, host, server.CurrentDomainValue, cfApiKey, cfEmail); ;
             }
 
             return Json(new { status = "1", message = "Done Subdomain !" });
