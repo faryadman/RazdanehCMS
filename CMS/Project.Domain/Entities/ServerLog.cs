@@ -1,10 +1,6 @@
 ﻿using Project.Domain.Entities.Base;
 using Project.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project.Domain.Entities
 {
@@ -12,11 +8,17 @@ namespace Project.Domain.Entities
     {
         public int ServerId { get; set; }
         public Server Server { get; set; }
+        [StringLength(128)]
         public string UserId { get; set; }
+        [StringLength(128)]
         public string Ip { get; set; }
+        [StringLength(128)]
         public string Isp { get; set; }
+        [StringLength(128)]
         public string City { get; set; }
+        [StringLength(128)]
         public string Org { get; set; }
+        [StringLength(128)]
         public string Country { get; set; }
         public Operator Operator { get; set; }
         public ConnectionStatus ConnectionStatus { get; set; }
