@@ -13,7 +13,7 @@ namespace Project.Persistence
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 //options.UseLazyLoadingProxies();
-                options.EnableSensitiveDataLogging(true);
+                /*options.EnableSensitiveDataLogging(true);*/
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 

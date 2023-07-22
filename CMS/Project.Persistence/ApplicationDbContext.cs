@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Project.Domain.Entities;
-using Project.Domain.Entities.Base;
 
 namespace Project.Persistence
 {
@@ -20,18 +19,18 @@ namespace Project.Persistence
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            foreach (var entry in base.ChangeTracker.Entries<BaseEntity>()
-                .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
-            {
-                entry.Entity.UpdatedAt = DateTime.Now;
-                entry.Entity.UpdatedBy = "SYSTEM";
+            //foreach (var entry in base.ChangeTracker.Entries<BaseEntity>()
+            //    .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
+            //{
+            //    entry.Entity.UpdatedAt = DateTime.Now;
+            //    entry.Entity.UpdatedBy = "SYSTEM";
 
-                if (entry.State == EntityState.Added)
-                {
-                    entry.Entity.CreatedAt = DateTime.Now;
-                    entry.Entity.CreatedBy = "SYSTEM";
-                }
-            }
+            //    if (entry.State == EntityState.Added)
+            //    {
+            //        entry.Entity.CreatedAt = DateTime.Now;
+            //        entry.Entity.CreatedBy = "SYSTEM";
+            //    }
+            //}
 
             var result = await base.SaveChangesAsync(cancellationToken);
 

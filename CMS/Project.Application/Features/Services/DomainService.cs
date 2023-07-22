@@ -48,6 +48,19 @@ namespace Project.Application.Features.Services
         {
             await _domainRepository.Delete(id);
         }
+        public Task Remove()
+        {
+            var query = _domainRepository.GetAllQueryable();
+            query = query.Where(x => !x.IsActive);
+            var list = query.ToList();
+            foreach (var domain in list)
+            {
+                _domainRepository.Remove(domain);
+            }
+
+            _domainRepository.SaveChangesTask();
+            return Task.CompletedTask;
+        }
 
         public async Task<List<Domain.Entities.Domain>> ListInactiveDomain()
         {

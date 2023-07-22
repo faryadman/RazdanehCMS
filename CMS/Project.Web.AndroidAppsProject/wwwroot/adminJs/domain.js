@@ -231,6 +231,10 @@ function deleteInactiveDomain() {
                         getdomains(true);
                     }
                     data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    setTimeout(function () {
+                        swal.close();
+                        $('#filterdomainsModal').modal('toggle');
+                    }, 4000)
                 }
             })
         }

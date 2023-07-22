@@ -1,19 +1,14 @@
-using DNTCommon.Web.Core;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Project.Application;
-using Project.Application.Features.Interfaces;
 using Project.Application.Filters;
 using Project.Application.Middlewares;
 using Project.Domain.Entities;
 //using Project.Infrastructure;
 using Project.Persistence;
-using Project.Web.AndroidAppsProject;
 using Project.Web.AndroidAppsProject.CronJob;
 using Project.Web.AndroidAppsProject.Dapper;
 using System.IO.Compression;
@@ -157,7 +152,7 @@ app.UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate(
     "myrecurringjob",
-    () =>  app.Services.GetService<ICronJobService>().Reset(),
+    () => app.Services.GetService<ICronJobService>().Reset(),
     Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
