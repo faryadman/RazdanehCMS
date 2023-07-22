@@ -20,7 +20,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             _cronJobInfoService = cronJobInfoService;
             _cronJobInfoRepository = cronJobInfoRepository;
-            _connectionString = "Data Source=163.172.117.78,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True";
+            _connectionString = _connectionString =
+                "Data Source=163.172.117.78,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True;encrypt=false";
         }
         public async Task<IActionResult> Get()
         {

@@ -1,13 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
-using Polly;
-using Project.Application.Contracts.Persistence;
 using Project.Domain.Entities;
-using Project.Persistence;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Data;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 
 namespace Project.Web.AndroidAppsProject.CronJob
 {
@@ -16,9 +9,8 @@ namespace Project.Web.AndroidAppsProject.CronJob
         private readonly string _connectionString;
         public CronJobService()
         {
-            _connectionString = "Data Source=168.119.140.221,1433;Initial Catalog=database;Persist Security Info=True;User ID=db;Password=6y2w~Kx10;TrustServerCertificate=True";
+            _connectionString = "Data Source=163.172.117.78,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True;encrypt=false";
         }
-
         //private readonly ApplicationDbContext _context;
         //private readonly IServerLogRepository _serverLogRepository; 
 

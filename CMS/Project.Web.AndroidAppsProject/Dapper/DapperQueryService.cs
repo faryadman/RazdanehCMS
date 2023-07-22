@@ -1,10 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Project.Application.Contracts.Persistence;
-using Project.Application.DTOs.AppSetting;
-using Project.Application.DTOs.Server;
-using Project.Application.Exceptions;
-using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
 using Project.Domain.Enums;
 
@@ -15,7 +10,7 @@ namespace Project.Web.AndroidAppsProject.Dapper
         private readonly string _connectionString;
         public DapperQueryService()
         {
-            _connectionString = "Data Source=168.119.140.221,1433;Initial Catalog=database;Persist Security Info=True;User ID=db;Password=6y2w~Kx10;TrustServerCertificate=True";
+            _connectionString = "Data Source=163.172.117.78,1433;Initial Catalog=test;Persist Security Info=True;User ID=sa;Password=Admin@123;TrustServerCertificate=True;encrypt=false";
         }
 
         public async Task<List<Server>> GetServerByApp(string groups, bool isAd, Operator operatorType)
