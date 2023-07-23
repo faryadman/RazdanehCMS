@@ -198,7 +198,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 return;
             foreach (var id in serverIds)
             {
-                await ChangeSubDomain(id, jobDto.Email, jobDto.ApiKey);
+                await ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
             }
         }
         public async Task CheckHostDomainJob()
@@ -289,17 +289,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow
             });
-            if (deleteDomain)
-            {
-                if (domains != null) await _domainService.Delete(domains[0].Id);
-            }
             return Json(new { status = "1", message = "done successfully" });
         }
-        public async Task<IActionResult> ChangeSubDomain(int serverId, string email, string apiKey)
+        public async Task<IActionResult> ChangeSubDomain(string id, string email, string apiKey)
         {
-
-
-            var server = await _serverService.Detail(serverId.ToString());
+            var server = await _serverService.Detail(id);
             var config = server.Config;
             var jsonObject = JObject.Parse(config);
             var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");

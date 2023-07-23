@@ -150,10 +150,10 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseHangfireServer();
 app.UseHangfireDashboard();
 
-RecurringJob.AddOrUpdate(
-    "myrecurringjob",
-    () => app.Services.GetService<ICronJobService>().Reset(),
-    Cron.MinuteInterval(10));
+//RecurringJob.AddOrUpdate(
+//    "myrecurringjob",
+//    () => app.Services.GetService<ICronJobService>().Reset(),
+//    Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 

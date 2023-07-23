@@ -329,13 +329,13 @@ namespace Project.Application.Features.Services
         {
             var data = await _serverRepository.GetAll();
 
-            return data.Select(x => x.Id).ToList();
+            return data.Where(x => x.IsActive).Select(x => x.Id).ToList();
         }
 
         public async Task<List<int>> GetActiveIds()
         {
             var data = await _serverRepository.GetAll();
-            return data.Where(x => x.IsActive == true).Select(x => x.Id).ToList();
+            return data.Where(x => x.IsActive && x.IsAvailable).Select(x => x.Id).ToList();
         }
         public async Task ToggleIsAvailableInput(int id)
         {
