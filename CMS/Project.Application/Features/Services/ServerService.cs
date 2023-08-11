@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
-using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
@@ -200,7 +199,7 @@ namespace Project.Application.Features.Services
         {
             var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
 
-            AppSettingDTO app = await _appSettingService.DetailByApiRoute(apiRoute);
+            var app = await _appSettingService.DetailByApiRoute(apiRoute);
 
             if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
                 throw new BadRequestException("this app has no server");

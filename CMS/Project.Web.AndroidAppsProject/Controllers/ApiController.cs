@@ -65,13 +65,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetAdServer(string apiRoute, string isp, string Operator)
         {
-            if (_memoryCache.TryGetValue($"GetAdServer_{apiRoute}_{isp}_{Operator}", out ServerDTO? cachedGetAdServer))
-            {
-                return new Response<ServerDTO>(cachedGetAdServer).ToJsonResult();
-            }
             var server = await _serverService.GetByApp(apiRoute, true, isp, Operator);
-            // ذخیره اطلاعات در کش
-            _memoryCache.Set($"GetAdServer_{apiRoute}_{isp}_{Operator}", server);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
 
@@ -79,17 +73,9 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpPost]
         public async Task<IActionResult> SuccessServerLog(AddServerLogDTO input)
         {
-            if (_memoryCache.TryGetValue($"SuccessServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
-            {
-                return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
-            }
             var server = await _serverService.Detail(input.ServerId);
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
-
-            // ذخیره‌ی اطلاعات در حافظه‌ی کش
-            _memoryCache.Set($"SuccessServerLog_{input.ServerId}", input);
-
             await _serverLogService.Create(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
