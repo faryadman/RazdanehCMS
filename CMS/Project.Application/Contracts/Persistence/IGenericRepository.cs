@@ -13,7 +13,7 @@ namespace Project.Application.Contracts.Persistence
         System.Linq.IQueryable<T> GetAllQueryable();
         Task<T> GetNoTracking(int id);
         Task<bool> Exist(Expression<Func<T, bool>> predicate);
-        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+        IQueryable<T> Find(Expression<Func<T, bool>> predicate);
         IQueryable<T> FindQueryable(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate);

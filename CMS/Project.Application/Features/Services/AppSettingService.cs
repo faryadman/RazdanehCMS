@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
-using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.Features.Services
 {
@@ -47,7 +40,6 @@ namespace Project.Application.Features.Services
         {
             var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id);
             _mapper.Map(input, model);
-            //var model = _mapper.Map<AppSetting>(input);
             await _appSettingRepository.Update(model);
         }
         public async Task Delete(int id)
@@ -59,35 +51,27 @@ namespace Project.Application.Features.Services
         {
             var app = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id);
             var groups = await _groupService.GetAll();
-            var list = new List<GroupsByAppDTO>();
-            foreach (var item in groups)
+            return groups.Select(item => new GroupsByAppDTO
             {
-                list.Add(new GroupsByAppDTO
-                {
-                    Id = item.Id,
-                    Title = item.Title,
-                    IsAd = item.IsAd,
-                    DoTheyHaveRelation = string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn) ? false : app.GroupsThatAppIsJoinedIn.Split("_").Contains(item.Id.ToString()),
-                });
-            }
-            return list;
+                Id = item.Id,
+                Title = item.Title,
+                IsAd = item.IsAd,
+                DoTheyHaveRelation = !string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn) && app.GroupsThatAppIsJoinedIn.Split("_").Contains(item.Id.ToString()),
+            })
+                .ToList();
         }
 
         public async Task UpdateAppGroups(int id, string groupIds)
         {
-            var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id);
+            var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id && x.IsActive == true);
             model.GroupsThatAppIsJoinedIn = string.IsNullOrWhiteSpace(groupIds) ? "" : groupIds;
             await _appSettingRepository.Update(model);
         }
 
         public async Task<AppSettingDTO> DetailByApiRoute(string apiRoute)
         {
-            var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.ApiRoute == apiRoute);
-
-            if (model == null)
-                throw new NotFoundException();
-
-            return _mapper.Map<AppSettingDTO>(model);
+            var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.ApiRoute == apiRoute && x.IsActive == true);
+            return model == null ? new AppSettingDTO() : _mapper.Map<AppSettingDTO>(model);
         }
     }
 }

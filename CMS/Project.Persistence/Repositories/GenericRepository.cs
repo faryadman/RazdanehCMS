@@ -14,24 +14,26 @@ namespace Project.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        private async Task<T> Get(int id)
+        private IQueryable<T> ActiveEntities => _dbContext.Set<T>().Where(e => (e as BaseEntity).IsActive);
+
+        public async Task<T> Get(int id)
         {
-            return await _dbContext.Set<T>().FirstOrDefaultAsync(f => (f as BaseEntity).IsActive == true && (f as BaseEntity).Id == id);
+            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => (e as BaseEntity).Id == id);
         }
 
         public async Task<T> GetNoTracking(int id)
         {
-            return await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(f => (f as BaseEntity).IsActive == true && (f as BaseEntity).Id == id);
+            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => (e as BaseEntity).Id == id);
         }
 
         public async Task<IReadOnlyList<T>> GetAll()
         {
-            return await _dbContext.Set<T>().Where(w => (w as BaseEntity).IsActive == true).ToListAsync();
+            return await ActiveEntities.AsNoTracking().ToListAsync();
         }
 
         public IQueryable<T> GetAllQueryable()
         {
-            return _dbContext.Set<T>().AsQueryable();
+            return ActiveEntities.AsNoTracking();
         }
 
         public async Task<T> Add(T entity)
@@ -49,85 +51,82 @@ namespace Project.Persistence.Repositories
 
         public async Task Delete(int id)
         {
-            var find = await Get(id);
-            (find as BaseEntity).IsActive = false;
-            //_dbContext.Set<T>().Update(find);
-            await _dbContext.SaveChangesAsync();
+            var entity = await Get(id);
+            if (entity != null)
+            {
+                (entity as BaseEntity).IsActive = false;
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task Recover(int id)
         {
-            var find = await Get(id);
-            (find as BaseEntity).IsActive = true;
-            //_dbContext.Set<T>().Update(find);
-            await _dbContext.SaveChangesAsync();
+            var entity = await Get(id);
+            if (entity != null)
+            {
+                (entity as BaseEntity).IsActive = true;
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task<bool> Exist(int id)
         {
-            var entity = await GetNoTracking(id);
-            return entity != null;
+            return await ActiveEntities.AnyAsync(e => (e as BaseEntity).Id == id);
         }
+
         public async Task<bool> Exist(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>().Where(predicate).AnyAsync();
+            return await ActiveEntities.AnyAsync(predicate);
         }
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+
+        public IQueryable<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return _dbContext.Set<T>()
-                .Where(w => (w as BaseEntity).IsActive == true)
-                .Where(predicate);
+            return ActiveEntities.Where(predicate).AsNoTracking();
         }
 
         public IQueryable<T> FindQueryable(Expression<Func<T, bool>> predicate)
         {
-            return _dbContext.Set<T>()
-                .Where(w => (w as BaseEntity).IsActive == true)
-                .Where(predicate).AsQueryable();
+            return ActiveEntities.Where(predicate).AsNoTracking();
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>()
-                .Where(w => (w as BaseEntity).IsActive == true)
-                .Where(predicate).ToListAsync();
+            return await ActiveEntities.Where(predicate).AsNoTracking().ToListAsync();
         }
 
         public async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>()
-                .Where(w => (w as BaseEntity).IsActive == true)
-                .SingleOrDefaultAsync(predicate);
+            return await ActiveEntities.AsNoTracking().SingleOrDefaultAsync(predicate);
         }
 
         public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbContext.Set<T>()
-                .Where(w => (w as BaseEntity).IsActive == true)
-                .Where(predicate).CountAsync();
+            return await ActiveEntities.CountAsync(predicate);
         }
 
         public async Task Remove(int id)
         {
-            var find = await Get(id);
-            if (find != null)
+            var entity = await Get(id);
+            if (entity != null)
             {
-                _dbContext.Remove(find);
+                _dbContext.Set<T>().Remove(entity);
                 await _dbContext.SaveChangesAsync();
             }
-            _dbContext.Remove(find);
         }
+
         public Task Remove(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
             return Task.CompletedTask;
-
         }
+
         public Task SaveChangesTask()
         {
             _dbContext.SaveChanges();
             return Task.CompletedTask;
-
         }
+
+
     }
+
 }

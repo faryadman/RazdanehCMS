@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
-using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.Server;
@@ -36,14 +35,7 @@ namespace Project.Application.Features.Services
 
             if (filter != 0)
             {
-                if (filter == 1)
-                {
-                    query = query.Where(x => x.IsAvailable);
-                }
-                else
-                {
-                    query = query.Where(x => !x.IsAvailable);
-                }
+                query = filter == 1 ? query.Where(x => x.IsAvailable) : query.Where(x => !x.IsAvailable);
             }
 
             if (groupId != null)
@@ -75,32 +67,32 @@ namespace Project.Application.Features.Services
                 IsForHamraheAvval = x.IsForHamraheAvval,
                 IsAvailable = x.IsAvailable,
                 CurrentDomainValue = x.CurrentDomainValue,
-                AllLogsStatistics = x.Logs.Where(y => y.IsActive).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                AllLogsStatistics = x.Logs.Any(y => y.IsActive) ? new DTOs.ServerLog.ServerLogStatistics
                 {
-                    Count = x.Logs.Where(y => y.IsActive).Count(),
-                    FailCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed).Count(),
-                    SuccessCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful).Count(),
+                    Count = x.Logs.Count(y => y.IsActive),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful),
                 } : null,
 
-                HamraheAvvalLogsStatistics = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.HamraheAvval).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                HamraheAvvalLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.HamraheAvval) ? new DTOs.ServerLog.ServerLogStatistics
                 {
-                    Count = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
-                    FailCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
-                    SuccessCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
                 } : null,
 
-                IrancellLogsStatistics = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.Irancell).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                IrancellLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Irancell) ? new DTOs.ServerLog.ServerLogStatistics
                 {
-                    Count = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.Irancell).Count(),
-                    FailCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.Irancell).Count(),
-                    SuccessCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.Irancell).Count(),
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
                 } : null,
 
-                UnknownLogsStatistics = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.Unknown).Count() != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                UnknownLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Unknown) ? new DTOs.ServerLog.ServerLogStatistics
                 {
-                    Count = x.Logs.Where(y => y.IsActive && y.Operator == Domain.Enums.Operator.Unknown).Count(),
-                    FailCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.Unknown).Count(),
-                    SuccessCount = x.Logs.Where(y => y.IsActive && y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.Unknown).Count(),
+                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown),
+                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
+                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
                 } : null,
 
             }).ToListAsync();
@@ -130,28 +122,28 @@ namespace Project.Application.Features.Services
                 IsAvailable = x.IsAvailable,
                 CurrentDomainValue = x.CurrentDomainValue,
                 DomainDateTime = x.DomainDateTime,
-                AllLogsStatistics = x.Logs.Count(y => y.IsActive) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                AllLogsStatistics = x.Logs.Any(y => y.IsActive) ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Count(y => y.IsActive),
                     FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed),
                     SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful),
                 } : null,
 
-                HamraheAvvalLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                HamraheAvvalLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.HamraheAvval) ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval),
                     FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
                     SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
                 } : null,
 
-                IrancellLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                IrancellLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Irancell) ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell),
                     FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
                     SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
                 } : null,
 
-                UnknownLogsStatistics = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown) != 0 ? new DTOs.ServerLog.ServerLogStatistics
+                UnknownLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Unknown) ? new DTOs.ServerLog.ServerLogStatistics
                 {
                     Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown),
                     FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
@@ -196,7 +188,7 @@ namespace Project.Application.Features.Services
 
             var dto = _mapper.Map<CreateServerDTO>(server);
 
-            dto.ServerName = dto.ServerName + $" (Sample Of Id ={id})";
+            dto.ServerName += $" (Sample Of Id ={id})";
 
             var model = _mapper.Map<Server>(dto);
 
@@ -224,41 +216,40 @@ namespace Project.Application.Features.Services
 
             if (operatorType != Domain.Enums.Operator.Unknown)
             {
-                if (operatorType == Domain.Enums.Operator.Irancell)
+                query = operatorType switch
                 {
-                    query = query.Where(x => x.IsForIrancell).AsQueryable();
-                }
-                if (operatorType == Domain.Enums.Operator.HamraheAvval)
-                {
-                    query = query.Where(x => x.IsForHamraheAvval).AsQueryable();
-                }
+                    Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell).AsQueryable(),
+                    Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval).AsQueryable(),
+                    _ => query
+                };
             }
 
-            int dataCount = query.Count();
+            var servers = query as Server[] ?? query.ToArray();
+            var dataCount = servers.Count();
 
             if (query == null || dataCount == 0)
                 throw new BadRequestException("this app has no server");
 
             if (dataCount == 1)
             {
-                return _mapper.Map<ServerDTO>(query.FirstOrDefault());
+                return _mapper.Map<ServerDTO>(servers.FirstOrDefault());
             }
 
-            ApiLogDTO lastLog = await _apiLogService.GetLastLog(app.Id);
+            var lastLog = await _apiLogService.GetLastLog(app.Id);
 
 
-            Server server = new Server();
+            var server = new Server();
 
             if (app.SendRandomServer)
             {
-                int serverNotToReturnId = lastLog == null ? 0 : lastLog.ServerId;
+                var serverNotToReturnId = lastLog?.ServerId ?? 0;
                 //int serverNotToReturnId = 0;
 
-                Random random = new Random();
+                var random = new Random();
 
-                IEnumerable<Server> allowedServers = query.Where(x => x.Id != serverNotToReturnId);
+                var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
 
-                int index = random.Next(allowedServers.Count());
+                var index = random.Next(allowedServers.Count());
 
                 server = allowedServers.ElementAt(index);
             }
@@ -266,22 +257,22 @@ namespace Project.Application.Features.Services
             {
                 if (lastLog == null)
                 {
-                    Random random = new Random();
-                    int index = random.Next(query.Count());
-                    server = query.ElementAt(index);
+                    var random = new Random();
+                    var index = random.Next(servers.Count());
+                    server = servers.ElementAt(index);
                 }
                 else
                 {
-                    int lastServerIndex = query.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
+                    int lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
 
                     if (lastServerIndex == dataCount - 1)
                     {
-                        server = query.FirstOrDefault();
+                        server = servers.FirstOrDefault();
                     }
                     else
                     {
                         int index = lastServerIndex == -1 ? 0 : lastServerIndex;
-                        server = query.ElementAt(index + 1);
+                        server = servers.ElementAt(index + 1);
                     }
                 }
             }

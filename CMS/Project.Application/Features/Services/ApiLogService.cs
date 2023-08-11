@@ -34,6 +34,8 @@ namespace Project.Application.Features.Services
         public async Task DeleteApiLog(int count = 100000)
         {
             var list = await _apiLogRepository.GetAll();
+            if (list.Count <= 0)
+                return;
             foreach (var apiLog in list)
             {
                 await _apiLogRepository.Delete(apiLog.Id);
