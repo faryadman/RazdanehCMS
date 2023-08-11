@@ -157,8 +157,8 @@ app.Use(async (context, next) =>
     string path = context.Request.Path;
     if (path.EndsWith(".css") || path.EndsWith(".js") || path.EndsWith(".jpg") || path.EndsWith(".jpeg") || path.EndsWith(".png"))
     {
-        //Set css and js files to be cached for 7 days
-        TimeSpan maxAge = new(7, 0, 0, 0);     //7 days
+        //Set css and js files to be cached for 10 minutes
+        TimeSpan maxAge = new(0, 0, 10, 0);     //    10 minutes
         context.Response.Headers.Append("Cache-Control", "max-age=" + maxAge.TotalSeconds.ToString("0"));
     }
     else

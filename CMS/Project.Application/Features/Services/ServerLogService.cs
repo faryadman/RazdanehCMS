@@ -24,7 +24,7 @@ namespace Project.Application.Features.Services
         {
             var model = new ServerLog
             {
-                Operator = Domain.Enums.Operator.Unknown,
+                Operator = (Domain.Enums.Operator)input.ConnectionStatus,
                 ConnectionStatus = input.ConnectionStatus,
                 Ip = input.Ip,
                 ServerId = input.ServerId,
@@ -35,8 +35,8 @@ namespace Project.Application.Features.Services
                 Org = input.Org
             };
 
-            var Operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
-            model.Operator = Operator;
+            //var Operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
+            //model.Operator = Operator;
             await _serverLogRepository.Add(model);
         }
 

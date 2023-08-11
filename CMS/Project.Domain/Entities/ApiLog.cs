@@ -9,9 +9,9 @@ namespace Project.Domain.Entities
     {
         [ForeignKey("AppSettingId")]
         public virtual AppSetting AppSetting { get; set; }
-        public int AppSettingId { get; set; }
+        public int? AppSettingId { get; set; }
         [ForeignKey("ServerId")]
         public virtual Server Server { get; set; }
-        public int ServerId { get; set; }
+        public int? ServerId { get; set; }
     }
 }

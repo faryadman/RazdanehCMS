@@ -50,13 +50,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetServer(string apiRoute, string isp, string Operator)
         {
-            if (_memoryCache.TryGetValue($"GetServer_{apiRoute}", out ServerDTO? cachedGetServer))
+            if (_memoryCache.TryGetValue($"GetServer_{apiRoute}_{isp}_{Operator}", out ServerDTO? cachedGetServer))
             {
                 return new Response<ServerDTO>(cachedGetServer).ToJsonResult();
             }
             var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
             // ذخیره اطلاعات در کش
-            _memoryCache.Set($"GetServer_{apiRoute}", server);
+            _memoryCache.Set($"GetServer_{apiRoute}_{isp}_{Operator}", server);
 
             return new Response<ServerDTO>(server).ToJsonResult();
         }
@@ -65,14 +65,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetAdServer(string apiRoute, string isp, string Operator)
         {
-
-            if (_memoryCache.TryGetValue($"GetAdServer_{apiRoute}", out ServerDTO? cachedGetAdServer))
+            if (_memoryCache.TryGetValue($"GetAdServer_{apiRoute}_{isp}_{Operator}", out ServerDTO? cachedGetAdServer))
             {
                 return new Response<ServerDTO>(cachedGetAdServer).ToJsonResult();
             }
             var server = await _serverService.GetByApp(apiRoute, true, isp, Operator);
             // ذخیره اطلاعات در کش
-            _memoryCache.Set($"GetAdServer_{apiRoute}", server);
+            _memoryCache.Set($"GetAdServer_{apiRoute}_{isp}_{Operator}", server);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
 
@@ -80,12 +79,10 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpPost]
         public async Task<IActionResult> SuccessServerLog(AddServerLogDTO input)
         {
-            if (_memoryCache.TryGetValue($"SuccessServerLog_{input.ServerId}", out AddServerLogDTO? cachedSuccessServerLog) &&
-                cachedSuccessServerLog is { ConnectionStatus: Domain.Enums.ConnectionStatus.Successful })
+            if (_memoryCache.TryGetValue($"SuccessServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
             {
                 return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
             }
-
             var server = await _serverService.Detail(input.ServerId);
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
@@ -101,12 +98,10 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpPost]
         public async Task<IActionResult> FailedServerLog(AddServerLogDTO input)
         {
-            if (_memoryCache.TryGetValue($"FailedServerLog_{input.ServerId}", out AddServerLogDTO? cachedFailedServerLog) &&
-                cachedFailedServerLog is { ConnectionStatus: Domain.Enums.ConnectionStatus.Failed })
+            if (_memoryCache.TryGetValue($"FailedServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
             {
                 return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
             }
-
             var server = await _serverService.Detail(input.ServerId);
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;

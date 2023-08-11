@@ -9,7 +9,7 @@ namespace Project.Domain.Entities
     [Index(nameof(ServerLog.Id), IsUnique = true)]
     public class ServerLog : BaseEntity
     {
-        public int ServerId { get; set; }
+        public int? ServerId { get; set; }
         [ForeignKey("ServerId")]
         public virtual Server Server { get; set; }
         [StringLength(128)]
