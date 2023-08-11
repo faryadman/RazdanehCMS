@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{8B9810CB-C01
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Web.AndroidAppsProject", "CMS\Project.Web.AndroidAppsProject\Project.Web.AndroidAppsProject.csproj", "{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "CMS\Project.Web.Api\WebApi\WebApi.csproj", "{0251B0A5-DC41-4674-BA91-C1D4DCF83B31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0251B0A5-DC41-4674-BA91-C1D4DCF83B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0251B0A5-DC41-4674-BA91-C1D4DCF83B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0251B0A5-DC41-4674-BA91-C1D4DCF83B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0251B0A5-DC41-4674-BA91-C1D4DCF83B31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{7F796B83-7566-4713-93C9-E2181608E0C0} = {29E12A23-6F21-4750-B995-3287DFDA5C12}
 		{07C225C2-2994-417E-890B-719E785E9FA0} = {29E12A23-6F21-4750-B995-3287DFDA5C12}
 		{D064D25F-6E1B-454B-99B9-E4C6AC6D6EC3} = {8B9810CB-C017-4CDD-9AA8-A0EF6A1DAD07}
+		{0251B0A5-DC41-4674-BA91-C1D4DCF83B31} = {8B9810CB-C017-4CDD-9AA8-A0EF6A1DAD07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FAAF4046-FD7F-41B4-8F85-2738BA98F313}

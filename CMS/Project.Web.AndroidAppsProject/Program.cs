@@ -25,6 +25,11 @@ builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
 builder.Services.AddSingleton<IDapperQueryService, DapperQueryService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddMemoryCache(options =>
+{
+    options.ExpirationScanFrequency = TimeSpan.FromMinutes(1);
+});
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -88,20 +93,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     //using Microsoft.AspNetCore.Authentication.Cookies;
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
     options.SlidingExpiration = true;
-    //options.Events.OnRedirectToLogin = context =>
-    //{
-    //    if (PublicHelper.IsAdminContext(context))
-    //    {
-    //        var redirectPath = new Uri(context.RedirectUri);
-    //        context.Response.Redirect("/admin/account/login" + redirectPath.Query);
-    //    }
-    //    else
-    //    {
-    //        context.Response.Redirect(context.RedirectUri);
-    //    }
-
-    //    return Task.CompletedTask;
-    //};
 });
 
 
@@ -142,7 +133,7 @@ app.UseResponseCompression();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = context =>
-    context.Context.Response.Headers.Add("Cache-Control", "public, max-age=2592000")
+    context.Context.Response.Headers.Append("Cache-Control", $"public, max-age={TimeSpan.FromMinutes(10).TotalSeconds}")
 });
 
 
@@ -153,7 +144,7 @@ app.UseHangfireDashboard();
 //RecurringJob.AddOrUpdate(
 //    "myrecurringjob",
 //    () => app.Services.GetService<ICronJobService>().Reset(),
-//    Cron.MinuteInterval(10));
+//Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 
@@ -164,7 +155,6 @@ app.UseSession();
 app.Use(async (context, next) =>
 {
     string path = context.Request.Path;
-
     if (path.EndsWith(".css") || path.EndsWith(".js") || path.EndsWith(".jpg") || path.EndsWith(".jpeg") || path.EndsWith(".png"))
     {
         //Set css and js files to be cached for 7 days

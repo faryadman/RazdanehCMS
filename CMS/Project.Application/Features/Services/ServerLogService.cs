@@ -98,5 +98,9 @@ namespace Project.Application.Features.Services
                 await _serverLogRepository.Remove(log.Id);
             }
         }
+        public void RestServerLogs()
+        {
+            DeleteServerLogs().GetAwaiter().GetResult();
+        }
     }
 }

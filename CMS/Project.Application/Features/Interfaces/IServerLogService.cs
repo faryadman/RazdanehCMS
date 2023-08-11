@@ -9,5 +9,6 @@ namespace Project.Application.Features.Interfaces
         Task<List<ServerLogDTO>> List();
         Task<ServerLogStatisticsDTO> GetAllLogsStatistics();
         Task DeleteServerLogs(int count = 100000);
+        void RestServerLogs();
     }
 }

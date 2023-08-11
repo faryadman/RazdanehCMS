@@ -16,16 +16,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private readonly IServerService _serverService;
         private readonly IServerLogService _serverLogService;
         private readonly IBlackListService _blackListService;
-        private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IDomainService _domainService;
 
-        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, ICronJobInfoService cronJobInfoService, IDomainService domainService)
+        public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, IDomainService domainService)
 
         {
             _serverService = serverService;
             _blackListService = blackListService;
             _serverLogService = serverLogService;
-            _cronJobInfoService = cronJobInfoService;
             _domainService = domainService;
         }
 
