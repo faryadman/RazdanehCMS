@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Project.Application.Contracts.Persistence;
+using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
@@ -17,14 +19,15 @@ namespace Project.Application.Features.Services
         private readonly IApiLogService _apiLogService;
         private readonly IMapper _mapper;
         private readonly IOperatorIdentificationService _operatorIdentificationService;
-
-        public ServerService(IServerRepository serverRepository, IMapper mapper, IAppSettingService appSettingService, IApiLogService apiLogService, IOperatorIdentificationService operatorIdentificationService)
+        private readonly IMemoryCache _memoryCache;
+        public ServerService(IServerRepository serverRepository, IMapper mapper, IAppSettingService appSettingService, IApiLogService apiLogService, IOperatorIdentificationService operatorIdentificationService, IMemoryCache memoryCache)
         {
             _serverRepository = serverRepository;
             _mapper = mapper;
             _appSettingService = appSettingService;
             _apiLogService = apiLogService;
             _operatorIdentificationService = operatorIdentificationService;
+            _memoryCache = memoryCache;
         }
 
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
@@ -194,52 +197,66 @@ namespace Project.Application.Features.Services
             await _serverRepository.Add(model);
 
         }
-
         public async Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator)
         {
             var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
-
-            var app = await _appSettingService.DetailByApiRoute(apiRoute);
+            var app = await GetCachedAppSetting(apiRoute); // Use a method to fetch app settings with caching
 
             if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
                 throw new BadRequestException("this app has no server");
 
-            string[] groups = app.GroupsThatAppIsJoinedIn.Split("_");
+            var groups = app.GroupsThatAppIsJoinedIn.Split("_");
 
-            IEnumerable<Server> query = await _serverRepository.FindAsync(x =>
-                groups.Contains(x.GroupId.ToString())
-                && x.IsAd == isAd
-                && x.IsAvailable);
+            var query = await GetServersByGroups(groups, isAd);
 
             query = query.OrderByDescending(x => x.Id);
 
-            if (operatorType != Domain.Enums.Operator.Unknown)
+            query = ApplyOperatorFilter(query, operatorType);
+
+            var server = await SelectServer(query, app.SendRandomServer, app.Id);
+
+            ServerDTO dto = _mapper.Map<ServerDTO>(server);
+            dto.Config = UpdateConfig(dto.Config, dto.ConfigKey, dto.ConfigValue);
+
+            return dto;
+        }
+
+        private async Task<AppSettingDTO> GetCachedAppSetting(string apiRoute)
+        {
+            if (_memoryCache.TryGetValue($"AppSetting_{apiRoute}", out AppSettingDTO cachedAppSetting))
             {
-                query = operatorType switch
-                {
-                    Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell).AsQueryable(),
-                    Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval).AsQueryable(),
-                    _ => query
-                };
+                return cachedAppSetting;
             }
 
-            var servers = query as Server[] ?? query.ToArray();
-            var dataCount = servers.Count();
+            var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
+            _memoryCache.Set($"AppSetting_{apiRoute}", appSetting);
 
-            if (query == null || dataCount == 0)
-                throw new BadRequestException("this app has no server");
+            return appSetting;
+        }
 
-            if (dataCount == 1)
+        private async Task<IEnumerable<Server>> GetServersByGroups(string[] groups, bool isAd)
+        {
+            return await _serverRepository.FindAsync(x =>
+                groups.Contains(x.GroupId.ToString())
+                && x.IsAd == isAd
+                && x.IsAvailable);
+        }
+
+        private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, Domain.Enums.Operator operatorType)
+        {
+            return operatorType switch
             {
-                return _mapper.Map<ServerDTO>(servers.FirstOrDefault());
-            }
+                Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell),
+                Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval),
+                _ => query
+            };
+        }
 
-            var lastLog = await _apiLogService.GetLastLog(app.Id);
-
-
-            var server = new Server();
-
-            if (app.SendRandomServer)
+        private async Task<Server> SelectServer(IEnumerable<Server> servers, bool sendRandomServer, int appSettingId)
+        {
+            Server server;
+            var lastLog = await _apiLogService.GetLastLog(appSettingId);
+            if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
                 //int serverNotToReturnId = 0;
@@ -254,43 +271,126 @@ namespace Project.Application.Features.Services
             }
             else
             {
+                IEnumerable<Server> enumerable = new List<Server>();
                 if (lastLog == null)
                 {
                     var random = new Random();
-                    var index = random.Next(servers.Count());
-                    server = servers.ElementAt(index);
+                    var index = random.Next(enumerable.Count());
+                    server = enumerable.ElementAt(index);
                 }
                 else
                 {
-                    int lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
+                    var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
 
-                    if (lastServerIndex == dataCount - 1)
-                    {
-                        server = servers.FirstOrDefault();
-                    }
-                    else
-                    {
-                        int index = lastServerIndex == -1 ? 0 : lastServerIndex;
-                        server = servers.ElementAt(index + 1);
-                    }
+                    server = lastServerIndex <= 1 ? enumerable.FirstOrDefault() : enumerable.ElementAt(lastServerIndex + 1);
                 }
             }
-            //await _apiLogService.Create(new ApiLogDTO
-            //{
-            //    AppSettingId = app.Id,
-            //    ServerId = server.Id
-            //});
-
-            ServerDTO dto = _mapper.Map<ServerDTO>(server);
-            dto.Config = dto.Config.Replace("@" + dto.ConfigKey, DateTime.Now.Ticks.ToString() + "." + dto.ConfigValue);
-
-            return dto;
+            return server;
+            // Implement your logic here for selecting a server based on sendRandomServer and appSettingId
+            // Return the selected server
         }
+
+        private static string UpdateConfig(string config, string configKey, string configValue)
+        {
+            return config.Replace("@" + configKey, DateTime.Now.Ticks.ToString() + "." + configValue);
+        }
+
+        //public async Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator)
+        //{
+        //    var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
+
+        //    var app = await _appSettingService.DetailByApiRoute(apiRoute);
+
+        //    if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
+        //        throw new BadRequestException("this app has no server");
+
+        //    string[] groups = app.GroupsThatAppIsJoinedIn.Split("_");
+
+        //    IEnumerable<Server> query = await _serverRepository.FindAsync(x =>
+        //        groups.Contains(x.GroupId.ToString())
+        //        && x.IsAd == isAd
+        //        && x.IsAvailable);
+
+        //    query = query.OrderByDescending(x => x.Id);
+
+        //    if (operatorType != Domain.Enums.Operator.Unknown)
+        //    {
+        //        query = operatorType switch
+        //        {
+        //            Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell).AsQueryable(),
+        //            Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval).AsQueryable(),
+        //            _ => query
+        //        };
+        //    }
+
+        //    var servers = query as Server[] ?? query.ToArray();
+        //    var dataCount = servers.Count();
+
+        //    if (query == null || dataCount == 0)
+        //        throw new BadRequestException("this app has no server");
+
+        //    if (dataCount == 1)
+        //    {
+        //        return _mapper.Map<ServerDTO>(servers.FirstOrDefault());
+        //    }
+
+        //    var lastLog = await _apiLogService.GetLastLog(app.Id);
+
+
+        //    var server = new Server();
+
+        //    if (app.SendRandomServer)
+        //    {
+        //        var serverNotToReturnId = lastLog?.ServerId ?? 0;
+        //        //int serverNotToReturnId = 0;
+
+        //        var random = new Random();
+
+        //        var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
+
+        //        var index = random.Next(allowedServers.Count());
+
+        //        server = allowedServers.ElementAt(index);
+        //    }
+        //    else
+        //    {
+        //        if (lastLog == null)
+        //        {
+        //            var random = new Random();
+        //            var index = random.Next(servers.Count());
+        //            server = servers.ElementAt(index);
+        //        }
+        //        else
+        //        {
+        //            int lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
+
+        //            if (lastServerIndex == dataCount - 1)
+        //            {
+        //                server = servers.FirstOrDefault();
+        //            }
+        //            else
+        //            {
+        //                int index = lastServerIndex == -1 ? 0 : lastServerIndex;
+        //                server = servers.ElementAt(index + 1);
+        //            }
+        //        }
+        //    }
+        //    //await _apiLogService.Create(new ApiLogDTO
+        //    //{
+        //    //    AppSettingId = app.Id,
+        //    //    ServerId = server.Id
+        //    //});
+
+        //    ServerDTO dto = _mapper.Map<ServerDTO>(server);
+        //    dto.Config = dto.Config.Replace("@" + dto.ConfigKey, DateTime.Now.Ticks.ToString() + "." + dto.ConfigValue);
+
+        //    return dto;
+        //}
 
         public async Task<ServerDTO> Detail(int id)
         {
             var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == id);
-            if (model == null || !model.IsActive)
+            if (model is not { IsActive: true })
                 throw new NotFoundException("سرور یافت نشد");
 
             return _mapper.Map<ServerDTO>(model);
@@ -299,7 +399,7 @@ namespace Project.Application.Features.Services
         public async Task<ServerDTO> Detail(string id)
         {
             var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id.ToString() == id);
-            if (model == null || !model.IsActive)
+            if (model is not { IsActive: true })
                 throw new NotFoundException("سرور یافت نشد");
 
             return _mapper.Map<ServerDTO>(model);

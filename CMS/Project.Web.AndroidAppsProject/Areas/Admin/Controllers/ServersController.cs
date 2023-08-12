@@ -44,26 +44,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task<IActionResult> List(int? groupId, int? appId, bool isAd, int filter)
         {
-            // تلاش برای خواندن اطلاعات از کش با استفاده از نام متد و پارامترهای ورودی به عنوان کلید
-            string cacheKey = $"List_{groupId}_{appId}_{isAd}_{filter}";
-            if (_memoryCache.TryGetValue(cacheKey, out List<ServerDTO>? cachedServerList))
-            {
-                return Json(cachedServerList); ;
-            }
-
-            // اگر اطلاعات در کش موجود نباشند، آنها را از منبع اصلی (سرویس _serverService) دریافت می‌کنیم
-
             var data = await _serverService.GetWithFilter(groupId, appId, isAd, filter);
-
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-
-            // ذخیره اطلاعات در کش با استفاده از نام متد و پارامترهای ورودی به عنوان کلید
-            _memoryCache.Set(cacheKey, data, cacheEntryOptions);
-
             return Json(data);
         }
         public async Task<IActionResult> Create(CreateServerDTO input)

@@ -71,7 +71,7 @@ namespace Project.Application.Features.Services
         public async Task<AppSettingDTO> DetailByApiRoute(string apiRoute)
         {
             var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.ApiRoute == apiRoute && x.IsActive == true);
-            return model == null ? new AppSettingDTO() : _mapper.Map<AppSettingDTO>(model);
+            return _mapper.Map<AppSettingDTO>(model);
         }
     }
 }
