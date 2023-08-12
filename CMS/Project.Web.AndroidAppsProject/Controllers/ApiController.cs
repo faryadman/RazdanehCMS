@@ -88,7 +88,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
             };
             // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"GetServer_{apiRoute}_{isp}_{Operator}", server, cacheEntryOptions);
+            _memoryCache.Set($"GetAdServer_{apiRoute}_{isp}_{Operator}", server, cacheEntryOptions);
 
             return new Response<ServerDTO>(server).ToJsonResult();
         }
