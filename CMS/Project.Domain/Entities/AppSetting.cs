@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Project.Domain.Entities
 {
-    [Index(nameof(AppSetting.Id), IsUnique = true)]
+    [Index(nameof(AppSetting.ApiRoute), IsUnique = true)]
     public class AppSetting : BaseEntity
     {
         [StringLength(256)]

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Server;
-using Project.Application.DTOs.ServerLog;
 using Project.Application.Extensions;
 using Project.Application.Features;
 using Project.Application.Features.Interfaces;
@@ -55,8 +54,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             // اگر اطلاعات در کش موجود نباشند، آنها را از منبع اصلی (سرویس _serverService) دریافت می‌کنیم
 
             var data = await _serverService.GetWithFilter(groupId, appId, isAd, filter);
+
+            // تنظیم انقضای داده‌ها به یک دقیقه
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+
             // ذخیره اطلاعات در کش با استفاده از نام متد و پارامترهای ورودی به عنوان کلید
-            _memoryCache.Set(cacheKey, data);
+            _memoryCache.Set(cacheKey, data, cacheEntryOptions);
 
             return Json(data);
         }
@@ -322,19 +328,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {
-            // تلاش برای خواندن اطلاعات از کش با استفاده از نام متد و پارامتر ورودی به عنوان کلید
-            string cacheKey = $"LogsList_{serverId}";
-            if (_memoryCache.TryGetValue(cacheKey, out List<ServerLogDTO>? cachedServerLogs))
-            {
-                return Json(cachedServerLogs);
-            }
-
-            // اگر اطلاعات در کش موجود نباشند، آنها را از منبع اصلی (سرویس _serverLogService) دریافت می‌کنیم
             var data = await _serverLogService.ListByServer(serverId);
-
-            // ذخیره اطلاعات در کش با استفاده از نام متد و پارامتر ورودی به عنوان کلید
-            _memoryCache.Set(cacheKey, data);
-
             return Json(data);
         }
 
@@ -346,17 +340,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/Logs/getAllLogsStatistics")]
         public IActionResult GetAllLogsStatistics()
         {
-
-            // تلاش برای خواندن اطلاعات از کش با استفاده از نام متد و پارامتر ورودی به عنوان کلید
-            string cacheKey = $"LogsStatistics";
-            if (_memoryCache.TryGetValue(cacheKey, out List<ServerLogDTO>? cachedLogsStatistics))
-            {
-                return Json(cachedLogsStatistics);
-            }
             var data = _serverLogService.GetAllLogsStatistics();
-            // ذخیره اطلاعات در کش با استفاده از نام متد و پارامتر ورودی به عنوان کلید
-            _memoryCache.Set(cacheKey, data);
-
             return Json(data);
         }
     }
