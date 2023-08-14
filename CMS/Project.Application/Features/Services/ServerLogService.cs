@@ -24,7 +24,7 @@ namespace Project.Application.Features.Services
         {
             var model = new ServerLog
             {
-                Operator = (Domain.Enums.Operator)input.ConnectionStatus,
+                Operator = Domain.Enums.Operator.Unknown,
                 ConnectionStatus = input.ConnectionStatus,
                 Ip = input.Ip,
                 ServerId = input.ServerId,

@@ -265,9 +265,10 @@ namespace Project.Application.Features.Services
 
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
 
-                var index = random.Next(allowedServers.Count());
+                var enumerable = allowedServers.ToList();
+                var index = random.Next(enumerable.Count());
 
-                server = allowedServers.ElementAt(index);
+                server = enumerable.ElementAt(index);
             }
             else
             {
@@ -294,98 +295,6 @@ namespace Project.Application.Features.Services
         {
             return config.Replace("@" + configKey, DateTime.Now.Ticks.ToString() + "." + configValue);
         }
-
-        //public async Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator)
-        //{
-        //    var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
-
-        //    var app = await _appSettingService.DetailByApiRoute(apiRoute);
-
-        //    if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
-        //        throw new BadRequestException("this app has no server");
-
-        //    string[] groups = app.GroupsThatAppIsJoinedIn.Split("_");
-
-        //    IEnumerable<Server> query = await _serverRepository.FindAsync(x =>
-        //        groups.Contains(x.GroupId.ToString())
-        //        && x.IsAd == isAd
-        //        && x.IsAvailable);
-
-        //    query = query.OrderByDescending(x => x.Id);
-
-        //    if (operatorType != Domain.Enums.Operator.Unknown)
-        //    {
-        //        query = operatorType switch
-        //        {
-        //            Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell).AsQueryable(),
-        //            Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval).AsQueryable(),
-        //            _ => query
-        //        };
-        //    }
-
-        //    var servers = query as Server[] ?? query.ToArray();
-        //    var dataCount = servers.Count();
-
-        //    if (query == null || dataCount == 0)
-        //        throw new BadRequestException("this app has no server");
-
-        //    if (dataCount == 1)
-        //    {
-        //        return _mapper.Map<ServerDTO>(servers.FirstOrDefault());
-        //    }
-
-        //    var lastLog = await _apiLogService.GetLastLog(app.Id);
-
-
-        //    var server = new Server();
-
-        //    if (app.SendRandomServer)
-        //    {
-        //        var serverNotToReturnId = lastLog?.ServerId ?? 0;
-        //        //int serverNotToReturnId = 0;
-
-        //        var random = new Random();
-
-        //        var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
-
-        //        var index = random.Next(allowedServers.Count());
-
-        //        server = allowedServers.ElementAt(index);
-        //    }
-        //    else
-        //    {
-        //        if (lastLog == null)
-        //        {
-        //            var random = new Random();
-        //            var index = random.Next(servers.Count());
-        //            server = servers.ElementAt(index);
-        //        }
-        //        else
-        //        {
-        //            int lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-
-        //            if (lastServerIndex == dataCount - 1)
-        //            {
-        //                server = servers.FirstOrDefault();
-        //            }
-        //            else
-        //            {
-        //                int index = lastServerIndex == -1 ? 0 : lastServerIndex;
-        //                server = servers.ElementAt(index + 1);
-        //            }
-        //        }
-        //    }
-        //    //await _apiLogService.Create(new ApiLogDTO
-        //    //{
-        //    //    AppSettingId = app.Id,
-        //    //    ServerId = server.Id
-        //    //});
-
-        //    ServerDTO dto = _mapper.Map<ServerDTO>(server);
-        //    dto.Config = dto.Config.Replace("@" + dto.ConfigKey, DateTime.Now.Ticks.ToString() + "." + dto.ConfigValue);
-
-        //    return dto;
-        //}
 
         public async Task<ServerDTO> Detail(int id)
         {
