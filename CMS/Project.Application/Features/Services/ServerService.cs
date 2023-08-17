@@ -33,7 +33,7 @@ namespace Project.Application.Features.Services
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
         {
             var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.IsAd == isAd);
+            query = query.Where(x => x.IsActive && x.IsAd == isAd && x.IsActive == true);
 
             if (filter != 0)
             {
@@ -105,7 +105,7 @@ namespace Project.Application.Features.Services
         public async Task<ServerDTO> GetServerStatistics(int serverId)
         {
             var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.Id == serverId);
+            query = query.Where(x => x.IsActive && x.Id == serverId && x.IsActive == true);
             query = query.Include(x => x.Logs);
             var data = query.Select(x => new ServerDTO
             {
@@ -245,7 +245,9 @@ namespace Project.Application.Features.Services
             return await _serverRepository.FindAsync(x =>
                 groups.Contains(x.GroupId.ToString())
                 && x.IsAd == isAd
-                && x.IsAvailable);
+                && x.IsAvailable
+                && x.IsActive == true
+                );
         }
 
         private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, string operatorType)
