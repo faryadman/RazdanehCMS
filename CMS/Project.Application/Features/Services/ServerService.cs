@@ -178,6 +178,7 @@ namespace Project.Application.Features.Services
             model.IsNewDomain = input.IsNewDomain;
             model.DomainDateTime = input.DomainDateTime;
             await _serverRepository.Update(model);
+
         }
         public async Task Delete(int id)
         {
@@ -199,7 +200,7 @@ namespace Project.Application.Features.Services
         }
         public async Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator)
         {
-            var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
+            //var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
             var app = await GetCachedAppSetting(apiRoute); // Use a method to fetch app settings with caching
 
             if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
@@ -211,7 +212,7 @@ namespace Project.Application.Features.Services
 
             query = query.OrderByDescending(x => x.Id);
 
-            query = ApplyOperatorFilter(query, operatorType);
+            query = ApplyOperatorFilter(query, Operator);  //TODO : this is not null!
 
             var server = await SelectServer(query, app.SendRandomServer, app.Id);
 
@@ -229,7 +230,12 @@ namespace Project.Application.Features.Services
             }
 
             var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
-            _memoryCache.Set($"AppSetting_{apiRoute}", appSetting);
+            // تنظیم انقضای داده‌ها به یک دقیقه
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+            _memoryCache.Set($"AppSetting_{apiRoute}", appSetting, cacheEntryOptions);
 
             return appSetting;
         }
@@ -242,12 +248,13 @@ namespace Project.Application.Features.Services
                 && x.IsAvailable);
         }
 
-        private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, Domain.Enums.Operator operatorType)
+        private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, string operatorType)
         {
-            return operatorType switch
+            return operatorType.ToLower() switch
             {
-                Domain.Enums.Operator.Irancell => query.Where(x => x.IsForIrancell),
-                Domain.Enums.Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval),
+                "irancell" => query.Where(x => x.IsForIrancell),
+                "hamraheavval" => query.Where(x => x.IsForHamraheAvval),
+                "mci" => query.Where(x => x.IsForHamraheAvval),
                 _ => query
             };
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
@@ -12,12 +13,13 @@ namespace Project.Application.Features.Services
         private readonly IAppSettingRepository _appSettingRepository;
         private readonly IGroupService _groupService;
         private readonly IMapper _mapper;
-
-        public AppSettingService(IAppSettingRepository appSettingRepository, IMapper mapper, IGroupService groupService)
+        private readonly IMemoryCache _memoryCache;
+        public AppSettingService(IAppSettingRepository appSettingRepository, IMapper mapper, IGroupService groupService, IMemoryCache memoryCache)
         {
             _appSettingRepository = appSettingRepository;
             _mapper = mapper;
             _groupService = groupService;
+            _memoryCache = memoryCache;
         }
 
         public async Task<List<MinimalAppSettingDTO>> GetAll()
@@ -41,6 +43,7 @@ namespace Project.Application.Features.Services
             var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id);
             _mapper.Map(input, model);
             await _appSettingRepository.Update(model);
+            _memoryCache.Remove($"AppSetting_{input.ApiRoute}");
         }
         public async Task Delete(int id)
         {
@@ -66,6 +69,7 @@ namespace Project.Application.Features.Services
             var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.Id == id && x.IsActive == true);
             model.GroupsThatAppIsJoinedIn = string.IsNullOrWhiteSpace(groupIds) ? "" : groupIds;
             await _appSettingRepository.Update(model);
+            _memoryCache.Remove($"AppSetting_{model.ApiRoute}");
         }
 
         public async Task<AppSettingDTO> DetailByApiRoute(string apiRoute)

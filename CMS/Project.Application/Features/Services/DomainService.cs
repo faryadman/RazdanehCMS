@@ -9,19 +9,15 @@ namespace Project.Application.Features.Services
     public class DomainService : IDomainService
     {
         private readonly IDomainRepository _domainRepository;
-        private readonly IAppSettingService _appSettingService;
-        private readonly IApiLogService _apiLogService;
         private readonly IMapper _mapper;
-        private readonly IOperatorIdentificationService _operatorIdentificationService;
 
-        public DomainService(IDomainRepository domainRepository, IMapper mapper, IAppSettingService appSettingService, IApiLogService apiLogService, IOperatorIdentificationService operatorIdentificationService)
+        public DomainService(IMapper mapper, IDomainRepository domainRepository)
         {
-            _domainRepository = domainRepository;
             _mapper = mapper;
-            _appSettingService = appSettingService;
-            _apiLogService = apiLogService;
-            _operatorIdentificationService = operatorIdentificationService;
+            _domainRepository = domainRepository;
         }
+
+
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
@@ -32,7 +28,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
             var query = _domainRepository.GetAllQueryable();
-            query = filter == 1 ? query.Where(x => x.IsActive) : query.Where(x => !x.IsActive);
+            query = filter == 1 ? query.Where(x => x.IsActive) : query.Where(x => x.IsActive == false);
             var data = await query.ToListAsync();
             var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
             return list;

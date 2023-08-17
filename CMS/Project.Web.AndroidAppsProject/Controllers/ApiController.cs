@@ -57,18 +57,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetServer(string apiRoute, string isp, string Operator)
         {
-            if (_memoryCache.TryGetValue($"GetServer_{apiRoute}_{isp}_{Operator}", out ServerDTO? cachedGetServer))
-            {
-                return new Response<ServerDTO>(cachedGetServer).ToJsonResult();
-            }
             var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"GetServer_{apiRoute}_{isp}_{Operator}", server, cacheEntryOptions);
 
             return new Response<ServerDTO>(server).ToJsonResult();
         }
@@ -77,19 +66,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetAdServer(string apiRoute, string isp, string Operator)
         {
-            if (_memoryCache.TryGetValue($"GetAdServer_{apiRoute}_{isp}_{Operator}", out ServerDTO? cachedGetAdServer))
-            {
-                return new Response<ServerDTO>(cachedGetAdServer).ToJsonResult();
-            }
             var server = await _serverService.GetByApp(apiRoute, true, isp, Operator);
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"GetAdServer_{apiRoute}_{isp}_{Operator}", server, cacheEntryOptions);
-
             return new Response<ServerDTO>(server).ToJsonResult();
         }
 
