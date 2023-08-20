@@ -46,7 +46,6 @@ function renderisps(data) {
     }
 }
 function deleteip(id) {
-    console.log(id);
     Swal.fire({
         title: '',
         text: confirmDeleteQuestion,
@@ -60,13 +59,9 @@ function deleteip(id) {
     }).then(function (result) {
         if (result.value) {
             loading();
-            let vm = {
-                id: id
-            };
             $.ajax({
                 type: "POST",
                 url: '/admin/ip/DeleteIp',
-                data: vm,
                 success: function (data) {
                     if (window.location.pathname == '/admin/ip') {
                         getip(false);
@@ -74,6 +69,7 @@ function deleteip(id) {
                         getip(true);
                     }
                     data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    getip();
                 }
             })
         }

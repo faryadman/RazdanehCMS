@@ -35,6 +35,14 @@ namespace Project.Application.Features.Services
             await _ipRepository.Delete(id);
         }
 
+        public async Task Delete()
+        {
+            var ips = await _ipRepository.GetAll();
+            foreach (var ip in ips)
+            {
+                await _ipRepository.Remove(ip);
+            }
+        }
         public async Task Create(CreateIpDTO input)
         {
             var model = _mapper.Map<SaveIP>(input);

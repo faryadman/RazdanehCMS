@@ -17,9 +17,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             return View();
         }
+        //TODO: dont need int id! delete it.
         public async Task<IActionResult> DeleteIp(int id)
         {
-            await _ipService.Delete(id);
+            await _ipService.Delete();
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
         public async Task<IActionResult> MassDelete(string ids)

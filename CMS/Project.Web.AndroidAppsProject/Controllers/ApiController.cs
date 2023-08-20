@@ -19,7 +19,8 @@ namespace Project.Web.AndroidAppsProject.Controllers
         private readonly IIpService _ipService;
         private readonly IMemoryCache _memoryCache;
 
-        public ApiController(IAppSettingService appSettingService, IServerService serverService, IServerLogService serverLogService, IIpService ipService, IMemoryCache memoryCache)
+        public ApiController(IAppSettingService appSettingService, IServerService serverService,
+            IServerLogService serverLogService, IIpService ipService, IMemoryCache memoryCache)
         {
             _appSettingService = appSettingService;
             _serverService = serverService;
@@ -78,6 +79,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             {
                 return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
             }
+
             var server = await _serverService.Detail(input.ServerId);
             // تنظیم انقضای داده‌ها به یک دقیقه
             var cacheEntryOptions = new MemoryCacheEntryOptions
@@ -101,6 +103,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             {
                 return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
             }
+
             var server = await _serverService.Detail(input.ServerId);
             // تنظیم انقضای داده‌ها به یک دقیقه
             var cacheEntryOptions = new MemoryCacheEntryOptions
@@ -119,25 +122,8 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpGet]
         public async Task<IActionResult> ServerLogs(int serverId)
         {
-            var cacheKey = $"ServerLogs_{serverId}";
-
-            // ابتدا تلاش می‌کنیم اطلاعات را از حافظه‌ی کش بخوانیم
-            if (_memoryCache.TryGetValue(cacheKey, out List<ServerLogDTO>? cachedLogs))
-            {
-                return new Response<List<ServerLogDTO>?>(cachedLogs).ToJsonResult();
-            }
-
             // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
             var logs = await _serverLogService.ListByServer(serverId);
-
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set(cacheKey, logs, cacheEntryOptions);
-
             return new Response<List<ServerLogDTO>>(logs).ToJsonResult();
         }
 

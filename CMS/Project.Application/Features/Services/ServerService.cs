@@ -200,7 +200,7 @@ namespace Project.Application.Features.Services
         }
         public async Task<ServerDTO> GetByApp(string apiRoute, bool isAd, string isp, string Operator)
         {
-            //var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
+            var operatorType = await _operatorIdentificationService.GetOperator(isp, Operator);
             var app = await GetCachedAppSetting(apiRoute); // Use a method to fetch app settings with caching
 
             if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
@@ -212,7 +212,7 @@ namespace Project.Application.Features.Services
 
             query = query.OrderByDescending(x => x.Id);
 
-            query = ApplyOperatorFilter(query, Operator);  //TODO : this is not null!
+            query = ApplyOperatorFilter(query, operatorType);  //TODO : this is not null!
 
             var server = await SelectServer(query, app.SendRandomServer, app.Id);
 
@@ -250,13 +250,12 @@ namespace Project.Application.Features.Services
                 );
         }
 
-        private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, string operatorType)
+        private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, Operator operatorType)
         {
-            return operatorType.ToLower() switch
+            return operatorType switch
             {
-                "irancell" => query.Where(x => x.IsForIrancell),
-                "hamraheavval" => query.Where(x => x.IsForHamraheAvval),
-                "mci" => query.Where(x => x.IsForHamraheAvval),
+                Operator.Irancell => query.Where(x => x.IsForIrancell),
+                Operator.HamraheAvval => query.Where(x => x.IsForHamraheAvval),
                 _ => query
             };
         }
@@ -268,7 +267,6 @@ namespace Project.Application.Features.Services
             if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
-                //int serverNotToReturnId = 0;
 
                 var random = new Random();
 
