@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
+using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
@@ -34,9 +36,8 @@ namespace Project.Application.Features.Services
                 Isp = input.Isp,
                 Org = input.Org
             };
-
-            //var Operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
-            //model.Operator = Operator;
+            var @operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
+            model.Operator = @operator;
             await _serverLogRepository.Add(model);
         }
 
@@ -47,11 +48,12 @@ namespace Project.Application.Features.Services
             return _mapper.Map<List<ServerLogDTO>>(data.OrderByDescending(x => x.Id));
         }
 
-        public async Task<List<ServerLogDTO>> List()
+
+        public async Task<List<ServerLog>> List()
         {
             var data = await _serverLogRepository.GetAll();
 
-            return _mapper.Map<List<ServerLogDTO>>(data.OrderByDescending(x => x.Id));
+            return data.ToList();
         }
         public Task<ServerLogStatisticsDTO> GetAllLogsStatistics()
         {
@@ -59,13 +61,13 @@ namespace Project.Application.Features.Services
 
             var data = new ServerLogStatisticsDTO
             {
-                AllLogsStatistics = !logs.Any() ? new ServerLogStatistics
+                AllLogsStatistics = new ServerLogStatistics
                 {
                     Count = logs.Count(),
                     FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed),
                     SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful),
-                } : null,
-                HamraheAvvalLogsStatistics = logs.All(y => y.Operator != Operator.HamraheAvval)
+                },
+                HamraheAvvalLogsStatistics = logs.All(y => y.Operator == Operator.HamraheAvval)
                     ? new ServerLogStatistics
                     {
                         Count = logs.Count(y => y.Operator == Operator.HamraheAvval),
@@ -88,19 +90,34 @@ namespace Project.Application.Features.Services
 
             return Task.FromResult(data);
         }
-
+        public async Task Delete(ServerLog log)
+        {
+            await _serverLogRepository.RemoveWithoutSaveChange(log);
+            await _serverLogRepository.SaveChangesTask();
+        }
+        public async Task Delete(int id)
+        {
+            await _serverLogRepository.Remove(id);
+        }
         public async Task DeleteServerLogs(int count = 100000)
         {
             var list = await _serverLogRepository.GetAll();
             if (list.Count <= 0) return;
             foreach (var log in list)
             {
-                await _serverLogRepository.Remove(log.Id);
+                await _serverLogRepository.RemoveWithoutSaveChange(log);
             }
+            await _serverLogRepository.SaveChangesTask();
         }
         public void RestServerLogs()
         {
             DeleteServerLogs().GetAwaiter().GetResult();
+        }
+        public async Task<ApiLogDTO> GetLastLog()
+        {
+            var query = _serverLogRepository.FindQueryable(x => x.IsActive == true).OrderByDescending(x => x.Id);
+            var model = await query.FirstOrDefaultAsync();
+            return _mapper.Map<ApiLogDTO>(model);
         }
     }
 }

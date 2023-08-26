@@ -33,23 +33,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}")]
         public async Task<IActionResult> AppSetting(string apiRoute)
         {
-            if (_memoryCache.TryGetValue($"AppSetting_{apiRoute}", out AppSettingDTO? cachedAppSetting))
-            {
-                return new Response<AppSettingDTO>(cachedAppSetting).ToJsonResult();
-            }
-
-            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی (سرویس _appSettingService) دریافت می‌کنیم
             var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
-
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"AppSetting_{apiRoute}", appSetting, cacheEntryOptions);
-
             return new Response<AppSettingDTO>(appSetting).ToJsonResult();
         }
 
@@ -58,8 +42,8 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetServer(string apiRoute, string isp, string Operator)
         {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
             var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
-
             return new Response<ServerDTO>(server).ToJsonResult();
         }
 
@@ -67,6 +51,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetAdServer(string apiRoute, string isp, string Operator)
         {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
             var server = await _serverService.GetByApp(apiRoute, true, isp, Operator);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
@@ -75,23 +60,8 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpPost]
         public async Task<IActionResult> SuccessServerLog(AddServerLogDTO input)
         {
-            if (_memoryCache.TryGetValue($"SuccessServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
-            {
-                return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
-            }
-
-            var server = await _serverService.Detail(input.ServerId);
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"SuccessServerLog_{input.ServerId}_{input.UserId}", server, cacheEntryOptions);
-
-            input.Ip = server.Ip;
-            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
-            await _serverLogService.Create(input);
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.SuccessServerLog(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
 
@@ -99,23 +69,8 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [HttpPost]
         public async Task<IActionResult> FailedServerLog(AddServerLogDTO input)
         {
-            if (_memoryCache.TryGetValue($"FailedServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
-            {
-                return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
-            }
-
-            var server = await _serverService.Detail(input.ServerId);
-            // تنظیم انقضای داده‌ها به یک دقیقه
-            var cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-            };
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"FailedServerLog_{input.ServerId}_{input.UserId}", server, cacheEntryOptions);
-
-            input.Ip = server.Ip;
-            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
-            await _serverLogService.Create(input);
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.FailedServerLog(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
 
@@ -138,50 +93,20 @@ namespace Project.Web.AndroidAppsProject.Controllers
             }
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             var userAgent = Request.Headers["User-Agent"].ToString();
-
-            var server = await _ipService.Detail(clientIp);
-            if (server != null)
+            await _ipService.Insert(new CreateIpDTO()
             {
-                await _ipService.Delete(server.Id);
-            }
-
-            // ابتدا تلاش می‌کنیم اطلاعات را از حافظه‌ی کش بخوانیم
-            if (!_memoryCache.TryGetValue($"AddIp_{clientIp}", out CreateIpDTO? cachedIpData))
-            {
-                // اگر اطلاعات در کش نبود، آنها را از منبع اصلی (درخواست HTTP) دریافت می‌کنیم
-                cachedIpData = new CreateIpDTO
-                {
-                    Ip = clientIp,
-                    Tcp = tcpId.ToString(),
-                    UserAgent = userAgent
-                };
-                // تنظیم انقضای داده‌ها به یک دقیقه
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
-                };
-                // سپس اطلاعات را در کش ذخیره می‌کنیم
-                _memoryCache.Set($"AddIp_{clientIp}", cachedIpData, cacheEntryOptions);
-                return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
-
-            }
-            await _ipService.Create(cachedIpData);
+                Tcp = tcp.ToString(),
+                Ip = clientIp,
+                UserAgent = userAgent
+            });
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
 
         [HttpGet]
         public async Task<IActionResult> ListIp()
         {
-            // ابتدا تلاش می‌کنیم اطلاعات را از حافظه‌ی کش بخوانیم
-            if (_memoryCache.TryGetValue("ListIp", out List<IpDTO> cachedIpList))
-                return new Response<List<IpDTO>>(cachedIpList).ToJsonResult();
-            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی (سرویس _ipService) دریافت می‌کنیم
-            cachedIpList = await _ipService.List();
-
-            // سپس اطلاعات را در کش ذخیره می‌کنیم
-            _memoryCache.Set("ListIp", cachedIpList);
-
-            return new Response<List<IpDTO>>(cachedIpList).ToJsonResult();
+            var list = await _ipService.List();
+            return new Response<List<IpDTO>>(list).ToJsonResult();
         }
     }
 }

@@ -25,25 +25,48 @@ function renderisps(data) {
 
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
-      
-        let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
-        let deleteButton = '<button class="btn btn-sm btn-danger" onclick="deleteip(' + item.id + ')">Delete</button>';
         let addedRow = ipTable.row.add([
-            deleteChekbox,
             item.ip,
             item.updatedAtFormatted,
             item.tcp,
-            deleteButton
         ]).node();
 
-
-        $(addedRow).attr('data-row-id', item.id);
-        $(addedRow).addClass('id');
         $(addedRow).addClass('ip');
         $(addedRow).addClass('tcp');
         ipTable.rows.add(addedRow).draw();
 
     }
+}
+
+function DeleteAll() {
+    Swal.fire({
+        title: '',
+        text: confirmDeleteQuestion,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-danger ml-1',
+        buttonsStyling: false,
+    }).then(function (result) {
+        if (result.value) {
+            loading();
+            $.ajax({
+                type: "POST",
+                url: '/admin/ip/DeleteIp',
+                success: function (data) {
+                    if (window.location.pathname == '/admin/ip') {
+                        getip(false);
+                    } else {
+                        getip(true);
+                    }
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+
+                }
+            })
+        }
+    });
 }
 function deleteip(id) {
     Swal.fire({

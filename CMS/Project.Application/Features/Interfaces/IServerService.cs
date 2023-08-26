@@ -1,4 +1,5 @@
 ﻿using Project.Application.DTOs.Server;
+using Project.Application.DTOs.ServerLog;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -17,5 +18,7 @@ namespace Project.Application.Features.Interfaces
         Task DeleteByGroupId(int groupId);
         Task Edit(EditServerDTO input);
         Task ToggleIsAvailableInput(int id);
+        Task SuccessServerLog(AddServerLogDTO input);
+        Task FailedServerLog(AddServerLogDTO input);
     }
 }

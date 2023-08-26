@@ -5,6 +5,7 @@ using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
 using Project.Application.DTOs.Server;
+using Project.Application.DTOs.ServerLog;
 using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
@@ -16,18 +17,23 @@ namespace Project.Application.Features.Services
     {
         private readonly IServerRepository _serverRepository;
         private readonly IAppSettingService _appSettingService;
-        private readonly IApiLogService _apiLogService;
         private readonly IMapper _mapper;
+        private readonly IServerLogService _serverLogService;
         private readonly IOperatorIdentificationService _operatorIdentificationService;
         private readonly IMemoryCache _memoryCache;
-        public ServerService(IServerRepository serverRepository, IMapper mapper, IAppSettingService appSettingService, IApiLogService apiLogService, IOperatorIdentificationService operatorIdentificationService, IMemoryCache memoryCache)
+        private MemoryCacheEntryOptions _cacheEntryOptions;
+        public ServerService(IServerRepository serverRepository, IMapper mapper, IAppSettingService appSettingService, IOperatorIdentificationService operatorIdentificationService, IMemoryCache memoryCache, IServerLogService serverLogService)
         {
             _serverRepository = serverRepository;
             _mapper = mapper;
             _appSettingService = appSettingService;
-            _apiLogService = apiLogService;
             _operatorIdentificationService = operatorIdentificationService;
             _memoryCache = memoryCache;
+            _serverLogService = serverLogService;
+            _cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
         }
 
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
@@ -102,7 +108,7 @@ namespace Project.Application.Features.Services
             return _mapper.Map<List<ServerDTO>>(data);
         }
 
-        public async Task<ServerDTO> GetServerStatistics(int serverId)
+        public Task<ServerDTO> GetServerStatistics(int serverId)
         {
             var query = _serverRepository.GetAllQueryable();
             query = query.Where(x => x.IsActive && x.Id == serverId && x.IsActive == true);
@@ -154,7 +160,7 @@ namespace Project.Application.Features.Services
 
             }).SingleOrDefault();
 
-            return _mapper.Map<ServerDTO>(data);
+            return Task.FromResult(_mapper.Map<ServerDTO>(data));
         }
 
 
@@ -263,15 +269,12 @@ namespace Project.Application.Features.Services
         private async Task<Server> SelectServer(IEnumerable<Server> servers, bool sendRandomServer, int appSettingId)
         {
             Server server;
-            var lastLog = await _apiLogService.GetLastLog(appSettingId);
+            var lastLog = await _serverLogService.GetLastLog();
             if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
-
                 var random = new Random();
-
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
-
                 var enumerable = allowedServers.ToList();
                 var index = random.Next(enumerable.Count());
 
@@ -348,6 +351,42 @@ namespace Project.Application.Features.Services
             var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == id);
             model.IsAvailable = !model.IsAvailable;
             await _serverRepository.Update(model);
+        }
+
+        public async Task SuccessServerLog(AddServerLogDTO input)
+        {
+            if (_memoryCache.TryGetValue($"SuccessServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
+            {
+                return;
+            }
+
+            var server = await Detail(input.ServerId);
+            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
+            _memoryCache.Set($"SuccessServerLog_{input.ServerId}_{input.UserId}", server, _cacheEntryOptions);
+
+            input.Ip = server.Ip;
+            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
+            await _serverLogService.Create(input);
+        }
+        public async Task FailedServerLog(AddServerLogDTO input)
+        {
+            if (_memoryCache.TryGetValue($"FailedServerLog_{input.ServerId}_{input.UserId}", out AddServerLogDTO? _))
+            {
+                return;
+            }
+
+            var server = await Detail(input.ServerId);
+            // تنظیم انقضای داده‌ها به یک دقیقه
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
+            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
+            _memoryCache.Set($"FailedServerLog_{input.ServerId}_{input.UserId}", server, cacheEntryOptions);
+
+            input.Ip = server.Ip;
+            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
+            await _serverLogService.Create(input);
         }
     }
 }
