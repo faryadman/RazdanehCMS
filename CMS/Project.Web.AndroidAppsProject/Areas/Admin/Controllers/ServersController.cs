@@ -158,6 +158,13 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.ServerId = serverId;
             return View();
         }
+
+        public async Task<IActionResult> ChangeServerAddressInput(string address)
+        {
+
+            return Json(new { status = "1", message = "done successfully" });
+        }
+
         public async Task<IActionResult> ChangeSubDomain(string id)
         {
             var server = await _serverService.Detail(id);

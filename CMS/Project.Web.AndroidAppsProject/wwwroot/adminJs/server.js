@@ -414,7 +414,6 @@ let refreshId = setInterval(function () {
 $('#serversTable').on('change', '.isAvailableInput', function () {
     loading();
     let input = $(this);
-    console.log(itemId);
     let model = {
         id: input.attr('data-item-id')
     }
@@ -486,6 +485,35 @@ function duplicate(id) {
         }
     });
 }
+function onClickChangeServerAddresses() {
+    loading();
+    $('#changeServerAddressModal').modal();
+    swal.close();
+
+}
+
+function onClickChangeServerAddressSubmit() {
+    loading();
+    let result = $('#addressInput').val();
+    let model = {
+        address: result
+    }
+    $.ajax({
+        type: "POST",
+        url: serversBaseUrl + '/ChangeServerAddressInput',
+        data: model,
+        dataType: "json",
+        success: function (data) {
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert(" بروز اشکال در اتصال به اینترنت ");
+            swal.close();
+        }
+    });
+    swal.close();
+}
+
 $('#selectAllCheckbox').change(function () {
     var isChecked = $(this).prop('checked');
     $('.deleteCheckbox').prop('checked', isChecked).each(function () {
@@ -493,3 +521,5 @@ $('#selectAllCheckbox').change(function () {
         $(this).val(itemId);
     });
 });
+
+

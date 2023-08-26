@@ -95,6 +95,12 @@
                                         <button class="btn btn-outline-info ml-2" onclick="RefreshSubDomainSelectedItems(serversBaseUrl, getservers, false)">
                                             رفرش زیردامنه ها
                                         </button>
+
+
+                                        <button class="btn btn-outline-warning ml-2" onclick="onClickChangeServerAddresses()">
+                                            تنظیم آدرس همه سرور ها
+                                        </button>
+
                                     </div>
                                     <br />
                                 </div>
@@ -273,4 +279,28 @@
     </div>
 </div>
 
+    <div class="modal fade" id="changeServerAddressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change server address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="filterServerForm">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input id="addressInput" type="text" class="form-control" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                    <button onclick="onClickChangeServerAddressSubmit()" type="button" class="btn btn-success">تایید</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
