@@ -14,12 +14,17 @@ namespace Project.Application.Features.Services
         private readonly IGroupService _groupService;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
+        private readonly MemoryCacheEntryOptions _cacheEntryOptions;
         public AppSettingService(IAppSettingRepository appSettingRepository, IMapper mapper, IGroupService groupService, IMemoryCache memoryCache)
         {
             _appSettingRepository = appSettingRepository;
             _mapper = mapper;
             _groupService = groupService;
             _memoryCache = memoryCache;
+            _cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            };
         }
 
         public async Task<List<MinimalAppSettingDTO>> GetAll()
@@ -59,9 +64,10 @@ namespace Project.Application.Features.Services
                 Id = item.Id,
                 Title = item.Title,
                 IsAd = item.IsAd,
-                DoTheyHaveRelation = !string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn) && app.GroupsThatAppIsJoinedIn.Split("_").Contains(item.Id.ToString()),
-            })
-                .ToList();
+                DoTheyHaveRelation = !string
+                    .IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn) && app.GroupsThatAppIsJoinedIn.Split("_")
+                    .Contains(item.Id.ToString()),
+            }).ToList();
         }
 
         public async Task UpdateAppGroups(int id, string groupIds)
@@ -74,7 +80,12 @@ namespace Project.Application.Features.Services
 
         public async Task<AppSettingDTO> DetailByApiRoute(string apiRoute)
         {
+            if (_memoryCache.TryGetValue($"AppSetting_{apiRoute}", out AppSettingDTO cachedAppSetting))
+            {
+                return _mapper.Map<AppSettingDTO>(cachedAppSetting);
+            }
             var model = await _appSettingRepository.SingleOrDefaultAsync(x => x.ApiRoute == apiRoute && x.IsActive == true);
+            _memoryCache.Set($"AppSetting_{apiRoute}", model, _cacheEntryOptions);
             return _mapper.Map<AppSettingDTO>(model);
         }
     }

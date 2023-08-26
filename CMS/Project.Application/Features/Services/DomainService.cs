@@ -51,7 +51,7 @@ namespace Project.Application.Features.Services
             var list = query.ToList();
             foreach (var domain in list)
             {
-                _domainRepository.Remove(domain);
+                _domainRepository.RemoveWithoutSaveChange(domain);
             }
 
             _domainRepository.SaveChangesTask();
