@@ -55,6 +55,7 @@ namespace Project.Persistence.Repositories
             if (entity != null)
             {
                 (entity as BaseEntity).IsActive = false;
+                _dbContext.Entry(entity).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -65,6 +66,7 @@ namespace Project.Persistence.Repositories
             if (entity != null)
             {
                 (entity as BaseEntity).IsActive = true;
+                _dbContext.Entry(entity).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -114,7 +116,7 @@ namespace Project.Persistence.Repositories
             }
         }
 
-        public Task Remove(T entity)
+        public Task RemoveWithoutSaveChange(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
             return Task.CompletedTask;
