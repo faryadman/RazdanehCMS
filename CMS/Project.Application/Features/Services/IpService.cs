@@ -68,7 +68,7 @@ namespace Project.Application.Features.Services
             var ipDto = await Detail(input.Ip);
             if (ipDto != null)
             {
-                await Update(input);
+                await Delete(ipDto.Id);
             }
             else
             {
@@ -80,13 +80,6 @@ namespace Project.Application.Features.Services
         {
             var model = _mapper.Map<SaveIP>(input);
             await _ipRepository.Add(model);
-        }
-
-        public async Task Update(CreateIpDTO input)
-        {
-            var model = _mapper.Map<SaveIP>(input);
-            model.Tcp = input.Tcp;
-            await _ipRepository.Update(model);
         }
     }
 }
