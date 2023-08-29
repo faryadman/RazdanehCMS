@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Mvc;
 using Project.Application.Features.Interfaces;
 
 namespace Project.Web.AndroidAppsProject.Controllers
@@ -9,6 +10,10 @@ namespace Project.Web.AndroidAppsProject.Controllers
         public LogDeleterController(IServerLogService serverLogService)
         {
             _serverLogService = serverLogService;
+            RecurringJob.AddOrUpdate(
+                "logDeleterJob",
+                () => Index(),
+            Cron.MinuteInterval(10));
         }
         public async Task<IActionResult> Index()
         {

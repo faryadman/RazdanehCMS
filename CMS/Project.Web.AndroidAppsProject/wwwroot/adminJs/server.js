@@ -505,6 +505,7 @@ function onClickChangeServerAddressSubmit() {
         dataType: "json",
         success: function (data) {
             data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+            swal.close();
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");
