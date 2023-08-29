@@ -35,6 +35,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var job = await _jobService.Detail("DomainJob");
+            if (job == null)
+            {
+                return View();
+            }
             ViewBag.Email = job.Email ?? "";
             ViewBag.ApiKey = job.ApiKey ?? "";
             ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
@@ -70,6 +74,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> GetJobDomainData()
         {
             var job = await _jobService.Detail("DomainJob");
+            if (job == null)
+            {
+                return Json(new CreateJobDTO());
+            }
             var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
             ViewBag.Email = job.Email ?? "";
             ViewBag.ApiKey = job.ApiKey ?? "";
