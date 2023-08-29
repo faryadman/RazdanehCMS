@@ -9,7 +9,7 @@ namespace Project.Application.Features.Interfaces
         Task Delete(int id);
         Task Delete();
         Task Create(CreateIpDTO input);
-        Task Update(IpDTO input);
+        Task Update(CreateIpDTO input);
         Task Insert(CreateIpDTO input);
     }
 }
