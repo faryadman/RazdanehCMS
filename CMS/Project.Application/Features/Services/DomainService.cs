@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CloudFlare.NET;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
@@ -64,5 +66,82 @@ namespace Project.Application.Features.Services
             var list = _mapper.Map<IEnumerable<DomainDTO>, List<Domain.Entities.Domain>>(listInactive);
             return list;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns>item 1 : server name  ,
+        /// item 2 : host name
+        /// </returns>
+        private static (string, string) GetServerAndHostStrings(string config, string subServerName, string subHostName)
+        {
+            var jsonObject = JObject.Parse(config);
+
+            var tlsServerName = jsonObject["outbounds"]?[0]?["streamSettings"]?["tlsSettings"]?["serverName"]?.ToString();
+            var serverNameString = tlsServerName?.Split(".");
+
+            var wsHost = jsonObject["outbounds"]?[0]?["streamSettings"]?["wsSettings"]?["headers"]?["Host"]?.ToString();
+            var hostString = wsHost?.Split(".");
+
+            var serverName = $"{subServerName}.{serverNameString?[1]}.{serverNameString?[2]}";
+            var host = $"{subHostName}.{hostString?[1]}.{hostString?[2]}";
+            return (serverNameString?.ToString(), hostString?.ToString());
+        }
+        public static JObject SetServerAndHostAndAddressStrings(string config, string newServerName, string newHost)
+        {
+            var jsonObject = JObject.Parse(config);
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = newServerName;
+            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = newHost;
+            return jsonObject;
+        }
+        public JObject SetServerAddressStrings(string config, string newAddress)
+        {
+            var jsonObject = JObject.Parse(config);
+            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["address"] = newAddress;
+            return jsonObject;
+        }
+        public Task UpdateJsonValues(string config, string newServerName, string newHost, string newAddress)
+        {
+            //var serverAndHost = GetServerAndHostStrings(config);
+
+            SetServerAndHostAndAddressStrings(config, newServerName, newHost);
+            SetServerAddressStrings(config, newAddress);
+            return Task.CompletedTask;
+        }
+
+        private static bool IsNotNullString(string @string)
+        {
+            return string.IsNullOrWhiteSpace(@string);
+        }
+
+
+        public async Task<string> UpdateCloudflareDnsRecord(string currentDomainValue, string newHost, string cfEmail, string cfApiKey)
+        {
+            var cfZoneId = string.Empty;
+            var cfDomain = $"{currentDomainValue?[1]}.{currentDomainValue?[2]}";
+            var auth = new CloudFlareAuth(cfEmail, cfApiKey);
+            var cfClient = new CloudFlareClient(auth);
+            var zones = await cfClient.GetAllZonesAsync();
+            foreach (var zone in zones)
+            {
+                if (zone.Name == cfDomain)
+                    cfZoneId = new IdentifierTag(zone.Id);
+            }
+
+            var dnsRecords = await cfClient.GetDnsRecordsAsync(cfZoneId);
+            var cnameRecord = dnsRecords.Result.FirstOrDefault(record => record.Type == DnsRecordType.CNAME);
+            var cloudflare = new CloudflareApiClient();
+            if (cnameRecord != null)
+            {
+                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, newHost, currentDomainValue, cfApiKey, cfEmail);
+            }
+            else
+            {
+                await cloudflare.CreateDnsRecordAsync(cfZoneId, newHost, currentDomainValue, cfApiKey, cfEmail);
+            }
+
+            return cfZoneId;
+        }
+
     }
 }

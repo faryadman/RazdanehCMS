@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.Group;
@@ -387,6 +388,28 @@ namespace Project.Application.Features.Services
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
             await _serverLogService.Create(input);
+        }
+        public async Task<string> UpdateServerConfig(Server server, JObject updatedJsonObject)
+        {
+            var updatedJsonString = updatedJsonObject.ToString();
+            server.Config = updatedJsonString;
+            var editDto = new EditServerDTO
+            {
+                Config = server.Config,
+                ServerName = server.ServerName,
+                ConfigValue = server.ConfigValue,
+                ConfigKey = server.ConfigKey,
+                Ip = server.Ip,
+                IsForHamraheAvval = server.IsForHamraheAvval,
+                IsForIrancell = server.IsForIrancell,
+                ItemId = server.Id,
+                Location = server.Location,
+                CurrentDomainValue = server.CurrentDomainValue,
+                IsNewDomain = true,
+                DomainDateTime = DateTime.UtcNow
+            };
+            await Edit(editDto);
+            return server.CurrentDomainValue;
         }
     }
 }

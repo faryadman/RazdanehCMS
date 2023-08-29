@@ -1,4 +1,5 @@
-﻿using Project.Application.DTOs.Domain;
+﻿using Newtonsoft.Json.Linq;
+using Project.Application.DTOs.Domain;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -10,5 +11,6 @@ namespace Project.Application.Features.Interfaces
         Task Delete(int id);
         Task Remove();
         Task<List<Domain.Entities.Domain>> ListInactiveDomain();
+        JObject SetServerAddressStrings(string config, string newAddress);
     }
 }

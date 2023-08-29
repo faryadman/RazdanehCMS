@@ -161,9 +161,33 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
         public async Task<IActionResult> ChangeServerAddressInput(string address)
         {
-
+            var listServer = await _serverService.GetAllIds();
+            foreach (var id in listServer)
+            {
+                var server = await _serverService.Detail(id);
+                var config = server.Config;
+                var updatedJsonString = _domainService.SetServerAddressStrings(config, address).ToString();
+                server.Config = updatedJsonString;
+                await _serverService.Edit(new EditServerDTO()
+                {
+                    Config = server.Config,
+                    ServerName = server.ServerName,
+                    ConfigValue = server.ConfigValue,
+                    ConfigKey = server.ConfigKey,
+                    Ip = server.Ip,
+                    IsForHamraheAvval = server.IsForHamraheAvval,
+                    IsForIrancell = server.IsForIrancell,
+                    ItemId = server.Id,
+                    Location = server.Location,
+                    CurrentDomainValue = server.CurrentDomainValue,
+                    IsNewDomain = true,
+                    DomainDateTime = DateTime.UtcNow
+                });
+                break;
+            }
             return Json(new { status = "1", message = "done successfully" });
         }
+
 
         public async Task<IActionResult> ChangeSubDomain(string id)
         {
