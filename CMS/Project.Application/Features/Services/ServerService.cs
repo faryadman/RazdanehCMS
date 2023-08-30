@@ -221,7 +221,7 @@ namespace Project.Application.Features.Services
 
             query = ApplyOperatorFilter(query, operatorType);  //TODO : this is not null!
 
-            var server = await SelectServer(query, app.SendRandomServer, app.Id);
+            var server = await SelectServer(query, app.SendRandomServer && !isAd, app.Id);
 
             ServerDTO dto = _mapper.Map<ServerDTO>(server);
             dto.Config = UpdateConfig(dto.Config, dto.ConfigKey, dto.ConfigValue);
@@ -254,7 +254,7 @@ namespace Project.Application.Features.Services
                 && x.IsAd == isAd
                 && x.IsAvailable
                 && x.IsActive == true
-                );
+                ).ConfigureAwait(true);
         }
 
         private static IEnumerable<Server> ApplyOperatorFilter(IEnumerable<Server> query, Operator operatorType)
