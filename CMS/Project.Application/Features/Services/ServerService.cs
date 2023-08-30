@@ -221,7 +221,7 @@ namespace Project.Application.Features.Services
 
             query = ApplyOperatorFilter(query, operatorType);  //TODO : this is not null!
 
-            var server = await SelectServer(query, app.SendRandomServer && !isAd, app.Id);
+            var server = await SelectServer(query, app.SendRandomServer, app.Id);
 
             ServerDTO dto = _mapper.Map<ServerDTO>(server);
             dto.Config = UpdateConfig(dto.Config, dto.ConfigKey, dto.ConfigValue);
@@ -277,27 +277,28 @@ namespace Project.Application.Features.Services
                 var random = new Random();
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
                 var enumerable = allowedServers.ToList();
-                var index = random.Next(enumerable.Count());
-
-                server = enumerable.ElementAt(index);
+                if (enumerable.Any())
+                {
+                    var index = random.Next(enumerable.Count());
+                    server = enumerable.ElementAt(index);
+                    return server;
+                }
+            }
+            IEnumerable<Server> newServers = new List<Server>();
+            if (lastLog == null)
+            {
+                var random = new Random();
+                var index = random.Next(newServers.Count());
+                server = newServers.ElementAt(index);
             }
             else
             {
-                IEnumerable<Server> enumerable = new List<Server>();
-                if (lastLog == null)
-                {
-                    var random = new Random();
-                    var index = random.Next(enumerable.Count());
-                    server = enumerable.ElementAt(index);
-                }
-                else
-                {
-                    var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-
-                    server = lastServerIndex <= 1 ? enumerable.FirstOrDefault() : enumerable.ElementAt(lastServerIndex + 1);
-                }
+                var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
+                server = lastServerIndex <= 1 ? newServers.FirstOrDefault() : newServers.ElementAt(lastServerIndex + 1);
             }
             return server;
+
+
             // Implement your logic here for selecting a server based on sendRandomServer and appSettingId
             // Return the selected server
         }
