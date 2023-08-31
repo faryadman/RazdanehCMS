@@ -274,33 +274,28 @@ namespace Project.Application.Features.Services
             if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
-                var random = new Random();
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
                 var enumerable = allowedServers.ToList();
                 if (enumerable.Any())
                 {
+                    var random = new Random();
                     var index = random.Next(enumerable.Count());
                     server = enumerable.ElementAt(index);
                     return server;
                 }
             }
-            IEnumerable<Server> newServers = new List<Server>();
             if (lastLog == null)
             {
                 var random = new Random();
-                var index = random.Next(newServers.Count());
-                server = newServers.ElementAt(index);
+                var index = random.Next(servers.Count());
+                server = servers.ElementAt(index);
             }
             else
             {
                 var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-                server = lastServerIndex <= 1 ? newServers.FirstOrDefault() : newServers.ElementAt(lastServerIndex + 1);
+                server = lastServerIndex < 1 ? servers.FirstOrDefault() : servers.ElementAt(lastServerIndex + 1);
             }
             return server;
-
-
-            // Implement your logic here for selecting a server based on sendRandomServer and appSettingId
-            // Return the selected server
         }
 
         private static string UpdateConfig(string config, string configKey, string configValue)
