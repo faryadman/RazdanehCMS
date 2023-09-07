@@ -385,11 +385,11 @@ namespace Project.Application.Features.Services
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
             await _serverLogService.Create(input);
         }
-        public async Task<string> UpdateServerConfig(Server server, JObject updatedJsonObject)
+        public async Task<string> EditServer(Server server, JObject updatedJsonObject)
         {
             var updatedJsonString = updatedJsonObject.ToString();
             server.Config = updatedJsonString;
-            var editDto = new EditServerDTO
+            await Edit(new EditServerDTO
             {
                 Config = server.Config,
                 ServerName = server.ServerName,
@@ -403,9 +403,26 @@ namespace Project.Application.Features.Services
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow
-            };
-            await Edit(editDto);
+            });
             return server.CurrentDomainValue;
+        }
+        public async Task UpdateServer(ServerDTO server)
+        {
+            await Edit(new EditServerDTO
+            {
+                Config = server.Config,
+                ServerName = server.ServerName,
+                ConfigValue = server.ConfigValue,
+                ConfigKey = server.ConfigKey,
+                Ip = server.Ip,
+                IsForHamraheAvval = server.IsForHamraheAvval,
+                IsForIrancell = server.IsForIrancell,
+                ItemId = server.Id,
+                Location = server.Location,
+                CurrentDomainValue = server.CurrentDomainValue,
+                IsNewDomain = true,
+                DomainDateTime = DateTime.UtcNow
+            });
         }
     }
 }

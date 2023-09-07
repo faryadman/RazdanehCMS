@@ -1,5 +1,7 @@
-﻿using Project.Application.DTOs.Server;
+﻿using Newtonsoft.Json.Linq;
+using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
+using Project.Domain.Entities;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -20,5 +22,7 @@ namespace Project.Application.Features.Interfaces
         Task ToggleIsAvailableInput(int id);
         Task SuccessServerLog(AddServerLogDTO input);
         Task FailedServerLog(AddServerLogDTO input);
+        Task<string> EditServer(Server server, JObject updatedJsonObject);
+        Task UpdateServer(ServerDTO server);
     }
 }

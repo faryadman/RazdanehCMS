@@ -14,7 +14,7 @@ namespace Project.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        private IQueryable<T> ActiveEntities => _dbContext.Set<T>().Where(e => (e as BaseEntity).IsActive);
+        private IQueryable<T> ActiveEntities => _dbContext.Set<T>();
 
         public async Task<T> Get(int id)
         {

@@ -31,9 +31,9 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var data = await _domainService.GetByFilter(filter);
             return Json(data);
         }
-        public async Task<IActionResult> ListInactive(int filter = 0)
+        public async Task<IActionResult> ListInactive()
         {
-            var data = await _domainService.GetByFilter(filter);
+            var data = await _domainService.ListInactiveDomain();
             return Json(data);
         }
         public async Task<IActionResult> CreateDomain(CreateDomainDTO input)

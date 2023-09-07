@@ -63,10 +63,10 @@
                             </div>
                             <div class="card-body">
                                 <hr />
-                                    <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">جاب دامنه ها</button>
-                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobSubDomain()">جاب زیردامنه ها</button>
-                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobHostDomain()">جاب هاست</button>
-                                <button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>
+                                    <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">Change Domain Job</button>
+                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobSubDomain()">Change SubDomain Job</button>
+                                <button class="btn btn-danger ml-lg-3" id="button" onclick="jobHostDomain()">Delete Dns Records (CNAME)</button>
+                                @*<button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>*@
                             </div>
 
                         </div>
@@ -181,6 +181,7 @@
                             <label asp-for="IsActiveJob">وضعیت جاب</label>
                             <input id="IsActiveJob_hostdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
                         </div>
+
                         <div class="form-group">
                             <label asp-for="ApiKey"></label>
                             <input id="ApiKey_hostdomain" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
@@ -188,6 +189,10 @@
                         <div class="form-group">
                             <label asp-for="Email"></label>
                             <input id="Email_hostdomain" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="JobExpireMinuteTime"></label>
+                            <input id="JobExpireMinuteTime_hostdomain" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
                         </div>
                         <div class="form-group">
                             <label asp-for="JobPeriodTime"></label>

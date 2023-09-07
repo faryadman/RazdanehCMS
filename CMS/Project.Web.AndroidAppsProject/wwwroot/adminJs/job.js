@@ -180,6 +180,8 @@ function disableFields() {
     $("#ApiKey_subdomain").prop("disabled", true);
     $("#Email_subdomain").prop("disabled", true);
     $("#JobPeriodTime_subdomain").prop("disabled", true);
+    $("#JobExpireMinuteTime_hostdomain").prop("disabled", true);
+
 
 }
 
@@ -195,6 +197,7 @@ function enableFields() {
     $("#ApiKey_subdomain").prop("disabled", false);
     $("#Email_subdomain").prop("disabled", false);
     $("#JobPeriodTime_subdomain").prop("disabled", false);
+    $("#JobExpireMinuteTime_hostdomain").prop("disabled", false);
 }
 
 
