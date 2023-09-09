@@ -153,7 +153,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             string email = _configuration["CloudflareData:Email"];
             foreach (var item in ids.Split("_"))
             {
-                await _domainService.ChangeDomain(int.Parse(item), email, apiKey);
+                await _domainService.ChangeDomain(item, email, apiKey);
             }
             return Json(new { status = "1", message = "done successfully" });
         }
@@ -178,6 +178,12 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return Json(new { status = "1", message = "done successfully" });
         }
 
+        public async Task<IActionResult> ChangeDomain(string id)
+        {
+            var apiKey = _configuration["CloudflareData:ApiKey"];
+            var email = _configuration["CloudflareData:Email"];
+            return Json(new { status = "1", message = await _domainService.ChangeDomain(id, email, apiKey) });
+        }
 
         public async Task<IActionResult> ChangeSubDomain(string id)
         {

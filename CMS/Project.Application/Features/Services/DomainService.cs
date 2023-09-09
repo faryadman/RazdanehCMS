@@ -27,7 +27,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted));
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted).ToList());
             return model;
         }
 
@@ -82,7 +82,7 @@ namespace Project.Application.Features.Services
             jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["address"] = newAddress;
             return jsonObject;
         }
-        public async Task<string> ChangeDomain(int serverId, string email, string apiKey)
+        public async Task<string> ChangeDomain(string serverId, string email, string apiKey)
         {
             try
             {
@@ -94,15 +94,15 @@ namespace Project.Application.Features.Services
 
                 var server = await _serverService.Detail(serverId);
                 var config = server.Config;
-
-                var newDomain = domains[0].DomainName;
+                var firstDomain = domains.FirstOrDefault(x => x.IsActive);
+                var newDomain = firstDomain.DomainName;
 
                 var cnameValue = await ChangeCnameDomain(email, apiKey, server.CurrentDomainValue, newDomain);
 
                 UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
 
                 await _serverService.UpdateServer(server);
-
+                await Delete(firstDomain.Id);
                 return "Done successfully";
             }
             catch (Exception ex)
@@ -111,7 +111,7 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
-        public async Task<string> ChangeSubDomain(int serverId, string email, string apiKey)
+        public async Task<string> ChangeSubDomain(string serverId, string email, string apiKey)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
-        public async Task<string> DeleteCnameDnsAsync(int serverId, string expireMinuteOn, string email, string apiKey)
+        public async Task<string> DeleteCnameDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey)
         {
             try
             {

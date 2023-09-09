@@ -183,7 +183,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                     percentFailConnection >= domainJobDto.FailConnectionPercent &&
                     failConnection >= domainJobDto.FailConnectionCount)
                 {
-                    await _domainService.ChangeDomain(id, jobDto.Email, jobDto.ApiKey);
+                    await _domainService.ChangeDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
                 }
             }
         }
@@ -197,7 +197,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             foreach (var id in serverIds)
             {
                 if (id > 38)
-                    await _domainService.ChangeSubDomain(id, jobDto.Email, jobDto.ApiKey);
+                    await _domainService.ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
             }
         }
         public async Task CheckHostDomainJob()
@@ -213,7 +213,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             {
                 if (id > 38)
                 {
-                    await _domainService.DeleteCnameDnsAsync(id, domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
+                    await _domainService.DeleteCnameDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
                 }
             }
         }
