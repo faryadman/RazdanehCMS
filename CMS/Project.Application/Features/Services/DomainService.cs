@@ -123,7 +123,7 @@ namespace Project.Application.Features.Services
                 var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
                 var hostName = $"{hostString?[1]}.{hostString?[2]}";
 
-                var cnameValue = await ChangeCnameDomain(email, apiKey, serverName, serverName, true);
+                var cnameValue = await ChangeCnameDomain(email, apiKey, server.CurrentDomainValue, serverName, true);
                 if (cnameValue != "fail")
                 {
                     UpdateServerConfig(server, config, cnameValue, serverName, hostName);
