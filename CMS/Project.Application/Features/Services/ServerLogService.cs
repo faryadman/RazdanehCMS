@@ -67,25 +67,24 @@ namespace Project.Application.Features.Services
                     FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed),
                     SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful),
                 },
-                HamraheAvvalLogsStatistics = logs.All(y => y.Operator == Operator.HamraheAvval)
-                    ? new ServerLogStatistics
-                    {
-                        Count = logs.Count(y => y.Operator == Operator.HamraheAvval),
-                        FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
-                        SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
-                    } : null,
-                IrancellLogsStatistics = logs.All(y => y.Operator == Operator.Irancell) ? new ServerLogStatistics
+                HamraheAvvalLogsStatistics = new ServerLogStatistics
+                {
+                    Count = logs.Count(y => y.Operator == Operator.HamraheAvval),
+                    FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
+                    SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
+                },
+                IrancellLogsStatistics = new ServerLogStatistics
                 {
                     Count = logs.Count(y => y.Operator == Operator.Irancell),
                     FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
                     SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
-                } : null,
-                UnknownLogsStatistics = logs.All(y => y.Operator == Operator.Unknown) ? new ServerLogStatistics
+                },
+                UnknownLogsStatistics = new ServerLogStatistics
                 {
                     Count = logs.Count(y => y.Operator == Operator.Unknown),
                     FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
                     SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
-                } : null
+                }
             };
 
             return Task.FromResult(data);
