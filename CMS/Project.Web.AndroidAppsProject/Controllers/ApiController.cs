@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Project.Application.DTOs;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.IP;
 using Project.Application.DTOs.Server;
@@ -27,6 +28,19 @@ namespace Project.Web.AndroidAppsProject.Controllers
             _serverLogService = serverLogService;
             _ipService = ipService;
             _memoryCache = memoryCache;
+        }
+
+        [HttpGet]
+        [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
+        public async Task<IActionResult> GetGeneralApp(string apiRoute, string isp, string Operator)
+        {
+            var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
+            var server = await _serverService.GetByApp(apiRoute, appSetting.IsAdServerAllowed, isp, Operator);
+            return new Response<GeneralServerDTO>(new GeneralServerDTO()
+            {
+                AppSettingDTO = appSetting,
+                ServerDTO = server,
+            }).ToJsonResult();
         }
 
         [HttpGet]
