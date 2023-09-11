@@ -6,6 +6,7 @@ namespace Project.Application.DTOs
     public class GeneralServerDTO
     {
         public ServerDTO ServerDTO { get; set; }
+        public ServerDTO ServerAdDTO { get; set; }
         public AppSettingDTO AppSettingDTO { get; set; }
     }
 }

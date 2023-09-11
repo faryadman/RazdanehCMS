@@ -35,11 +35,13 @@ namespace Project.Web.AndroidAppsProject.Controllers
         public async Task<IActionResult> GetGeneralApp(string apiRoute, string isp, string Operator)
         {
             var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
-            var server = await _serverService.GetByApp(apiRoute, appSetting.IsAdServerAllowed, isp, Operator);
+            var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
+            var serverAd = await _serverService.GetByApp(apiRoute, true, isp, Operator);
             return new Response<GeneralServerDTO>(new GeneralServerDTO()
             {
                 AppSettingDTO = appSetting,
                 ServerDTO = server,
+                ServerAdDTO = serverAd,
             }).ToJsonResult();
         }
 
