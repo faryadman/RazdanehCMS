@@ -223,7 +223,8 @@ namespace Project.Application.Features.Services
 
             var server = await SelectServer(query, app.SendRandomServer, app.Id);
 
-            ServerDTO dto = _mapper.Map<ServerDTO>(server);
+            var dto = _mapper.Map<ServerDTO>(server);
+
             dto.Config = UpdateConfig(dto.Config, dto.ConfigKey, dto.ConfigValue);
 
             return dto;
@@ -270,8 +271,9 @@ namespace Project.Application.Features.Services
         private async Task<Server> SelectServer(IEnumerable<Server> servers, bool sendRandomServer, int appSettingId)
         {
             Server server;
+            int ignoreServerId = 0;
             var lastLog = await _serverLogService.GetLastLog();
-            if (sendRandomServer)
+            if (lastLog.ConnectionStatus == ConnectionStatus.Failed || sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
