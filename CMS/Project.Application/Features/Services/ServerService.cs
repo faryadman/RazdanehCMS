@@ -272,16 +272,7 @@ namespace Project.Application.Features.Services
         {
             Server server;
             var lastLog = await _serverLogService.GetLastLog();
-
-            if (lastLog == null)
-            {
-                var random = new Random();
-                var index = random.Next(servers.Count());
-                server = servers.ElementAt(index);
-                return server;
-            }
-
-            if (lastLog.ConnectionStatus == ConnectionStatus.Failed)
+            if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);
@@ -294,9 +285,17 @@ namespace Project.Application.Features.Services
                     return server;
                 }
             }
-
-            var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-            server = lastServerIndex < 1 ? servers.FirstOrDefault() : servers.ElementAt(lastServerIndex + 1);
+            if (lastLog == null)
+            {
+                var random = new Random();
+                var index = random.Next(servers.Count());
+                server = servers.ElementAt(index);
+            }
+            else
+            {
+                var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
+                server = lastServerIndex < 1 ? servers.FirstOrDefault() : servers.ElementAt(lastServerIndex + 1);
+            }
             return server;
 
         }
