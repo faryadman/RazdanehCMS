@@ -281,7 +281,7 @@ namespace Project.Application.Features.Services
                 return server;
             }
 
-            if (lastLog.ConnectionStatus == ConnectionStatus.Failed || sendRandomServer)
+            if (lastLog.ConnectionStatus == ConnectionStatus.Failed)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
                 var allowedServers = servers.Where(x => x.Id != serverNotToReturnId);

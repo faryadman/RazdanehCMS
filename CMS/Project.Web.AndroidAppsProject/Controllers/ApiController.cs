@@ -90,6 +90,22 @@ namespace Project.Web.AndroidAppsProject.Controllers
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> FailedServer(AddServerLogDTO input)
+        {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.FailedServerLog(input);
+            var server = await _serverService.GetByApp(input.ApiRoute, false, input.Isp, input.Operator);
+            var serverAd = await _serverService.GetByApp(input.ApiRoute, true, input.Isp, input.Operator);
+            return new Response<GeneralServerDTO>(new GeneralServerDTO()
+            {
+                AppSettingDTO = null,
+                ServerDTO = server,
+                ServerAdDTO = serverAd,
+            }).ToJsonResult();
+        }
+
         [HttpGet]
         public async Task<IActionResult> ServerLogs(int serverId)
         {
