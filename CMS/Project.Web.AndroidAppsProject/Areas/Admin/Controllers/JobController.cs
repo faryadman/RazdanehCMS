@@ -196,7 +196,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 return;
             foreach (var id in serverIds)
             {
-                if (id > 38)
+                if (id == 41)
                     await _domainService.ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
             }
         }
@@ -211,7 +211,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
             foreach (var id in serverIds)
             {
-                if (id > 38)
+                if (id == 41)
                 {
                     await _domainService.DeleteCnameDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
                 }

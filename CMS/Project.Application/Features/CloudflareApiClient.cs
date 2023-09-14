@@ -97,7 +97,7 @@ namespace Project.Application.Features
                         var currentTime = DateTime.Now;
                         var timeDifference = currentTime - modifiedDateTime;
 
-                        if (timeDifference > expireTimeSpan)
+                        if (timeDifference >= expireTimeSpan)
                         {
                             var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDelete.id}";
                             await httpClient.DeleteAsync(deleteUrl);
