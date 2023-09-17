@@ -154,10 +154,11 @@ namespace Project.Application.Features.Services
 
                 var cfClient = InitializeCloudflareClient(cfEmail, cfApiKey);
                 var cfZoneId = await GetCloudflareZoneId(cfClient, subServerName);
-                if (await DeleteDnsRecord(cfZoneId, expireMinuteOn, cfEmail, cfApiKey))
-                {
-                    await ChangeCnameDomain(cfEmail, cfApiKey, server.CurrentDomainValue, serverName, true);
-                }
+                await DeleteDnsRecord(cfZoneId, expireMinuteOn, cfEmail, cfApiKey);
+                var cnameValue = await ChangeCnameDomain(cfEmail, cfApiKey, server.CurrentDomainValue, serverName, true);
+                UpdateServerConfig(server, config, cnameValue, serverName, serverName);
+
+                await _serverService.UpdateServer(server);
                 return "Done successfully";
             }
             catch (Exception ex)
@@ -191,7 +192,6 @@ namespace Project.Application.Features.Services
                 else
                 {
                     await UpdateDnsRecord(cfClient, cfZoneId, newCnameValue, currentDomain, cfEmail, cfApiKey);
-
                 }
 
                 return cnameValue;

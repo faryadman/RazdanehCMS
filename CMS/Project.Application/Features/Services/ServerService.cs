@@ -40,7 +40,7 @@ namespace Project.Application.Features.Services
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
         {
             var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.IsAd == isAd && x.IsActive == true);
+            query = query.Where(x => x.IsActive && x.IsAd == isAd);
 
             if (filter != 0)
             {

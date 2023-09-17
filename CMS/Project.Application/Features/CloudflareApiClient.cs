@@ -90,18 +90,18 @@ namespace Project.Application.Features
 
                     foreach (var recordToDelete in recordsToDelete)
                     {
-                        var modifiedDateTime = DateTime.Parse(recordToDelete.modified_on);
-                        var expireTimeInMinutes = double.Parse(expireTimeOn);
-                        var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);
+                        //var modifiedDateTime = DateTime.Parse(recordToDelete.modified_on);
+                        //var expireTimeInMinutes = double.Parse(expireTimeOn);
+                        //var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);
 
-                        var currentTime = DateTime.Now;
-                        var timeDifference = currentTime - modifiedDateTime;
+                        //var currentTime = DateTime.Now;
+                        //var timeDifference = currentTime - modifiedDateTime;
 
-                        if (timeDifference >= expireTimeSpan)
-                        {
-                            var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDelete.id}";
-                            await httpClient.DeleteAsync(deleteUrl);
-                        }
+                        //if (timeDifference >= expireTimeSpan)
+                        //{
+                        var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDelete.id}";
+                        await httpClient.DeleteAsync(deleteUrl);
+                        //}
                     }
 
                     return true;
