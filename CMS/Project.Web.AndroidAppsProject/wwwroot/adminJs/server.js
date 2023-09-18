@@ -49,8 +49,16 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewSubDomain = '<div><br><button class="btn btn-primary btn-sm" onclick="subdomainRefresh('+item.id+')">Refresh SubDomain</button></div>'
-        let isNewDomain = '<div>' + item.currentDomainValue + '<br><button class="btn btn-success btn-sm" onclick="domainRefresh(' + item.id +')">Refresh Domain</button><br/>' + isNewSubDomain + '</div>' 
+        let buttonNewSubDomain = '<div><br><button class="btn btn-primary btn-sm" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>'
+        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>'
+        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>'
+
+        let buttons = '<div>' +
+            item.currentDomainValue +
+            '<br><button class="btn btn-success btn-sm" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button><br/>' +
+            buttonNewSubDomain +
+            buttonCreateDnsRecord +
+            buttonDeleteDnsRecord + '</div>' 
         let config = item.config;
         let configObject = JSON.parse(config);
         console.log(configObject);
@@ -62,7 +70,7 @@ function renderservers(data) {
             deleteChekbox,
             item.id,
             isAdServer,
-            isNewDomain,
+            buttons,
             '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted +'</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
@@ -173,6 +181,64 @@ function domainRefresh(id) {
     let formData = new FormData(form);
     $.ajax({
         url: serversBaseUrl + `/changeDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function createDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/CreateDnsRecord?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function deleteAllDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/DeleteDnsRecord?id=‍${id}`,
         data: formData,
         method: 'POST',
         contentType: false,

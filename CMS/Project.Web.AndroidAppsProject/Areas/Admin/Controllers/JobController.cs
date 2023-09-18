@@ -213,7 +213,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             {
                 if (id == 41)
                 {
-                    await _domainService.DeleteCnameDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
+                    await _domainService.GenerateDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
                 }
             }
         }

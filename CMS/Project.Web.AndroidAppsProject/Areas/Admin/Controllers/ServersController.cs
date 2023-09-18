@@ -178,6 +178,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return Json(new { status = "1", message = "done successfully" });
         }
 
+
         public async Task<IActionResult> ChangeDomain(string id)
         {
             var apiKey = _configuration["CloudflareData:ApiKey"];
@@ -251,6 +252,18 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return Json(new { status = "1", message = "Done Subdomain !" });
         }
 
+        public async Task<IActionResult> CreateDnsRecord(string id)
+        {
+            var apiKey = _configuration["CloudflareData:ApiKey"];
+            var email = _configuration["CloudflareData:Email"];
+            return Json(new { status = "1", message = await _domainService.CreateDnsAsync(id, email, apiKey) });
+        }
+        public async Task<IActionResult> DeleteDnsRecord(string id)
+        {
+            var apiKey = _configuration["CloudflareData:ApiKey"];
+            var email = _configuration["CloudflareData:Email"];
+            return Json(new { status = "1", message = await _domainService.DeleteDnsAsync(id, email, apiKey) });
+        }
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {

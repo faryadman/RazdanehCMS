@@ -71,7 +71,7 @@ namespace Project.Application.Features
             }
         }
 
-        public async Task<bool> DeleteCnameRecords(string zoneId, string expireTimeOn, string apiKey, string email)
+        public async Task<bool> DeleteCnameRecords(string zoneId, string apiKey, string email)
         {
             try
             {

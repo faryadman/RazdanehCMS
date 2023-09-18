@@ -139,26 +139,13 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
-        public async Task<string> DeleteCnameDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey)
+        public async Task<string> DeleteDnsAsync(string serverId, string email, string apiKey)
         {
             try
             {
-                var cfEmail = email;
-                var cfApiKey = apiKey;
-                var server = await _serverService.Detail(serverId);
-                var config = server.Config;
-                var jsonObject = JObject.Parse(config);
-                var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
-                var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
-                var subServerName = $"{serverNameString?[1]}.{serverNameString?[2]}";
+                var cfZoneId = ServerDto(serverId, email, apiKey, out var server, out var serverName);
+                await DeleteDnsRecord(cfZoneId, email, apiKey);
 
-                var cfClient = InitializeCloudflareClient(cfEmail, cfApiKey);
-                var cfZoneId = await GetCloudflareZoneId(cfClient, subServerName);
-                await DeleteDnsRecord(cfZoneId, expireMinuteOn, cfEmail, cfApiKey);
-                var cnameValue = await ChangeCnameDomain(cfEmail, cfApiKey, server.CurrentDomainValue, serverName, true);
-                UpdateServerConfig(server, config, cnameValue, serverName, serverName);
-
-                await _serverService.UpdateServer(server);
                 return "Done successfully";
             }
             catch (Exception ex)
@@ -166,6 +153,61 @@ namespace Project.Application.Features.Services
                 // Handle exceptions here
                 return ex.Message;
             }
+        }
+        public async Task<string> CreateDnsAsync(string serverId, string email, string apiKey)
+        {
+            try
+            {
+                ServerDto(serverId, email, apiKey, out var server, out var serverName);
+                var cnameValue = await ChangeCnameDomain(email, apiKey, server.CurrentDomainValue, serverName, true);
+                UpdateServerConfig(server, server.Config, cnameValue, serverName, serverName);
+                await _serverService.UpdateServer(server);
+
+                return "Done successfully";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                return ex.Message;
+            }
+        }
+        public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey)
+        {
+            try
+            {
+                await DeleteDnsAsync(serverId, email, apiKey);
+                await CreateDnsAsync(serverId, email, apiKey);
+
+                return "Done successfully";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                return ex.Message;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="email"></param>
+        /// <param name="apiKey"></param>
+        /// <param name="server"></param>
+        /// <param name="serverName"></param>
+        /// <returns> get return cfZoneId </returns>
+        private string ServerDto(string serverId, string email, string apiKey, out ServerDTO server, out string serverName)
+        {
+            server = _serverService.Detail(serverId).GetAwaiter().GetResult();
+            var config = server.Config;
+            var jsonObject = JObject.Parse(config);
+            var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString()
+                .Split(".");
+            serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
+            var subServerName = $"{serverNameString?[1]}.{serverNameString?[2]}";
+
+            var cfClient = InitializeCloudflareClient(email, apiKey);
+            var cfZoneId = GetCloudflareZoneId(cfClient, subServerName).GetAwaiter().GetResult();
+            return cfZoneId;
         }
 
         private static async Task<string> ChangeCnameDomain(string email, string apiKey, string currentDomain, string newDomain, bool isActiveSubDomain = false)
@@ -255,10 +297,10 @@ namespace Project.Application.Features.Services
             await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, cfApiKey, cfEmail);
 
         }
-        private static async Task<bool> DeleteDnsRecord(string cfZoneId, string expireMinuteOn, string cfEmail, string cfApiKey)
+        public async Task<bool> DeleteDnsRecord(string cfZoneId, string cfEmail, string cfApiKey)
         {
             var cloudflare = new CloudflareApiClient();
-            return await cloudflare.DeleteCnameRecords(cfZoneId, expireMinuteOn, cfApiKey, cfEmail);
+            return await cloudflare.DeleteCnameRecords(cfZoneId, cfApiKey, cfEmail);
         }
     }
 }
