@@ -196,8 +196,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 return;
             foreach (var id in serverIds)
             {
-                if (id == 41)
-                    await _domainService.ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
+                await _domainService.ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
             }
         }
         public async Task CheckHostDomainJob()
@@ -211,10 +210,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
             foreach (var id in serverIds)
             {
-                if (id == 41)
-                {
-                    await _domainService.GenerateDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
-                }
+                await _domainService.GenerateDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
             }
         }
 

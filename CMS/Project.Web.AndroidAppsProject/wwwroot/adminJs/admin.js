@@ -21,7 +21,7 @@ $(function () {
 
 function loading() {
     Swal.fire({
-        html: '<p>در حال بارگذاری</p><img src="/app-assets/load.gif"/>',
+        html: '<p>در حال بارگذاری</p><br/><p>درخواست هایی به سمت سرورهای کلودفلر ممکن یک تا سه دقیقه به طول بیانجامد</p><img src="/app-assets/load.gif"/>',
         allowOutsideClick: false,
         showCancelButton: false,
         showConfirmButton: false
