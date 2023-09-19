@@ -176,10 +176,6 @@ namespace Project.Application.Features.Services
                             await cloudflare.DeleteCnameRecords(cfZoneId, record.id, apiKey, email);
                         }
                     }
-                    else
-                    {
-                        await cloudflare.DeleteCnameRecords(cfZoneId, record.id, apiKey, email);
-                    }
                 }
                 return "Done successfully";
             }
