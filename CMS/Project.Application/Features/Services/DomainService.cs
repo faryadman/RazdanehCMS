@@ -154,6 +154,41 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
+        private async Task<string> DeleteAndCheckDnsAsync(string serverId, string minuteTimeOn, string email, string apiKey)
+        {
+            try
+            {
+                var cfZoneId = ServerDto(serverId, email, apiKey, out var server, out var serverName);
+                var cloudflare = new CloudflareApiClient();
+                var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, apiKey, email);
+                foreach (var record in recordsToDelete)
+                {
+                    if (!string.IsNullOrEmpty(record.comment))
+                    {
+                        var modifiedDateTime = DateTime.Parse(record.comment);
+                        var expireTimeInMinutes = double.Parse(minuteTimeOn);
+                        var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);
+
+                        var currentTime = DateTime.Now;
+                        var timeDifference = currentTime - modifiedDateTime;
+                        if (timeDifference >= expireTimeSpan)
+                        {
+                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, apiKey, email);
+                        }
+                    }
+                    else
+                    {
+                        await cloudflare.DeleteCnameRecords(cfZoneId, record.id, apiKey, email);
+                    }
+                }
+                return "Done successfully";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                return ex.Message;
+            }
+        }
         public async Task<string> CreateDnsAsync(string serverId, string email, string apiKey)
         {
             try
@@ -175,9 +210,8 @@ namespace Project.Application.Features.Services
         {
             try
             {
-                await DeleteDnsAsync(serverId, email, apiKey);
+                await DeleteAndCheckDnsAsync(serverId, expireMinuteOn, email, apiKey);
                 await CreateDnsAsync(serverId, email, apiKey);
-
                 return "Done successfully";
             }
             catch (Exception ex)
@@ -300,7 +334,14 @@ namespace Project.Application.Features.Services
         public async Task<bool> DeleteDnsRecord(string cfZoneId, string cfEmail, string cfApiKey)
         {
             var cloudflare = new CloudflareApiClient();
-            return await cloudflare.DeleteCnameRecords(cfZoneId, cfApiKey, cfEmail);
+            var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, cfApiKey, cfEmail);
+            foreach (var recordToDelete in recordsToDelete)
+            {
+                await cloudflare.DeleteCnameRecords(cfZoneId, recordToDelete.id, cfApiKey, cfEmail);
+            }
+
+
+            return true;
         }
     }
 }
