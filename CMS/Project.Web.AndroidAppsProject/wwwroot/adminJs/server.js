@@ -555,10 +555,10 @@ function onClickChangeServerAddresses() {
     loading();
     $('#changeServerAddressModal').modal();
     swal.close();
-
 }
 
 function onClickChangeServerAddressSubmit() {
+    $('#changeServerAddressModal').modal('toggle');
     loading();
     let result = $('#addressInput').val();
     let model = {
@@ -570,15 +570,17 @@ function onClickChangeServerAddressSubmit() {
         data: model,
         dataType: "json",
         success: function (data) {
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
             data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
-            swal.close();
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");
-            swal.close();
         }
     });
-    swal.close();
 }
 
 $('#selectAllCheckbox').change(function () {

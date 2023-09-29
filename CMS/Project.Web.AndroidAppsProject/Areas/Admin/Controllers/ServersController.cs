@@ -173,7 +173,6 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 var updatedJsonString = _domainService.SetServerAddressStrings(config, address).ToString();
                 server.Config = updatedJsonString;
                 await _serverService.UpdateServer(server);
-                break;
             }
             return Json(new { status = "1", message = "done successfully" });
         }

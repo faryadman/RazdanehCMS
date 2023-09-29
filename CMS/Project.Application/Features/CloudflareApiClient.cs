@@ -104,22 +104,6 @@ namespace Project.Application.Features
                 httpClient.DefaultRequestHeaders.Add("X-Auth-Key", apiKey);
                 var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDeleteId}";
                 await httpClient.DeleteAsync(deleteUrl);
-                //var recordsToDelete = await GetAllRecords(zoneId, apiKey, email);
-                //foreach (var recordToDelete in recordsToDelete)
-                //{
-                //    //var modifiedDateTime = DateTime.Parse(recordToDelete.modified_on);
-                //    //var expireTimeInMinutes = double.Parse(expireTimeOn);
-                //    //var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);
-
-                //    //var currentTime = DateTime.Now;
-                //    //var timeDifference = currentTime - modifiedDateTime;
-
-                //    //if (timeDifference >= expireTimeSpan)
-                //    //{
-                //    var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDelete.id}";
-                //    await httpClient.DeleteAsync(deleteUrl);
-                //    //}
-                //}
             }
             catch (Exception ex)
             {
