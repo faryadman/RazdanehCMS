@@ -79,7 +79,7 @@ namespace Project.Application.Features.Services
         public JObject SetServerAddressStrings(string config, string newAddress)
         {
             var jsonObject = JObject.Parse(config);
-            jsonObject["outbounds"]![0]!["settings"]!["vnext"]!["address"] = newAddress;
+            jsonObject["outbounds"]![0]!["settings"]!["vnext"]![0]!["address"] = newAddress;
             return jsonObject;
         }
         public async Task<string> ChangeDomain(string serverId, string email, string apiKey)

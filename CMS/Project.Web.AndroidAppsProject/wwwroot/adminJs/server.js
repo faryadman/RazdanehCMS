@@ -58,20 +58,20 @@ function renderservers(data) {
             '<br><button class="btn btn-success btn-sm" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button><br/>' +
             buttonNewSubDomain +
             buttonCreateDnsRecord +
-            buttonDeleteDnsRecord + '</div>' 
+            buttonDeleteDnsRecord + '</div>'
         let config = item.config;
         let configObject = JSON.parse(config);
         console.log(configObject);
         var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
         var hostName = configObject.outbounds[0]?.streamSettings?.wsSettings?.headers?.Host;
-        
+
 
         let addedRow = serversTable.row.add([
             deleteChekbox,
             item.id,
             isAdServer,
             buttons,
-            '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted +'</span>',
+            '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted + '</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
             '<span class="badge badge-dark">' + item.group.title + '</span>',
@@ -575,10 +575,12 @@ function onClickChangeServerAddressSubmit() {
             } else {
                 getservers(true);
             }
-            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+            data.status == "0" ? swal.fire('', data.message, 'error') : swal.fire('', data.message, 'success');
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
+            swal.close();
             alert(" بروز اشکال در اتصال به اینترنت ");
+
         }
     });
 }
