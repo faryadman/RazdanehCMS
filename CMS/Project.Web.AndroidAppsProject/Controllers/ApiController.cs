@@ -127,7 +127,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var userAgent = Request.Headers["User-Agent"].ToString();
             await _ipService.Insert(new CreateIpDTO()
             {
-                Tcp = tcp.ToString(),
+                Tcp = tcpId.ToString(),
                 Ip = clientIp,
                 UserAgent = userAgent
             });
