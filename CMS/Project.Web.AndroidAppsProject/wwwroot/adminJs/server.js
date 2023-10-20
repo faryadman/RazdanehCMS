@@ -116,6 +116,12 @@ function goDomain() {
     window.location.href = url;
     swal.close();
 }
+function goIpList() {
+    loading();
+    let url = '/admin/ipconfig';
+    window.location.href = url;
+    swal.close();
+}
 function submitForm() {
     loading();
     let form = document.getElementById('serverForm');

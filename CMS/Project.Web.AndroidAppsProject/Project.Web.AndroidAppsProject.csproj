@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\IP_Files\" />
     <Folder Include="wwwroot\UploadedFiles\" />
   </ItemGroup>
 
