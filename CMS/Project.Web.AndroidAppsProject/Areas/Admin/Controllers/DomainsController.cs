@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
-using Project.Persistence;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -11,19 +10,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
     public class DomainsController : Controller
     {
         private readonly IDomainService _domainService;
-        private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IWebHostEnvironment _env;
-        private readonly ApplicationDbContext _context;
-        public DomainsController(IDomainService domainService, ICronJobInfoService cronJobInfoService, IWebHostEnvironment env, ApplicationDbContext context)
+        public DomainsController(IDomainService domainService, IWebHostEnvironment env)
         {
             _domainService = domainService;
-            _cronJobInfoService = cronJobInfoService;
             _env = env;
-            _context = context;
         }
         public IActionResult Index()
         {
-
             return View();
         }
         public async Task<IActionResult> List(int filter)
