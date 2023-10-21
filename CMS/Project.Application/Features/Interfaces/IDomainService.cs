@@ -12,6 +12,7 @@ namespace Project.Application.Features.Interfaces
         Task Remove();
         Task<List<DomainDTO>> ListInactiveDomain();
         JObject SetServerAddressStrings(string config, string newAddress);
+        string GetServerAddressStrings(string config);
         Task<string> ChangeDomain(string serverId, string email, string apiKey);
         Task<string> ChangeSubDomain(string serverId, string email, string apiKey);
         Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey);

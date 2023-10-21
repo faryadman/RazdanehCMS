@@ -38,9 +38,8 @@ function renderdata(data) {
         table.row.add([
             deleteChekbox,
             (i + 1),
-            item.id,
             item.ip,
-            '<div>  ' + item.fileName + '  <hr/> ' + item.updatedAtFormatted + ' </div>',
+            '<div>  ' + item.fileName + ' </div>',
             deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 
@@ -141,5 +140,81 @@ function uploadFile() {
                 }
             });
         });
+    });
+}
+function getInactive() {
+    $.ajax({
+        type: "GET",
+        url: serversBaseUrl + '/listInactive',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            renderInactive(result);
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("بروز اشکال در اتصال به اینترنت");
+        }
+    });
+}
+
+function renderInactive(data) {
+    let inactiveList = $('#inactiveList');
+    inactiveList.empty();
+    let list = [];
+    for (var i = 0; i < data.length; i++) {
+        let item = data[i];
+        inactiveList.append('<li>' + item.ip + '</li>');
+        list.push(item.ip);
+    }
+    inactiveList.wrap('<ol></ol>');
+
+    // تبدیل آرایه نام دامنه‌ها به رشته JSON
+    let jsonString = JSON.stringify(list);
+
+    // کپی کردن رشته JSON به کلیپ بورد
+    copyToClipboard(jsonString);
+
+    $('#inactiveModal').modal();
+}
+
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+}
+
+function deleteInactive() {
+    Swal.fire({
+        title: '',
+        text: confirmDeleteQuestion,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        confirmButtonClass: 'btn btn-primary',
+        cancelButtonClass: 'btn btn-danger ml-1',
+        buttonsStyling: false,
+    }).then(function (result) {
+        if (result.value) {
+            loading();
+
+            $.ajax({
+                type: "POST",
+                url: serversBaseUrl + '/DeleteInactive',
+                success: function (data) {
+                    getList();
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    setTimeout(function () {
+                        getList();
+                        swal.close();
+                    }, 4000)
+                }
+            })
+        }
     });
 }

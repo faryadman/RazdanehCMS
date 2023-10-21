@@ -253,13 +253,37 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task CheckIpConfigJobJob()
         {
+            var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
+
             var jobDto = list.OrderByDescending(x => x.Id).FirstOrDefault(job => job.JobName == "IpConfigJob");
-            var JobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
             if (jobDto == null)
                 return;
-            await _configService.GenerateUpdateAsync(JobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
 
+            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
+
+            foreach (var id in serverIds)
+            {
+                var server = await _serverService.GetServerStatistics(id);
+                if (server?.AllLogsStatistics == null)
+                    continue;
+                //TODO: IF Success Result Convert to extention method!
+                var totalSuccessConnection = server.AllLogsStatistics.Count;
+                var successConnection = server.AllLogsStatistics.SuccessCount;
+                var failConnection = server.AllLogsStatistics.FailCount;
+                var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
+                var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
+                //TODO: IF Success Result Convert to extention method
+                var start = server.DomainDateTime;
+                var now = DateTime.Now;
+                var ts = now.Subtract(start);
+                if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime &&
+                    percentFailConnection >= domainJobDto.FailConnectionPercent &&
+                    failConnection >= domainJobDto.FailConnectionCount)
+                {
+                    await _configService.GenerateUpdateAsync(id.ToString(), jobDto.Email, jobDto.ApiKey);
+                }
+            }
         }
     }
 }

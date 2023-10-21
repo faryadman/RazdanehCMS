@@ -28,9 +28,20 @@ namespace Project.Application.Features.Services
                 : _ipConfigRepository.GetAll().Result.SingleOrDefault(i => i.Id == id);
         }
 
+        public IPConfigEntity Get(string ip)
+        {
+            return ip is null
+                ? null
+                : _ipConfigRepository.GetAll().Result.SingleOrDefault(i => i.IP == ip);
+        }
         public async Task<List<IPConfigEntity>> GetAll()
         {
             return (List<IPConfigEntity>)await _ipConfigRepository.GetAll();
+        }
+
+        public IEnumerable<IPConfigEntity> ListInactive()
+        {
+            return _ipConfigRepository.GetAll().Result.Where(i => i.IsActive == false && i.IsDeleted == true).ToList();
         }
 
         public async Task Create(IPConfigDTO input)
@@ -48,37 +59,37 @@ namespace Project.Application.Features.Services
         {
             await _ipConfigRepository.Remove(id);
         }
-
-        public async Task GenerateUpdateAsync(string expireMinuteOn, string email, string apiKey)
+        public async Task Inactive(int id)
         {
-            var dateTimeNow = DateTime.UtcNow;
-            var correctTime = int.TryParse(expireMinuteOn, out var expireResult);
-            if (!correctTime) return;
-            await UpdateIpServers(expireResult);
+            var entity = _ipConfigRepository.Find(i => i.Id == id).FirstOrDefault();
+            entity.IsDeleted = true;
+            entity.IsActive = false;
+            await _ipConfigRepository.Update(entity);
+        }
+        public async Task GenerateUpdateAsync(string serverId, string email, string apiKey)
+        {
+            await UpdateIpServers(serverId);
         }
 
-        public async Task UpdateIpServers(int expireTime)
+        public async Task UpdateIpServers(string serverId)
         {
-            var serverActiveIds = await _serverService.GetActiveIds();
-            foreach (var activeId in serverActiveIds)
+            var server = await _serverService.Detail(serverId);
+            if (server is null) return;
+            var newIp = Get((int?)null);
+            if (newIp is null) return;
+
+            var config = server.Config;
+            var newConfig = _domainService.SetServerAddressStrings(config, newIp.IP);
+            server.Config = newConfig.ToString();
+            await _serverService.UpdateServer(server);
+
+            var ip = _domainService.GetServerAddressStrings(config);
+            var oldIP = Get(ip);
+            if (oldIP != null)
             {
-                var server = await _serverService.Detail(activeId);
-                if (server is null) continue;
-                var newIp = Get(null);
-                if (newIp is null) break;
-
-                var startTime = DateTime.Now;
-                var endTime = server.UpdatedAt;
-                var duration = startTime - endTime;
-                var minutes = duration.Minutes;
-                if (expireTime > minutes) continue;
-
-                var config = server.Config;
-                var newConfig = _domainService.SetServerAddressStrings(config, newIp.IP);
-                server.Config = newConfig.ToString();
-                await _serverService.UpdateServer(server);
-                //await Delete(newIp.Id);
+                await Inactive(oldIP.Id);
             }
+
         }
     }
 }

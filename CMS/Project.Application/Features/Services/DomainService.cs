@@ -82,6 +82,11 @@ namespace Project.Application.Features.Services
             jsonObject["outbounds"]![0]!["settings"]!["vnext"]![0]!["address"] = newAddress;
             return jsonObject;
         }
+        public string GetServerAddressStrings(string config)
+        {
+            var jsonObject = JObject.Parse(config);
+            return jsonObject["outbounds"]![0]!["settings"]!["vnext"]![0]!["address"]!.ToString();
+        }
         public async Task<string> ChangeDomain(string serverId, string email, string apiKey)
         {
             try
@@ -335,8 +340,6 @@ namespace Project.Application.Features.Services
             {
                 await cloudflare.DeleteCnameRecords(cfZoneId, recordToDelete.id, cfApiKey, cfEmail);
             }
-
-
             return true;
         }
     }

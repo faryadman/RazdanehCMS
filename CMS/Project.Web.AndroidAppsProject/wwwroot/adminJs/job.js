@@ -73,22 +73,22 @@ function jobHostDomain() {
 
 function jobIpConfigJob() {
     formUrl = jobBaseUrl + '/CreateIpConfigJob';
-    var modal = $('#jobHostDomainModal');
+    var modal = $('#jobModal');
     modal.on('show.bs.modal', function (event) {
-        var modal = $(this);
         $.ajax({
-            url: '/admin/job/GetJobHostDomainData',
+            url: '/admin/job/GetJobIpConfigData',
             method: 'GET',
             success: function (data) {
-                console.log("data", data);
-                modal.find('#IsActiveJob_hostdomain').prop('checked', data.isActiveJob);
-                modal.find('#ApiKey_hostdomain').val(data.apiKey);
-                modal.find('#Email_hostdomain').val(data.email);
-                modal.find('#JobPeriodTime_hostdomain').val(data.jobPeriodTime);
-                modal.find('#JobExpireMinuteTime_hostdomain').val(data.JobExpireMinuteTime);
-          
+                modal.find('#IsActiveJob').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey').val(data.apiKey);
+                modal.find('#Email').val(data.email);
+                modal.find('#JobPeriodTime').val(data.jobPeriodTime);
+                modal.find('#JobExpireMinuteTime').val(data.jobExpireMinuteTime);
+                modal.find('#FailConnectionCount').val(data.failConnectionCount);
+                modal.find('#FailConnectionPercent').val(data.failConnectionPercent);
             },
             error: function (xhr, ajaxOptions, thrownError) {
+
                 swal.close();
             }
         });

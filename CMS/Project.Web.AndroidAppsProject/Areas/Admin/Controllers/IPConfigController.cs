@@ -30,9 +30,8 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task<IActionResult> ListInactive()
         {
-            //var data = await _domainService.ListInactiveDomain();
-            //return Json(data);
-            return Json(new { status = "1", message = "done successfully" });
+            var data = _ipConfigService.ListInactive();
+            return Json(data);
         }
         public async Task<IActionResult> Create(CreateDomainDTO input)
         {
@@ -45,10 +44,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _ipConfigService.Delete(id);
             return Json(new { status = "1", message = "done successfully" });
         }
-        public Task<IActionResult> DeleteInactiveDomain()
+        public Task<IActionResult> DeleteInactive()
         {
             ////TODO: Refactor into service
             //var list = _domainService.Remove();
+            var data = _ipConfigService.ListInactive();
+            foreach (var entity in data)
+            {
+                _ipConfigService.Delete(entity.Id);
+            }
             return Task.FromResult<IActionResult>(Json(new { status = "1", message = "done successfully" }));
         }
         public async Task<IActionResult> MassDelete(string ids)
