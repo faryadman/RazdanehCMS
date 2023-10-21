@@ -71,6 +71,31 @@ function jobHostDomain() {
     modal.modal();
 }
 
+function jobIpConfigJob() {
+    formUrl = jobBaseUrl + '/CreateIpConfigJob';
+    var modal = $('#jobHostDomainModal');
+    modal.on('show.bs.modal', function (event) {
+        var modal = $(this);
+        $.ajax({
+            url: '/admin/job/GetJobHostDomainData',
+            method: 'GET',
+            success: function (data) {
+                console.log("data", data);
+                modal.find('#IsActiveJob_hostdomain').prop('checked', data.isActiveJob);
+                modal.find('#ApiKey_hostdomain').val(data.apiKey);
+                modal.find('#Email_hostdomain').val(data.email);
+                modal.find('#JobPeriodTime_hostdomain').val(data.jobPeriodTime);
+                modal.find('#JobExpireMinuteTime_hostdomain').val(data.JobExpireMinuteTime);
+          
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal.close();
+            }
+        });
+    });
+    modal.modal();
+}
+
 function submitForm() {
     loading();
     let form = document.getElementById('jobForm');
@@ -181,8 +206,6 @@ function disableFields() {
     $("#Email_subdomain").prop("disabled", true);
     $("#JobPeriodTime_subdomain").prop("disabled", true);
     $("#JobExpireMinuteTime_hostdomain").prop("disabled", true);
-
-
 }
 
 // تابع تنظیم وضعیت فعال بودن فیلدها

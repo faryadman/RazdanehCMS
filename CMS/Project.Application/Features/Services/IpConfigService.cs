@@ -49,20 +49,35 @@ namespace Project.Application.Features.Services
             await _ipConfigRepository.Remove(id);
         }
 
-        public async Task UpdateIpServers()
+        public async Task GenerateUpdateAsync(string expireMinuteOn, string email, string apiKey)
+        {
+            var dateTimeNow = DateTime.UtcNow;
+            var correctTime = int.TryParse(expireMinuteOn, out var expireResult);
+            if (!correctTime) return;
+            await UpdateIpServers(expireResult);
+        }
+
+        public async Task UpdateIpServers(int expireTime)
         {
             var serverActiveIds = await _serverService.GetActiveIds();
             foreach (var activeId in serverActiveIds)
             {
                 var server = await _serverService.Detail(activeId);
-                var newIp = Get(null);
                 if (server is null) continue;
+                var newIp = Get(null);
                 if (newIp is null) break;
+
+                var startTime = DateTime.Now;
+                var endTime = server.UpdatedAt;
+                var duration = startTime - endTime;
+                var minutes = duration.Minutes;
+                if (expireTime > minutes) continue;
+
                 var config = server.Config;
                 var newConfig = _domainService.SetServerAddressStrings(config, newIp.IP);
                 server.Config = newConfig.ToString();
                 await _serverService.UpdateServer(server);
-                await Delete(newIp.Id);
+                //await Delete(newIp.Id);
             }
         }
     }

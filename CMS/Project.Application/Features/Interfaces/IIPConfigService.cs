@@ -9,6 +9,6 @@ namespace Project.Application.Features.Interfaces
         Task<List<IPConfigEntity>> GetAll();
         Task Create(IPConfigDTO input);
         Task Delete(int id);
-        Task UpdateIpServers();
+        Task GenerateUpdateAsync(string expireMinuteOn, string email, string apiKey);
     }
 }
