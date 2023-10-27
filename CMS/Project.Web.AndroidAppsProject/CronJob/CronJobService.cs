@@ -11,10 +11,21 @@ namespace Project.Web.AndroidAppsProject.CronJob
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task Reset()
+        public async Task ResetServerLog()
         {
             var serverLogService = (IServerLogService)serviceProvider.GetService(typeof(IServerLogService))!;
             await serverLogService.DeleteServerLogs();
+        }
+
+        public async Task ResetServerSubDomain()
+        {
+            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+            await serverChangeSubDomainService.ChangeSubDomain();
+        }
+        public async Task ResetServerDns()
+        {
+            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+            await serverChangeSubDomainService.DeleteDnsAsync();
         }
     }
 }

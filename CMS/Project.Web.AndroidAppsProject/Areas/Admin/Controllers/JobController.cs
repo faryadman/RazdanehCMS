@@ -40,7 +40,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task<IActionResult> GetJobHostDomainData()
         {
-            var job = await _jobService.Detail("HostDomainJob");
+            var job = await _jobService.Detail("DeleteDnsJob");
             if (job == null)
             {
                 return Json(new CreateJobDTO());
@@ -119,11 +119,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 case "SubDomainJob":
                     RecurringJob.AddOrUpdate("SubDomainJob", () => CheckSubDomainJob(), $"*/{input.JobPeriodTime} * * * *");
                     break;
-                case "HostDomainJob":
-                    RecurringJob.AddOrUpdate("HostDomainJob", () => CheckHostDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+                case "DeleteDnsJob":
+                    RecurringJob.AddOrUpdate("DeleteDnsJob", () => CheckDeleteDnsDomainJob(), $"*/{input.JobPeriodTime} * * * *");
                     break;
                 case "IpConfigJob":
-                    RecurringJob.AddOrUpdate("IpConfigJob", () => CheckIpConfigJobJob(), $"*/{input.JobPeriodTime} * * * *");
+                    RecurringJob.AddOrUpdate("IpConfigJob", () => CheckIpConfigJob(), $"*/{input.JobPeriodTime} * * * *");
                     break;
                 default: throw new ArgumentOutOfRangeException(nameof(input.JobName), input.JobName);
             }
@@ -227,36 +227,28 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         }
         public async Task CheckSubDomainJob()
         {
-            var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
             var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "SubDomainJob");
             if (jobDto == null)
                 return;
-            foreach (var id in serverIds)
-            {
-                await _domainService.ChangeSubDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
-            }
+            await _domainService.ChangeSubDomain();
+
         }
-        public async Task CheckHostDomainJob()
+        public async Task CheckDeleteDnsDomainJob()
         {
-            var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
-            var jobDto = list.OrderByDescending(x => x.Id).FirstOrDefault(job => job.JobName == "HostDomainJob");
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "DeleteDnsJob");
             var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
             if (jobDto == null)
                 return;
-
-            foreach (var id in serverIds)
-            {
-                await _domainService.GenerateDnsAsync(id.ToString(), domainJobDto?.JobExpireMinuteTime.ToString(), jobDto.Email, jobDto.ApiKey);
-            }
+            await _domainService.DeleteDnsAsync(domainJobDto?.JobExpireMinuteTime.ToString());
         }
-        public async Task CheckIpConfigJobJob()
+        public async Task CheckIpConfigJob()
         {
             var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
 
-            var jobDto = list.OrderByDescending(x => x.Id).FirstOrDefault(job => job.JobName == "IpConfigJob");
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "IpConfigJob");
             if (jobDto == null)
                 return;
 
@@ -268,18 +260,18 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 if (server?.AllLogsStatistics == null)
                     continue;
                 //TODO: IF Success Result Convert to extention method!
-                var totalSuccessConnection = server.AllLogsStatistics.Count;
-                var successConnection = server.AllLogsStatistics.SuccessCount;
-                var failConnection = server.AllLogsStatistics.FailCount;
-                var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
-                var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
+                //var totalSuccessConnection = server.AllLogsStatistics.Count;
+                //var successConnection = server.AllLogsStatistics.SuccessCount;
+                //var failConnection = server.AllLogsStatistics.FailCount;
+                //var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
+                //var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
                 //TODO: IF Success Result Convert to extention method
                 var start = server.DomainDateTime;
                 var now = DateTime.Now;
                 var ts = now.Subtract(start);
-                if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime &&
-                    percentFailConnection >= domainJobDto.FailConnectionPercent &&
-                    failConnection >= domainJobDto.FailConnectionCount)
+                if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime)
+                //percentFailConnection >= domainJobDto.FailConnectionPercent &&
+                //failConnection >= domainJobDto.FailConnectionCount)
                 {
                     await _configService.GenerateUpdateAsync(id.ToString(), jobDto.Email, jobDto.ApiKey);
                 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CloudFlare.NET;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Domain;
@@ -15,12 +16,14 @@ namespace Project.Application.Features.Services
         private readonly IDomainRepository _domainRepository;
         private readonly IMapper _mapper;
         private readonly IServerService _serverService;
+        private readonly IConfiguration _configuration;
 
-        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService)
+        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, IConfiguration configuration)
         {
             _mapper = mapper;
             _domainRepository = domainRepository;
             _serverService = serverService;
+            _configuration = configuration;
         }
 
 
@@ -207,6 +210,29 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
+        public async Task ChangeSubDomain()
+        {
+            var serverIds = await _serverService.GetActiveIds();
+            var apiKey = _configuration["CloudflareData:ApiKey"];
+            var email = _configuration["CloudflareData:Email"];
+
+            foreach (var id in serverIds)
+            {
+                await ChangeSubDomain(id.ToString(), email, apiKey);
+            }
+        }
+        public async Task DeleteDnsAsync(string expireTime)
+        {
+            var serverIds = await _serverService.GetActiveIds();
+            var apiKey = _configuration["CloudflareData:ApiKey"];
+            var email = _configuration["CloudflareData:Email"];
+
+            foreach (var id in serverIds)
+            {
+                await GenerateDnsAsync(id.ToString(), expireTime, email, apiKey);
+            }
+        }
+
         public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey)
         {
             try

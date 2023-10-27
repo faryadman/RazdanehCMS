@@ -142,9 +142,19 @@ app.UseHangfireServer();
 app.UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate(
-    "resetJob",
-    () => app.Services.GetService<ICronJobService>()!.Reset(),
+    "resetServerLogJob",
+    () => app.Services.GetService<ICronJobService>()!.ResetServerLog(),
 Cron.MinuteInterval(10));
+
+RecurringJob.AddOrUpdate(
+    "resetServerSubDomainJob",
+    () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
+    Cron.MinuteInterval(30));
+RecurringJob.AddOrUpdate(
+
+    "resetServerDnsJob",
+    () => app.Services.GetService<ICronJobService>()!.ResetServerDns(),
+    Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 
