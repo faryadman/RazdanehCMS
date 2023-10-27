@@ -73,15 +73,13 @@ function jobHostDomain() {
 
 function jobIpConfigJob() {
     formUrl = jobBaseUrl + '/CreateIpConfigJob';
-    var modal = $('#jobModal');
+    var modal = $('#jobIpConfigModal');
     modal.on('show.bs.modal', function (event) {
         $.ajax({
             url: '/admin/job/GetJobIpConfigData',
             method: 'GET',
             success: function (data) {
                 modal.find('#IsActiveJob').prop('checked', data.isActiveJob);
-                modal.find('#ApiKey').val(data.apiKey);
-                modal.find('#Email').val(data.email);
                 modal.find('#JobPeriodTime').val(data.jobPeriodTime);
                 modal.find('#JobExpireMinuteTime').val(data.jobExpireMinuteTime);
                 modal.find('#FailConnectionCount').val(data.failConnectionCount);

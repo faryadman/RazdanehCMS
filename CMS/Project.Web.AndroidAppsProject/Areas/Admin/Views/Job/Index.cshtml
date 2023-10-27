@@ -63,10 +63,10 @@
                             </div>
                             <div class="card-body">
                                 <hr />
-                                    <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">Change Domain Job</button>
+                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">Change Domain Job</button>
                                 <button class="btn btn-success ml-lg-3" id="button" onclick="jobSubDomain()">Change SubDomain Job</button>
                                 <button class="btn btn-danger ml-lg-3" id="button" onclick="jobHostDomain()">Delete Dns Records (CNAME)</button>
-                                    <button class="btn btn-success ml-lg-3" id="button" onclick="jobIpConfigJob()">Job IpConfigJob</button>
+                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobIpConfigJob()">Job IpConfigJob</button>
                                 @*<button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>*@
                             </div>
 
@@ -167,7 +167,49 @@
     </div>
 </div>
 
-    <div class="modal fade" id="jobHostDomainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="jobHostDomainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="jobHostDomainForm">
+                    <div class="form-group">
+                        <label asp-for="IsActiveJob">وضعیت جاب</label>
+                        <input id="IsActiveJob_hostdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ApiKey"></label>
+                        <input id="ApiKey_hostdomain" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input id="Email_hostdomain" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JobExpireMinuteTime"></label>
+                        <input id="JobExpireMinuteTime_hostdomain" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JobPeriodTime"></label>
+                        <input id="JobPeriodTime_hostdomain" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                <button onclick="submitFormHostdomain()" type="button" class="btn btn-success">تایید</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="jobIpConfigModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -177,33 +219,32 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="jobHostDomainForm">
+                    <form id="jobForm">
                         <div class="form-group">
-                            <label asp-for="IsActiveJob">وضعیت جاب</label>
-                            <input id="IsActiveJob_hostdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="ApiKey"></label>
-                            <input id="ApiKey_hostdomain" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Email"></label>
-                            <input id="Email_hostdomain" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="JobExpireMinuteTime"></label>
-                            <input id="JobExpireMinuteTime_hostdomain" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
+                            <label asp-for="IsActiveJob">وضعیت جاب : </label>
+                            <input id="IsActiveJob" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label asp-for="JobPeriodTime"></label>
-                            <input id="JobPeriodTime_hostdomain" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
+                            <input id="JobPeriodTime" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="JobExpireMinuteTime"></label>
+                            <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FailConnectionCount"></label>
+                            <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control" value="@ViewBag.FailConnectionCount">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FailConnectionPercent"></label>
+                            <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control" value="@ViewBag.FailConnectionPercent">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                    <button onclick="submitFormHostdomain()" type="button" class="btn btn-success">تایید</button>
+                    <button onclick="submitForm()" type="button" class="btn btn-success">تایید</button>
                 </div>
             </div>
         </div>
