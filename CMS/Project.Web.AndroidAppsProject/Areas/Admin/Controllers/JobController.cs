@@ -152,7 +152,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             {
                 ApiKey = input.ApiKey,
                 IsActive = input.IsActiveJob,
-                JobName = "HostDomainJob",
+                JobName = "DeleteDnsJob",
                 JobPeriodTime = input.JobPeriodTime,
                 Email = input.Email,
                 JobConfig = JsonConvert.SerializeObject(input),
