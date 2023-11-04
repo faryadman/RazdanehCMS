@@ -19,6 +19,6 @@ namespace Project.Application.Features.Interfaces
         Task<string> DeleteDnsAsync(string serverId, string email, string apiKey);
         Task<string> CreateDnsAsync(string serverId, string email, string apiKey);
         Task ChangeSubDomain();
-        Task DeleteDnsAsync(string expireTime = "120");
+        Task DeleteDnsAsync(string expireTime = "180");
     }
 }
