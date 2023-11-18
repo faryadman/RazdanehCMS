@@ -1,4 +1,6 @@
-﻿using Hangfire;
+﻿using DNTPersianUtils.Core;
+using Hangfire;
+using Hangfire.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Project.Application.DTOs.Job;
@@ -13,9 +15,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private readonly IServerService _serverService;
         private readonly IDomainService _domainService;
         private readonly IIPConfigService _configService;
-
         private readonly IJobService _jobService;
-
 
         public JobController(IServerService serverService, IDomainService domainService, IJobService jobService, IIPConfigService configService)
         {
@@ -27,6 +27,23 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
+            using (var connection = JobStorage.Current.GetConnection())
+            {
+                var recurringJob = connection.GetRecurringJobs();
+                IList<HangfireDTO> hangfireDtos = new List<HangfireDTO>();
+                foreach (var dto in recurringJob)
+                {
+                    hangfireDtos.Add(new HangfireDTO()
+                    {
+                        CreatedAt = dto.CreatedAt.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                        Cron = dto.Cron,
+                        Id = dto.Id,
+                        LastExecTime = dto.LastExecution.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                        NextExecTime = dto.NextExecution.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                    });
+                }
+                ViewData["DetailModels"] = hangfireDtos;
+            }
             var job = await _jobService.Detail("DomainJob");
             if (job == null)
             {

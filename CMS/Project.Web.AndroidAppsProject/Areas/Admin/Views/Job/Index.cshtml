@@ -1,7 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Project.Application.DTOs.Job
+@using DNTPersianUtils.Core
+@using Hangfire
+@using Hangfire.Common
 @model Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO
 @{
     Layout = "_Admin";
+    var data = ViewData["DetailModels"] as List<HangfireDTO>;
 }
 
 @section vendors{
@@ -68,7 +73,42 @@
                                 <button class="btn btn-danger ml-lg-3" id="button" onclick="jobDeleteDnsJob()">Delete Dns Records (CNAME)</button>
                                 <button class="btn btn-success ml-lg-3" id="button" onclick="jobIpConfigJob()">Job IpConfigJob</button>
                                 @*<button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>*@
+                                <hr />
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Cron</th>
+                                        <th>Next execution</th>
+                                        <th>Last execution</th>
+                                        <th>Created</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if (data != null && data.Any())
+                                    {
+                                        foreach (var item in data)
+                                        {
+                                            <tr>
+                                                <td>@item?.Id</td>
+                                                <td>@item?.Cron</td>
+                                                <td>@item?.NextExecTime</td>
+                                                <td>@item?.LastExecTime</td>
+                                                <td>@item?.CreatedAt</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="5">هیچ داده‌ای موجود نیست.</td>
+                                        </tr>
+
+                                    }
+                                    </tbody>
+                                </table>
                             </div>
+
 
                         </div>
                     </div>
