@@ -48,13 +48,13 @@ function jobSubDomain() {
     modal.modal();
 }
 
-function jobHostDomain() {
-    formUrl = jobBaseUrl + '/CreateHostDomainJob';
-    var modal = $('#jobHostDomainModal');
+function jobDeleteDnsJob() {
+    formUrl = jobBaseUrl + '/CreateDeleteDnsJobJob';
+    var modal = $('#jobDeleteDnsJobModal');
     modal.on('show.bs.modal', function (event) {
         var modal = $(this);
         $.ajax({
-            url: '/admin/job/GetJobHostDomainData',
+            url: '/admin/job/GetDeleteDnsJobData',
             method: 'GET',
             success: function (data) {
                 console.log("data", data);
@@ -62,6 +62,7 @@ function jobHostDomain() {
                 modal.find('#ApiKey_hostdomain').val(data.apiKey);
                 modal.find('#Email_hostdomain').val(data.email);
                 modal.find('#JobPeriodTime_hostdomain').val(data.jobPeriodTime);
+                modal.find('#JobExpireMinuteTime_hostdomain').val(data.jobExpireMinuteTime);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 swal.close();
@@ -145,9 +146,9 @@ function submitFormSubdomain() {
     });
 }
 
-function submitFormHostdomain() {
+function submitFormDeleteDnsJob() {
     loading();
-    let form = document.getElementById('jobHostDomainForm');
+    let form = document.getElementById('jobDeleteDnsJobForm');
     let formData = new FormData(form);
     $.ajax({
         url: formUrl,
@@ -156,8 +157,8 @@ function submitFormHostdomain() {
         contentType: false,
         processData: false,
         success: function (data) {
-            document.getElementById('jobHostDomainForm').reset();
-            $('#jobHostDomainModal').modal('toggle');
+            document.getElementById('jobDeleteDnsJobForm').reset();
+            $('#jobDeleteDnsJobModal').modal('toggle');
             data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
             window.location.reload();
         },

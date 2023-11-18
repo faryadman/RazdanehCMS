@@ -65,7 +65,7 @@
                                 <hr />
                                 <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">Change Domain Job</button>
                                 <button class="btn btn-success ml-lg-3" id="button" onclick="jobSubDomain()">Change SubDomain Job</button>
-                                <button class="btn btn-danger ml-lg-3" id="button" onclick="jobHostDomain()">Delete Dns Records (CNAME)</button>
+                                <button class="btn btn-danger ml-lg-3" id="button" onclick="jobDeleteDnsJob()">Delete Dns Records (CNAME)</button>
                                 <button class="btn btn-success ml-lg-3" id="button" onclick="jobIpConfigJob()">Job IpConfigJob</button>
                                 @*<button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>*@
                             </div>
@@ -167,7 +167,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="jobHostDomainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="jobDeleteDnsJobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -177,7 +177,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="jobHostDomainForm">
+                <form id="jobDeleteDnsJobForm">
                     <div class="form-group">
                         <label asp-for="IsActiveJob">وضعیت جاب</label>
                         <input id="IsActiveJob_hostdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
@@ -203,7 +203,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                <button onclick="submitFormHostdomain()" type="button" class="btn btn-success">تایید</button>
+                <button onclick="submitFormDeleteDnsJob()" type="button" class="btn btn-success">تایید</button>
             </div>
         </div>
     </div>

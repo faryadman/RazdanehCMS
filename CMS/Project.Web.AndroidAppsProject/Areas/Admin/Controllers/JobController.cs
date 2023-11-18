@@ -38,18 +38,20 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.IsActiveJob = job.IsActive;
             return View();
         }
-        public async Task<IActionResult> GetJobHostDomainData()
+        public async Task<IActionResult> GetDeleteDnsJobData()
         {
             var job = await _jobService.Detail("DeleteDnsJob");
             if (job == null)
             {
                 return Json(new CreateJobDTO());
             }
-            ViewBag.Email = job.Email ?? "";
-            ViewBag.ApiKey = job.ApiKey ?? "";
-            ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
-            ViewBag.IsActiveJob = job.IsActive;
-            return Json(job);
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
+            ViewBag.Email = jobDto.Email ?? "";
+            ViewBag.ApiKey = jobDto.ApiKey ?? "";
+            ViewBag.JobPeriodTime = jobDto.JobPeriodTime ?? 0;
+            ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime ?? 0;
+            ViewBag.IsActiveJob = jobDto.IsActiveJob;
+            return Json(jobDto);
         }
         public async Task<IActionResult> GetJobSubdomainData()
         {
@@ -58,11 +60,12 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             {
                 return Json(new CreateJobDTO());
             }
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
             ViewBag.Email = job.Email ?? "";
             ViewBag.ApiKey = job.ApiKey ?? "";
             ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
-            ViewBag.IsActiveJob = job.IsActive;
-            return Json(job);
+            ViewBag.IsActiveJob = jobDto.IsActiveJob;
+            return Json(jobDto);
         }
         public async Task<IActionResult> GetJobDomainData()
         {
@@ -145,7 +148,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             });
             return Json(new { status = "1", message = "done successfully" });
         }
-        public async Task<IActionResult> CreateHostDomainJob(CreateDomainJobDTO input)
+        public async Task<IActionResult> CreateDeleteDnsJobJob(CreateDomainJobDTO input)
         {
             //Insert job to db
             await InsertJob(new CreateJobDTO
