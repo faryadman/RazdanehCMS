@@ -1,25 +1,47 @@
 ﻿let serversTable = $('#serversTable').DataTable();
-
+let lastPage = getLastPage();
 let serversBaseUrl = "/admin/servers";
 let formUrl;
+
+function getLastPage() {
+    return localStorage.getItem('lastPage');
+}
+function reloadTableAndGoToPage(pageNumber) {
+    serversTable.page(pageNumber - 1).draw(false);
+}
+
+function saveLastPage() {
+    // حذف رویداد
+    serversTable.off('draw.dt');
+
+    serversTable.on('draw.dt').on('draw.dt', function () {
+        console.log('شماره صفحه فعلی: ', serversTable.page.info().page + 1);
+        localStorage.setItem('lastPage', serversTable.page.info().page + 1);
+    });
+}
 
 function getservers(isAd, filter) {
     filter = filter == undefined ? 1 : filter;
     let groupId = $('#selectedgroupId').val();
     let appId = $('#selectedappId').val();
+
     $.ajax({
         type: "GET",
         url: serversBaseUrl + '/List?groupId=' + groupId + '&appId=' + appId + '&isAd=' + isAd + '&filter=' + filter,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
-            console.log(result);
             serversTable.clear().draw();
             renderservers(result);
+            // تنظیم رویداد بعد از تغییر صفحه
+            saveLastPage()
+
+            // بازگشت به صفحه مورد نظر
+            let currentPageNumber = lastPage !== null ? lastPage : 1;
+            reloadTableAndGoToPage(currentPageNumber);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");
-
         }
     });
 
@@ -49,13 +71,12 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let buttonNewSubDomain = '<div><br><button class="btn btn-primary btn-sm" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>'
-        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>'
-        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>'
+        let buttonNewSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>'
+        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>'
+        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>'
 
-        let buttons = '<div>' +
-            item.currentDomainValue +
-            '<br><button class="btn btn-success btn-sm" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button><br/>' +
+        let buttons =  item.currentDomainValue +
+            '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>' +
             buttonNewSubDomain +
             buttonCreateDnsRecord +
             buttonDeleteDnsRecord + '</div>'
@@ -182,6 +203,7 @@ function subdomainRefresh(id) {
     })
 }
 function domainRefresh(id) {
+    saveLastPage();
     loading();
     let form = document.getElementById('serverForm');
     let formData = new FormData(form);

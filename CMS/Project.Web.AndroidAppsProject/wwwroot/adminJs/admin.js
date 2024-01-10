@@ -21,10 +21,60 @@ $(function () {
 
 function loading() {
     Swal.fire({
-        html: '<p>در حال بارگذاری</p><br/><p>درخواست هایی به سمت سرورهای کلودفلر ممکن یک تا سه دقیقه به طول بیانجامد</p><img src="/app-assets/load.gif"/>',
+        html: '<p>در حال بارگذاری</p><br/><p>درخواست به سمت سرورهای کلودفلر ممکن است یک تا سه دقیقه به طول بیانجامد</p><img src="/app-assets/load.gif"/>',
         allowOutsideClick: false,
         showCancelButton: false,
         showConfirmButton: false
+    });
+}
+function loadingTasks(totalTasks) {
+    Swal.fire({
+        title: 'در حال بارگذاری',
+        html: '<p id="progress-text">درخواست به سمت سرورهای کلودفلر ممکن است یک تا سه دقیقه به طول بیانجامد</p><img id="loading-image" src="/app-assets/load.gif"/>',
+        allowOutsideClick: false,
+        showCancelButton: false,
+        showConfirmButton: false,
+        didOpen: async () => {
+            let completedTasks = 0;
+            const progressText = document.getElementById('progress-text');
+            const loadingImage = document.getElementById('loading-image');
+
+            if (!progressText || !loadingImage) {
+                console.error('Element not found!');
+                return;
+            }
+
+            const progressInterval = setInterval(() => {
+                const progress = (completedTasks / totalTasks) * 100;
+                progressText.innerHTML = `%در حال بارگذاری  - ${Math.round(progress)}`;
+  
+                if (completedTasks === totalTasks) {
+                    clearInterval(progressInterval);
+                }
+            }, 5000);
+
+            const tasks = Array.from({ length: totalTasks }, (_, index) => {
+                return new Promise((resolve, reject) => {
+                    // Mocking an asynchronous task
+                    setTimeout(() => {
+                        // Assume the task is successful
+                        completedTasks++;
+                        resolve();
+                    }, 5000 * index);
+                });
+            });
+
+            try {
+                await Promise.all(tasks);
+            } catch (error) {
+                // Handle errors if any of the tasks fail
+                console.error(error);
+            } finally {
+                // Close loading once all tasks are complete
+                clearInterval(progressInterval);
+                Swal.close();
+            }
+        }
     });
 }
 
@@ -140,7 +190,8 @@ function RefreshSubDomainSelectedItems(itemBaseUrl, func, args) {
 
 function RefreshDomainSelectedItems(itemBaseUrl, func, args) {
     if (idsToBeRefreshed.length != 0) {
-        loading();
+        // Call the loading function with the total number of tasks
+        loadingTasks(idsToBeRefreshed.length);
         Swal.fire({
             title: '',
             text: confirmRefreshQuestion,
@@ -153,7 +204,7 @@ function RefreshDomainSelectedItems(itemBaseUrl, func, args) {
             buttonsStyling: false,
         }).then(function (result) {
             if (result.value) {
-                loading();
+                loadingTasks();
                 let vm = {
                     ids: idsToBeRefreshed.join("_")
                 };

@@ -150,11 +150,11 @@ RecurringJob.AddOrUpdate(
     "SubDomainJob",
     () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
     Cron.MinuteInterval(30));
-RecurringJob.AddOrUpdate(
+//RecurringJob.AddOrUpdate(
 
-    "DeleteDnsJob",
-    () => app.Services.GetService<ICronJobService>()!.ResetServerDns(),
-    Cron.MinuteInterval(10));
+//"DeleteDnsJob",
+//() => app.Services.GetService<ICronJobService>()!.ResetServerDns(),
+//Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 

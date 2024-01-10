@@ -34,5 +34,6 @@ namespace Project.Domain.Entities
         public bool IsLogAllowed { get; set; }
         public bool IsAdServerAllowed { get; set; }
         public long TimerCounter { get; set; }
+        public bool IsGdprAllowed { get; set; }
     }
 }

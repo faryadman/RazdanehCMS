@@ -25,13 +25,13 @@
     <script src="~/adminJs/apps.js"></script>
 }
 
-    @section scripts{
+@section scripts{
     <script>
 
     </script>
 }
 
-    @section vendorstyles{
+@section vendorstyles{
     <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/vendors-rtl.min.css">
     <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/tables/datatable/datatables.min.css">
     <!-- END: Vendor CSS-->
@@ -52,188 +52,201 @@
     <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
 }
 
-    <div class="content-body">
-        <section id="basic-horizontal-layouts">
-            <div class="row match-height">
-                <div class="col-md-12 col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">تنظیمات اپ</h4>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-body">
-                                <form id="editForm" class="form form-horizontal">
-                                    <div class="form-body">
-                                        <div class="row">
-                                            <input  hidden asp-for="Id"/>
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="AppTitle" class="label label-control lable-custom"></label>
-                                                    <input asp-for="AppTitle" type="text" class="form-control">
-                                                </div>
+<div class="content-body">
+    <section id="basic-horizontal-layouts">
+        <div class="row match-height">
+            <div class="col-md-12 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">تنظیمات اپ</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form id="editForm" class="form form-horizontal">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <input hidden asp-for="Id" />
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="AppTitle" class="label label-control lable-custom"></label>
+                                                <input asp-for="AppTitle" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="ApiRoute" class="label label-control lable-custom"></label>
-                                                    <input readonly asp-for="ApiRoute" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="ApiRoute" class="label label-control lable-custom"></label>
+                                                <input readonly asp-for="ApiRoute" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="StoreVersion" class="label label-control lable-custom"></label>
-                                                    <input asp-for="StoreVersion" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="StoreVersion" class="label label-control lable-custom"></label>
+                                                <input asp-for="StoreVersion" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="InterAC" class="label label-control lable-custom"></label>
-                                                    <input asp-for="InterAC" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="InterAC" class="label label-control lable-custom"></label>
+                                                <input asp-for="InterAC" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="InterAD" class="label label-control lable-custom"></label>
-                                                    <input asp-for="InterAD" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="InterAD" class="label label-control lable-custom"></label>
+                                                <input asp-for="InterAD" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="InterSP" class="label label-control lable-custom"></label>
-                                                    <input asp-for="InterSP" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="InterSP" class="label label-control lable-custom"></label>
+                                                <input asp-for="InterSP" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="InterPreOne" class="label label-control lable-custom"></label>
-                                                    <input asp-for="InterPreOne" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="InterPreOne" class="label label-control lable-custom"></label>
+                                                <input asp-for="InterPreOne" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="InterPreTwo" class="label label-control lable-custom"></label>
-                                                    <input asp-for="InterPreTwo" type="text" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="InterPreTwo" class="label label-control lable-custom"></label>
+                                                <input asp-for="InterPreTwo" type="text" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="SplashTimeOut" class="label label-control lable-custom"></label>
-                                                    <input asp-for="SplashTimeOut" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="SplashTimeOut" class="label label-control lable-custom"></label>
+                                                <input asp-for="SplashTimeOut" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="ResponseTimeout" class="label label-control lable-custom"></label>
-                                                    <input asp-for="ResponseTimeout" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="ResponseTimeout" class="label label-control lable-custom"></label>
+                                                <input asp-for="ResponseTimeout" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="RetryNumber" class="label label-control lable-custom"></label>
-                                                    <input asp-for="RetryNumber" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="RetryNumber" class="label label-control lable-custom"></label>
+                                                <input asp-for="RetryNumber" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="ShareUi" class="label label-control lable-custom"></label>
-                                                    <input asp-for="ShareUi" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="ShareUi" class="label label-control lable-custom"></label>
+                                                <input asp-for="ShareUi" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="Url" class="label label-control lable-custom"></label>
-                                                    <input asp-for="Url" class="form-control">
-                                                </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="Url" class="label label-control lable-custom"></label>
+                                                <input asp-for="Url" class="form-control">
                                             </div>
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="AppId" class="label label-control lable-custom"></label>
-                                                    <input asp-for="AppId" class="form-control">
-                                                </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="AppId" class="label label-control lable-custom"></label>
+                                                <input asp-for="AppId" class="form-control">
                                             </div>
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="BannerId" class="label label-control lable-custom"></label>
-                                                    <input asp-for="BannerId" class="form-control">
-                                                </div>
-                                            </div> 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="TimerCounter" class="label label-control lable-custom"></label>
-                                                    <input asp-for="TimerCounter" class="form-control">
-                                                </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="BannerId" class="label label-control lable-custom"></label>
+                                                <input asp-for="BannerId" class="form-control">
                                             </div>
-                                            <div style="visibility:hidden" class="col-lg-3 col-md-3 col-3 col-sm-12"></div>
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="IsAdmobActive" class="label label-control lable-custom"></label>
-                                                    <input asp-for="IsAdmobActive" class="form-control">
-                                                </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="TimerCounter" class="label label-control lable-custom"></label>
+                                                <input asp-for="TimerCounter" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="IsSplashActive" class="label label-control lable-custom"></label>
-                                                    <input asp-for="IsSplashActive" class="form-control">
-                                                </div>
-                                            </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="IsUpdateForce" class="label label-control lable-custom"></label>
-                                                    <input asp-for="IsUpdateForce" class="form-control">
-                                                </div>
+                                        <div style="visibility:hidden" class="col-lg-3 col-md-3 col-3 col-sm-12"></div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsGdprAllowed" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsGdprAllowed" class="form-control">
                                             </div>
+                                        </div>
 
-                                            <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="CheckIp" class="label label-control lable-custom"></label>
-                                                    <input asp-for="CheckIp" class="form-control">
-                                                </div>
-                                            </div>
 
-                                             <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="SendRandomServer" class="label label-control lable-custom"></label>
-                                                    <input asp-for="SendRandomServer" class="form-control">
-                                                </div>
-                                            </div>
-                                              <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="IsLogAllowed" class="label label-control lable-custom"></label>
-                                                    <input asp-for="IsLogAllowed" class="form-control">
-                                                </div>
-                                            </div>
-                                              <div class="col-lg-3 col-md-3 col-12 col-sm-12">
-                                                <div class="form-group">
-                                                    <label asp-for="IsAdServerAllowed" class="label label-control lable-custom"></label>
-                                                    <input asp-for="IsAdServerAllowed" class="form-control">
-                                                </div>
-                                            </div>
 
+
+                                        <div style="visibility:hidden" class="col-lg-3 col-md-3 col-3 col-sm-12"></div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsAdmobActive" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsAdmobActive" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsSplashActive" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsSplashActive" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsUpdateForce" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsUpdateForce" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="CheckIp" class="label label-control lable-custom"></label>
+                                                <input asp-for="CheckIp" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="SendRandomServer" class="label label-control lable-custom"></label>
+                                                <input asp-for="SendRandomServer" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsLogAllowed" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsLogAllowed" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label asp-for="IsAdServerAllowed" class="label label-control lable-custom"></label>
+                                                <input asp-for="IsAdServerAllowed" class="form-control">
+                                            </div>
                                         </div>
 
                                     </div>
 
-                                    <div class="col-md-8">
-                                        <button type="submit" class="btn btn-primary mr-1 mb-1">تایید</button>
-                                    </div>
-                                </form>
-                            </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <button type="submit" class="btn btn-primary mr-1 mb-1">تایید</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
