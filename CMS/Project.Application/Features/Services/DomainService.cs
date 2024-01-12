@@ -18,6 +18,9 @@ namespace Project.Application.Features.Services
         private readonly IServerService _serverService;
         private readonly IConfiguration _configuration;
 
+        // دیکشنری لوکال برای ذخیره زون‌ها با استفاده از نام دامنه به عنوان کلید
+        private static readonly Dictionary<string, string> zoneDictionary = new Dictionary<string, string>();
+
         public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, IConfiguration configuration)
         {
             _mapper = mapper;
@@ -30,7 +33,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted).ToList());
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted));
             return model;
         }
 
@@ -76,8 +79,8 @@ namespace Project.Application.Features.Services
             const string serverNamePath = "outbounds[0].streamSettings.tlsSettings.serverName";
             const string hostPath = "outbounds[0].streamSettings.wsSettings.headers.Host";
 
-            config.SelectToken(serverNamePath).Replace($"{newServerName}");
-            config.SelectToken(hostPath).Replace($"{newHost}");
+            config.SelectToken(serverNamePath)?.Replace($"{newServerName}");
+            config.SelectToken(hostPath)?.Replace($"{newHost}");
         }
         public JObject SetServerAddressStrings(string config, string newAddress)
         {
@@ -94,17 +97,10 @@ namespace Project.Application.Features.Services
         {
             try
             {
-                var domains = await GetAll();
-                if (domains.Count == 0)
-                {
-                    return "Domain doesn't exist!";
-                }
-
                 var server = await _serverService.Detail(serverId);
                 var config = server.Config;
-                var firstDomain = domains.FirstOrDefault(x => x.IsActive);
+                var firstDomain = await GetDomain();
                 var newDomain = firstDomain.DomainName;
-
                 var cnameValue = await ChangeCnameDomain(email, apiKey, server.CurrentDomainValue, newDomain);
 
                 UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
@@ -119,6 +115,17 @@ namespace Project.Application.Features.Services
                 return ex.Message;
             }
         }
+
+        private async Task<DomainDTO> GetDomain()
+        {
+            var domains = await GetAll();
+            if (domains.Count == 0)
+            {
+                return null;
+            }
+            return domains.FirstOrDefault(x => x.IsActive);
+        }
+
         public async Task<string> ChangeSubDomain(string serverId, string email, string apiKey)
         {
             try
@@ -330,11 +337,34 @@ namespace Project.Application.Features.Services
 
         private static async Task<string> GetCloudflareZoneId(IZoneClient cfClient, string cfDomain)
         {
+            // اگر لیست زون‌ها خالی باشد، ابتدا آن را دریافت کنید
+            if (zoneDictionary.Count == 0)
+            {
+                var zones = await cfClient.GetAllZonesAsync();
+                foreach (var zone1 in zones)
+                {
+                    zoneDictionary[zone1.Name] = zone1.Id;
+                }
+            }
 
-            var zones = await cfClient.GetAllZonesAsync();
-            var zone = zones.FirstOrDefault(z => z.Name == cfDomain);
-            return zone?.Id;
+            // اگر زون با این دامنه در دیکشنری وجود داشته باشد، آن را بازگردانی کنید
+            if (zoneDictionary.TryGetValue(cfDomain, out var zoneId))
+            {
+                return zoneId;
+            }
+
+            // در غیر این صورت، زون مربوط به دامنه را جستجو و به دیکشنری اضافه کنید
+            var zone = cfClient.GetAllZonesAsync().Result.FirstOrDefault(z => z.Name == cfDomain);
+            if (zone != null)
+            {
+                zoneDictionary[zone.Name] = zone.Id;
+                return zone.Id;
+            }
+
+            // اگر زون پیدا نشد، مقدار خالی یا یک مقدار پیش‌فرض (بسته به نیاز شما) بازگردانی شود
+            return string.Empty;
         }
+
 
         private static async Task UpdateDnsRecord(IDnsRecordClient cfClient, string cfZoneId, string newCnameValue, string cnameContent, string cfEmail, string cfApiKey)
         {

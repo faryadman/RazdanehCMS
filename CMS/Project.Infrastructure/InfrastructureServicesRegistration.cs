@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Project.Application.Contracts.Infrastructure;
-using Project.Application.Models;
-using Project.Infrastructure.FileStorage;
-using Project.Infrastructure.Sms;
 
 namespace Project.Infrastructure
 {
@@ -14,12 +10,8 @@ namespace Project.Infrastructure
             //services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
             //services.AddTransient<IEmailSender, EmailSender>();
 
-            services.Configure<SmsSettings>(configuration.GetSection("SmsSettings"));
-            services.AddTransient<ISmsSender, SmsSender>();
-
-            services.Configure<ArvanCloudSettings>(configuration.GetSection("ArvanCloudSettings"));
-            services.AddScoped<IFileStorageService, ArvanCloudStorageService>();
-            //services.AddScoped<IFileStorageService, InAppStorageService>();
+            //services.Configure<SmsSettings>(configuration.GetSection("SmsSettings"));
+            //services.AddTransient<ISmsSender, SmsSender>();
 
             return services;
         }

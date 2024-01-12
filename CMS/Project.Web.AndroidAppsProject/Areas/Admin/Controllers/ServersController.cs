@@ -151,32 +151,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             string apiKey = _configuration["CloudflareData:ApiKey"];
             string email = _configuration["CloudflareData:Email"];
-
-
-            // Create a list to store the tasks
-            var changeDomainTasks = new List<Task>();
-
-            // Iterate through the IDs and start a task for each
             foreach (var item in ids.Split("_"))
             {
-                // Start a task for each ChangeDomain operation
-                var task = _domainService.ChangeDomain(item, email, apiKey);
-                changeDomainTasks.Add(task);
+                await _domainService.ChangeDomain(item, email, apiKey);
             }
-
-            try
-            {
-                // Wait for all tasks to complete
-                await Task.WhenAll(changeDomainTasks);
-
-                // All tasks completed successfully
-                return Json(new { status = "1", message = "done successfully" });
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions if any of the tasks fail
-                return Json(new { status = "0", message = $"An error occurred: {ex.Message}" });
-            }
+            return Json(new { status = "1", message = "done successfully" });
         }
         public IActionResult Logs(int serverId)
         {

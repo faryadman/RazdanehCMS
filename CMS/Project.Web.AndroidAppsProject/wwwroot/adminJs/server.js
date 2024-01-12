@@ -71,15 +71,17 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let buttonNewSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>'
-        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>'
-        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>'
+        let buttonRefreshDomain = '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>';
+        let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
+        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
+        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
 
-        let buttons =  item.currentDomainValue +
-            '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>' +
-            buttonNewSubDomain +
+        let buttons = item.currentDomainValue +
+            buttonRefreshDomain +
+            buttonRefreshSubDomain +
             buttonCreateDnsRecord +
-            buttonDeleteDnsRecord + '</div>'
+            buttonDeleteDnsRecord;
+
         let config = item.config;
         let configObject = JSON.parse(config);
         console.log(configObject);
