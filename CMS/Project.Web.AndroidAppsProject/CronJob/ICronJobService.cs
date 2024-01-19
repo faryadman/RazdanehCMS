@@ -5,5 +5,6 @@
         Task ResetServerLog();
         Task ResetServerSubDomain();
         Task ResetServerDns();
+        Task CheckZoneId();
     }
 }

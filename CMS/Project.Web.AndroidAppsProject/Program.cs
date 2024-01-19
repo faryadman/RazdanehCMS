@@ -150,6 +150,11 @@ RecurringJob.AddOrUpdate(
     "SubDomainJob",
     () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
     Cron.MinuteInterval(30));
+
+RecurringJob.AddOrUpdate(
+    "CheckZoneId",
+    () => app.Services.GetService<ICronJobService>()!.CheckZoneId(),
+    Cron.Daily(23, 59));
 //RecurringJob.AddOrUpdate(
 
 //"DeleteDnsJob",

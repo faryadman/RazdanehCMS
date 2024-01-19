@@ -1,11 +1,7 @@
-﻿using CloudFlare.NET;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Server;
-using Project.Application.Extensions;
-using Project.Application.Features;
 using Project.Application.Features.Interfaces;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
@@ -143,17 +139,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             foreach (var item in ids.Split("_"))
             {
-                await ChangeSubDomain(item);
+                await _domainService.ChangeSubDomain(item);
             }
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> RefreshDomain(string ids)
         {
-            string apiKey = _configuration["CloudflareData:ApiKey"];
-            string email = _configuration["CloudflareData:Email"];
             foreach (var item in ids.Split("_"))
             {
-                await _domainService.ChangeDomain(item, email, apiKey);
+                await _domainService.ChangeDomain(item);
             }
             return Json(new { status = "1", message = "done successfully" });
         }
@@ -177,91 +171,21 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return Json(new { status = "1", message = "done successfully" });
         }
 
-
         public async Task<IActionResult> ChangeDomain(string id)
         {
-            var apiKey = _configuration["CloudflareData:ApiKey"];
-            var email = _configuration["CloudflareData:Email"];
-            return Json(new { status = "1", message = await _domainService.ChangeDomain(id, email, apiKey) });
+            return Json(new { status = "1", message = await _domainService.ChangeDomain(id) });
         }
-
         public async Task<IActionResult> ChangeSubDomain(string id)
         {
-            var server = await _serverService.Detail(id);
-            var config = server.Config;
-            var jsonObject = JObject.Parse(config);
-            var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
-            var hostString = jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"]?.ToString().Split(".");
-            var subName = GenerateWordExtention.GenerateWords(4)[0];
-            var subServerName = GenerateWordExtention.GenerateWords(3)[0];
-            var serverName = $"{subServerName}.{serverNameString?[1]}.{serverNameString?[2]}";
-            var host = $"{subName}.{hostString?[1]}.{hostString?[2]}";
-            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = serverName;
-            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = host;
-            var updatedJsonString = jsonObject.ToString();
-            server.Config = updatedJsonString;
-            await _serverService.Edit(new EditServerDTO()
-            {
-                Config = server.Config,
-                ServerName = server.ServerName,
-                ConfigValue = server.ConfigValue,
-                ConfigKey = server.ConfigKey,
-                Ip = server.Ip,
-                IsForHamraheAvval = server.IsForHamraheAvval,
-                IsForIrancell = server.IsForIrancell,
-                ItemId = server.Id,
-                Location = server.Location,
-                CurrentDomainValue = server.CurrentDomainValue,
-                IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow
-            });
-            var currentDomainValue = serverNameString;
-            // Your Cloudflare API credentials
-            var cfEmail = _configuration["CloudflareData:Email"];
-            var cfApiKey = _configuration["CloudflareData:ApiKey"];
-
-            // Your Cloudflare zone ID and domain name
-            var cfZoneId = string.Empty;
-            var cfDomain = $"{currentDomainValue?[1]}.{currentDomainValue?[2]}";
-            var auth = new CloudFlareAuth(cfEmail, cfApiKey);
-            var cfClient = new CloudFlareClient(auth);
-            var zones = await cfClient.GetAllZonesAsync();
-            foreach (var zone in zones)
-            {
-                if (zone.Name == cfDomain)
-                    cfZoneId = new IdentifierTag(zone.Id);
-            }
-            // Get the list of DNS records in the zone
-            var dnsRecords = await cfClient.GetDnsRecordsAsync(cfZoneId);
-
-            // Find the CNAME record based on its name
-            var cnameRecord = dnsRecords.Result.FirstOrDefault(record => record.Type == DnsRecordType.CNAME);
-            var cloudflare = new CloudflareApiClient();
-            if (cnameRecord != null)
-            {
-                // Update the CNAME record with the new value
-                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, host, server.CurrentDomainValue, cfApiKey, cfEmail);
-            }
-            else
-            {
-                // Create the CNAME record with the new value
-                await cloudflare.CreateDnsRecordAsync(cfZoneId, host, server.CurrentDomainValue, cfApiKey, cfEmail); ;
-            }
-
-            return Json(new { status = "1", message = "Done Subdomain !" });
+            return Json(new { status = "1", message = await _domainService.ChangeSubDomain(id) });
         }
-
         public async Task<IActionResult> CreateDnsRecord(string id)
         {
-            var apiKey = _configuration["CloudflareData:ApiKey"];
-            var email = _configuration["CloudflareData:Email"];
-            return Json(new { status = "1", message = await _domainService.CreateDnsAsync(id, email, apiKey) });
+            return Json(new { status = "1", message = await _domainService.CreateDnsAsync(id) });
         }
         public async Task<IActionResult> DeleteDnsRecord(string id)
         {
-            var apiKey = _configuration["CloudflareData:ApiKey"];
-            var email = _configuration["CloudflareData:Email"];
-            return Json(new { status = "1", message = await _domainService.DeleteDnsAsync(id, email, apiKey) });
+            return Json(new { status = "1", message = await _domainService.DeleteDnsAsync(id) });
         }
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)

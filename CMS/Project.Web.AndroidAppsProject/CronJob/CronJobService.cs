@@ -27,5 +27,11 @@ namespace Project.Web.AndroidAppsProject.CronJob
             var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
             await serverChangeSubDomainService.DeleteDnsAsync();
         }
+
+        public async Task CheckZoneId()
+        {
+            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+            await serverChangeSubDomainService.InitZoneId();
+        }
     }
 }

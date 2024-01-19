@@ -13,12 +13,12 @@ namespace Project.Application.Features.Interfaces
         Task<List<DomainDTO>> ListInactiveDomain();
         JObject SetServerAddressStrings(string config, string newAddress);
         string GetServerAddressStrings(string config);
-        Task<string> ChangeDomain(string serverId, string email, string apiKey);
-        Task<string> ChangeSubDomain(string serverId, string email, string apiKey);
-        Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn, string email, string apiKey);
-        Task<string> DeleteDnsAsync(string serverId, string email, string apiKey);
-        Task<string> CreateDnsAsync(string serverId, string email, string apiKey);
+        Task<string> ChangeDomain(string zoneId);
+        Task<string> ChangeSubDomain(string serverId);
+        Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn);
+        Task<string> DeleteDnsAsync(string serverId = null, string expireMinuteOn = null);
+        Task<string> CreateDnsAsync(string serverId);
         Task ChangeSubDomain();
-        Task DeleteDnsAsync(string expireTime = "180");
+        Task InitZoneId();
     }
 }

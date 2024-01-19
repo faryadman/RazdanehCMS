@@ -8,6 +8,7 @@ namespace Project.Application.DTOs.Domain
         public string DomainName { get; set; }
         [Required]
         public string FileName { get; set; }
+        public string ZoneId { get; set; }
 
     }
 }

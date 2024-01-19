@@ -404,7 +404,7 @@ namespace Project.Application.Features.Services
                 Location = server.Location,
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow
+                DomainDateTime = DateTime.UtcNow,
             });
             return server.CurrentDomainValue;
         }
@@ -423,7 +423,7 @@ namespace Project.Application.Features.Services
                 Location = server.Location,
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow
+                DomainDateTime = DateTime.UtcNow,
             });
         }
     }

@@ -241,7 +241,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                     percentFailConnection >= domainJobDto.FailConnectionPercent &&
                     failConnection >= domainJobDto.FailConnectionCount)
                 {
-                    await _domainService.ChangeDomain(id.ToString(), jobDto.Email, jobDto.ApiKey);
+                    await _domainService.ChangeDomain(id.ToString());
                 }
             }
         }
@@ -261,7 +261,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
             if (jobDto == null)
                 return;
-            await _domainService.DeleteDnsAsync(domainJobDto?.JobExpireMinuteTime.ToString());
+            await _domainService.DeleteDnsAsync(expireMinuteOn: domainJobDto?.JobExpireMinuteTime.ToString());
         }
         public async Task CheckIpConfigJob()
         {
@@ -279,19 +279,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 var server = await _serverService.GetServerStatistics(id);
                 if (server?.AllLogsStatistics == null)
                     continue;
-                //TODO: IF Success Result Convert to extention method!
-                //var totalSuccessConnection = server.AllLogsStatistics.Count;
-                //var successConnection = server.AllLogsStatistics.SuccessCount;
-                //var failConnection = server.AllLogsStatistics.FailCount;
-                //var percentSuccessConnection = (int)Math.Round((double)(100 * successConnection) / totalSuccessConnection);
-                //var percentFailConnection = (int)Math.Round((double)(100 * failConnection) / totalSuccessConnection);
-                //TODO: IF Success Result Convert to extention method
                 var start = server.DomainDateTime;
                 var now = DateTime.Now;
                 var ts = now.Subtract(start);
                 if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime)
-                //percentFailConnection >= domainJobDto.FailConnectionPercent &&
-                //failConnection >= domainJobDto.FailConnectionCount)
                 {
                     await _configService.GenerateUpdateAsync(id.ToString(), jobDto.Email, jobDto.ApiKey);
                 }

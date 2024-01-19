@@ -6,6 +6,7 @@ namespace Project.Application.DTOs.Domain
     {
         public string DomainName { get; set; }
         public string FileName { get; set; }
+        public string ZoneId { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
 

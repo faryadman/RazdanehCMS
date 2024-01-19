@@ -40,8 +40,8 @@ function renderdomains(data) {
             (i + 1),
             item.id,
             item.domainName,
+            item.zoneId,
             '<div>  ' + item.fileName + '  <hr/> ' + item.updatedAtFormatted + ' </div>',
-            deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 
         if (isOdd) {
