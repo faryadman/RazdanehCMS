@@ -48,6 +48,7 @@ function getservers(isAd, filter) {
 }
 
 function renderservers(data) {
+    console.log(data);
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];

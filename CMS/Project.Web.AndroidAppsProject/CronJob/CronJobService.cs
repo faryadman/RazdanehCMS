@@ -1,4 +1,5 @@
 ﻿using Project.Application.Features.Interfaces;
+using Serilog;
 
 namespace Project.Web.AndroidAppsProject.CronJob
 {
@@ -19,8 +20,15 @@ namespace Project.Web.AndroidAppsProject.CronJob
 
         public async Task ResetServerSubDomain()
         {
-            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
-            await serverChangeSubDomainService.ChangeSubDomain();
+            try
+            {
+                var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+                await serverChangeSubDomainService.ChangeSubDomain();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
         }
         public async Task ResetServerDns()
         {

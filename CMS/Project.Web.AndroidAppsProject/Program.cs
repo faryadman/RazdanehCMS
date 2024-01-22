@@ -11,6 +11,7 @@ using Project.Domain.Entities;
 using Project.Persistence;
 using Project.Web.AndroidAppsProject.CronJob;
 using Project.Web.AndroidAppsProject.Dapper;
+using Serilog;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -113,7 +114,12 @@ builder.Services
     {
         options.ViewLocationFormats.Add("/{0}.cshtml");
     });
-
+string path = builder.Configuration["Serilog:path"];
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(path)
+    .MinimumLevel.Warning()
+    .CreateLogger();
+builder.Host.UseSerilog();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

@@ -1,0 +1,53 @@
+2024-01-23 02:31:38.882 +03:30 [ERR] Unexpected character encountered while parsing value: “. Path 'outbounds[0].settings.vnext[0].address', line 54, position 23.
+2024-01-23 02:31:43.985 +03:30 [WRN] Failed to process the job 'a6d30695-1434-487d-bba3-72eb7adbbc5d': an exception occurred. Retry attempt 1 of 10 will be performed in 00:00:32.
+Project.Application.Exceptions.NotFoundException: سرور یافت نشد پیدا نشد
+   at Project.Application.Features.Services.DomainService.ChangeSubDomain(String serverId) in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Application\Features\Services\DomainService.cs:line 134
+   at Project.Application.Features.Services.DomainService.ChangeSubDomain() in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Application\Features\Services\DomainService.cs:line 201
+   at Project.Web.AndroidAppsProject.CronJob.CronJobService.ResetServerSubDomain() in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Web.AndroidAppsProject\CronJob\CronJobService.cs:line 23
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+2024-01-23 02:33:28.112 +03:30 [ERR] Failed executing DbCommand (35,644ms) [Parameters=[@__input_ItemId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [s].[Id], [s].[Config], [s].[ConfigKey], [s].[ConfigValue], [s].[CreatedAt], [s].[CreatedBy], [s].[CurrentDomainValue], [s].[DomainDateTime], [s].[GroupId], [s].[Ip], [s].[IsActive], [s].[IsAd], [s].[IsAvailable], [s].[IsForHamraheAvval], [s].[IsForIrancell], [s].[IsNewDomain], [s].[Location], [s].[ServerName], [s].[UpdatedAt], [s].[UpdatedBy]
+FROM [Servers] AS [s]
+WHERE [s].[Id] = @__input_ItemId_0
+2024-01-23 02:33:33.196 +03:30 [ERR] An exception occurred while iterating over the results of a query for context type 'Project.Persistence.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__209_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__272_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:2215e1c1-0a35-4fe1-9237-f04fda838f5f
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__209_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__272_0(Object obj)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:2215e1c1-0a35-4fe1-9237-f04fda838f5f
+Error Number:-2,State:0,Class:11
+2024-01-23 02:33:33.677 +03:30 [ERR] Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+2024-01-23 02:33:34.257 +03:30 [WRN] Failed to process the job 'a6d30695-1434-487d-bba3-72eb7adbbc5d': an exception occurred. Retry attempt 2 of 10 will be performed in 00:00:54.
+Project.Application.Exceptions.NotFoundException: سرور یافت نشد پیدا نشد
+   at Project.Application.Features.Services.DomainService.ChangeSubDomain(String serverId) in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Application\Features\Services\DomainService.cs:line 134
+   at Project.Application.Features.Services.DomainService.ChangeSubDomain() in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Application\Features\Services\DomainService.cs:line 201
+   at Project.Web.AndroidAppsProject.CronJob.CronJobService.ResetServerSubDomain() in E:\Freelancer\project01\RazdanehCMS\CMS\Project.Web.AndroidAppsProject\CronJob\CronJobService.cs:line 23
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()

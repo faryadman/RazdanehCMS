@@ -6,8 +6,10 @@ using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Domain;
 using Project.Application.DTOs.Server;
+using Project.Application.Exceptions;
 using Project.Application.Extensions;
 using Project.Application.Features.Interfaces;
+using Serilog;
 
 namespace Project.Application.Features.Services
 {
@@ -99,7 +101,7 @@ namespace Project.Application.Features.Services
             catch (Exception ex)
             {
                 // Handle exceptions here
-                return ex.Message;
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
 
@@ -127,8 +129,9 @@ namespace Project.Application.Features.Services
             }
             catch (Exception ex)
             {
+                Log.Error(ex.Message);
                 // Handle exceptions here
-                return ex.Message;
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
         public async Task<string> DeleteDnsAsync(string serverId, string expireTime)
@@ -154,8 +157,9 @@ namespace Project.Application.Features.Services
             }
             catch (Exception ex)
             {
+                Log.Error(ex.Message);
                 // Handle exceptions here
-                return ex.Message;
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
 
@@ -185,7 +189,8 @@ namespace Project.Application.Features.Services
             catch (Exception ex)
             {
                 // Handle exceptions here
-                return ex.Message;
+                Log.Error(ex.Message);
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
         public async Task ChangeSubDomain()
@@ -208,7 +213,8 @@ namespace Project.Application.Features.Services
             catch (Exception ex)
             {
                 // Handle exceptions here
-                return ex.Message;
+                Log.Error(ex.Message);
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
 
@@ -280,7 +286,7 @@ namespace Project.Application.Features.Services
             catch (Exception ex)
             {
                 // Handle exceptions here
-                return "fail";
+                throw new NotFoundException("سرور یافت نشد");
             }
         }
         private async Task<string> DeleteAndCheckDnsAsync(string serverId, string minuteTimeOn, string email, string apiKey)

@@ -40,12 +40,12 @@ namespace Project.Application.Features.Services
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
         {
             var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.IsAd == isAd);
+            query = query.Where(x => x.IsActive && x.IsAvailable && x.IsAd == isAd);
 
-            if (filter != 0)
-            {
-                query = filter == 1 ? query.Where(x => x.IsAvailable) : query.Where(x => !x.IsAvailable);
-            }
+            //if (filter != 0)
+            //{
+            //    query = filter == 1 ? query.Where(x => x.IsAvailable) : query.Where(x => !x.IsAvailable);
+            //}
 
             if (groupId != null)
                 query = query.Where(x => x.GroupId == groupId);
@@ -211,7 +211,7 @@ namespace Project.Application.Features.Services
             var app = await GetCachedAppSetting(apiRoute); // Use a method to fetch app settings with caching
 
             if (string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn))
-                throw new BadRequestException("this app has no server");
+                throw new NotFoundException("برنامه ای یافت نشد");
 
             var groups = app.GroupsThatAppIsJoinedIn.Split("_");
 
