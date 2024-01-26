@@ -42,10 +42,10 @@ namespace Project.Application.Features.Services
             var query = _serverRepository.GetAllQueryable();
             query = query.Where(x => x.IsActive && x.IsAvailable && x.IsAd == isAd);
 
-            //if (filter != 0)
-            //{
-            //    query = filter == 1 ? query.Where(x => x.IsAvailable) : query.Where(x => !x.IsAvailable);
-            //}
+            if (filter != 0)
+            {
+                query = filter == 1 ? query.Where(x => x.IsAvailable) : query.Where(x => !x.IsAvailable);
+            }
 
             if (groupId != null)
                 query = query.Where(x => x.GroupId == groupId);
@@ -337,7 +337,7 @@ namespace Project.Application.Features.Services
         {
             var data = await _serverRepository.GetAll();
 
-            return data.Where(x => x.IsActive).Select(x => x.Id).ToList();
+            return data.Where(x => x.IsActive && x.IsAvailable).Select(x => x.Id).ToList();
         }
 
         public async Task<List<int>> GetActiveIds()

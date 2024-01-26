@@ -587,6 +587,11 @@ function onClickChangeServerAddresses() {
     $('#changeServerAddressModal').modal();
     swal.close();
 }
+function onClickDeleteDns() {
+    loading();
+    $('#onClickDeleteDns').modal();
+    swal.close();
+}
 
 function onClickChangeServerAddressSubmit() {
     $('#changeServerAddressModal').modal('toggle');

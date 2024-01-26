@@ -179,3 +179,47 @@ function RefreshDomainSelectedItems(itemBaseUrl, func, args) {
         toastr.error('Please choose an item first');
     }
 }
+
+function DnsDeleteSelectedItems(itemBaseUrl, func, args) {
+    console.log(itemBaseUrl);
+    console.log(idsToBeDeleted);
+    if (idsToBeDeleted.length != 0) {
+        loading();
+        Swal.fire({
+            title: '',
+            text: confirmDeleteQuestion,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonClass: 'btn btn-primary',
+            cancelButtonClass: 'btn btn-danger ml-1',
+            buttonsStyling: false,
+        }).then(function (result) {
+            if (result.value) {
+                loading();
+                let vm = {
+                    ids: idsToBeDeleted.join("_")
+                };
+                $.ajax({
+                    type: "POST",
+                    url: itemBaseUrl + '/MassDnsDelete',
+                    data: vm,
+                    success: function (data) {
+                        func(args);
+                        data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        let errors = xhr.responseJSON.errors;
+                        for (var i = 0; i < errors.length; i++) {
+                            toastr.error(errors[i]);
+                        }
+                        swal.close();
+                    }
+                })
+            }
+        });
+    } else {
+        toastr.error('Please choose an item first');
+    }
+}
