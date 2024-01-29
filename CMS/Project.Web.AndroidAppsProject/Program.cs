@@ -116,10 +116,9 @@ builder.Services
     });
 string path = builder.Configuration["Serilog:path"];
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.File(path)
+    .WriteTo.File(path, rollingInterval: RollingInterval.Hour)
     .MinimumLevel.Warning()
-    .CreateLogger();
-builder.Host.UseSerilog();
+    .CreateLogger(); builder.Host.UseSerilog();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
