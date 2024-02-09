@@ -201,6 +201,14 @@ namespace Project.Application.Features.Services
                 await ChangeSubDomain(id.ToString());
             }
         }
+        public async Task ChangeDomain()
+        {
+            var serverIds = await _serverService.GetActiveIds();
+            foreach (var id in serverIds)
+            {
+                await ChangeDomain(id.ToString());
+            }
+        }
 
         public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn)
         {

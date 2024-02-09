@@ -241,7 +241,7 @@ namespace Project.Application.Features.Services
             // تنظیم انقضای داده‌ها به یک دقیقه
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
             };
             _memoryCache.Set($"AppSetting_{apiRoute}", appSetting, cacheEntryOptions);
 

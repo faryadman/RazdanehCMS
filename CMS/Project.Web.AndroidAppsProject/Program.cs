@@ -7,7 +7,6 @@ using Project.Application;
 using Project.Application.Filters;
 using Project.Application.Middlewares;
 using Project.Domain.Entities;
-//using Project.Infrastructure;
 using Project.Persistence;
 using Project.Web.AndroidAppsProject.CronJob;
 using Project.Web.AndroidAppsProject.Dapper;
@@ -21,7 +20,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.ConfigureApplicationServices();
-//builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
@@ -151,15 +149,20 @@ RecurringJob.AddOrUpdate(
     () => app.Services.GetService<ICronJobService>()!.ResetServerLog(),
 Cron.MinuteInterval(10));
 
-RecurringJob.AddOrUpdate(
-    "SubDomainJob",
-    () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
-    Cron.MinuteInterval(30));
+//RecurringJob.AddOrUpdate(
+//    "SubDomainJob",
+//    () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
+//    Cron.MinuteInterval(30));
+
+//RecurringJob.AddOrUpdate(
+//    "DomainJob",
+//    () => app.Services.GetService<ICronJobService>()!.ResetServerDomain(),
+//    Cron.MinuteInterval(2));
 
 RecurringJob.AddOrUpdate(
     "CheckZoneId",
     () => app.Services.GetService<ICronJobService>()!.CheckZoneId(),
-    Cron.Daily(23, 59));
+     Cron.MinuteInterval(45));
 //RecurringJob.AddOrUpdate(
 
 //"DeleteDnsJob",

@@ -17,12 +17,11 @@ namespace Project.Application.DTOs.Server
         [Required]
         public string CurrentDomainValue { get; set; }
         public int GroupId { get; set; }
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; } = true;
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }
         public bool IsAd { get; set; }
         public bool IsNewDomain { get; set; } = false;
-        public DateTime DomainDateTime { get; set; }
-
+        public DateTime DomainDateTime { get; set; } = DateTime.UtcNow;
     }
 }

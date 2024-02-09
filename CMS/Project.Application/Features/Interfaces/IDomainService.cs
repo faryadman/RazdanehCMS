@@ -19,6 +19,7 @@ namespace Project.Application.Features.Interfaces
         Task<string> DeleteDnsAsync(string serverId = null, string expireMinuteOn = null);
         Task<string> CreateDnsAsync(string serverId);
         Task ChangeSubDomain();
+        Task ChangeDomain();
         Task InitZoneId();
     }
 }

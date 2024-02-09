@@ -30,6 +30,18 @@ namespace Project.Web.AndroidAppsProject.CronJob
                 Log.Error(ex.Message);
             }
         }
+        public async Task ResetServerDomain()
+        {
+            try
+            {
+                var serverChangeDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+                await serverChangeDomainService.ChangeDomain();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+        }
         public async Task ResetServerDns()
         {
             var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
