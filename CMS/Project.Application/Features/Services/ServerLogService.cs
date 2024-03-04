@@ -111,11 +111,11 @@ namespace Project.Application.Features.Services
         {
             DeleteServerLogs().GetAwaiter().GetResult();
         }
-        public async Task<ApiLogDTO> GetLastLog()
+        public Task<ApiLogDTO> GetLastLog()
         {
-            var query = await _serverLogRepository.GetAll();
-            var model = query.OrderBy(x => x.Id);
-            return _mapper.Map<ApiLogDTO>(model);
+            var query = _serverLogRepository.FindQueryable(x => x.IsActive == true).OrderByDescending(x => x.Id);
+            var model = query.LastOrDefault();
+            return Task.FromResult(_mapper.Map<ApiLogDTO>(model));
         }
     }
 }
