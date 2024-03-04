@@ -23,6 +23,8 @@ namespace Project.Application.Features.Services
         private readonly IOperatorIdentificationService _operatorIdentificationService;
         private readonly IMemoryCache _memoryCache;
         private MemoryCacheEntryOptions _cacheEntryOptions;
+        private static ThreadLocal<Random> _random = new ThreadLocal<Random>(() => new Random());
+
         public ServerService(IServerRepository serverRepository, IMapper mapper, IAppSettingService appSettingService, IOperatorIdentificationService operatorIdentificationService, IMemoryCache memoryCache, IServerLogService serverLogService)
         {
             _serverRepository = serverRepository;
@@ -40,7 +42,7 @@ namespace Project.Application.Features.Services
         public async Task<List<ServerDTO>> GetWithFilter(int? groupId, int? appId, bool isAd, int filter = 1)
         {
             var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.IsAvailable && x.IsAd == isAd);
+            query = query.Where(x => x.IsActive && x.IsAd == isAd);
 
             if (filter != 0)
             {
@@ -279,7 +281,7 @@ namespace Project.Application.Features.Services
                 var enumerable = allowedServers.ToList();
                 if (enumerable.Any())
                 {
-                    var random = new Random();
+                    var random = _random.Value;
                     var index = random.Next(enumerable.Count());
                     server = enumerable.ElementAt(index);
                     return server;
@@ -287,14 +289,14 @@ namespace Project.Application.Features.Services
             }
             if (lastLog == null)
             {
-                var random = new Random();
+                var random = _random.Value;
                 var index = random.Next(servers.Count());
                 server = servers.ElementAt(index);
             }
             else
             {
                 var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-                server = lastServerIndex < 1 ? servers.FirstOrDefault() : servers.ElementAt(lastServerIndex + 1);
+                server = lastServerIndex < 1 ? servers.LastOrDefault() : servers.ElementAt(lastServerIndex + 1);
             }
             return server;
 

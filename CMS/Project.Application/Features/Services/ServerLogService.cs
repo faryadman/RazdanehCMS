@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.ServerLog;
@@ -114,8 +113,8 @@ namespace Project.Application.Features.Services
         }
         public async Task<ApiLogDTO> GetLastLog()
         {
-            var query = _serverLogRepository.FindQueryable(x => x.IsActive == true).OrderByDescending(x => x.Id);
-            var model = await query.FirstOrDefaultAsync();
+            var query = await _serverLogRepository.GetAll();
+            var model = query.OrderByDescending(x => x.Id);
             return _mapper.Map<ApiLogDTO>(model);
         }
     }
