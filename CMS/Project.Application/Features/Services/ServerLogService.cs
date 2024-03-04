@@ -114,7 +114,7 @@ namespace Project.Application.Features.Services
         public async Task<ApiLogDTO> GetLastLog()
         {
             var query = await _serverLogRepository.GetAll();
-            var model = query.OrderByDescending(x => x.Id);
+            var model = query.OrderBy(x => x.Id);
             return _mapper.Map<ApiLogDTO>(model);
         }
     }
