@@ -35,7 +35,7 @@ namespace Project.Application.Features.Services
             _serverLogService = serverLogService;
             _cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
             };
         }
 
@@ -270,10 +270,10 @@ namespace Project.Application.Features.Services
             };
         }
 
-        private async Task<Server> SelectServer(IEnumerable<Server> servers, bool sendRandomServer, int appSettingId)
+        private Task<Server> SelectServer(IEnumerable<Server> servers, bool sendRandomServer, int appSettingId)
         {
             Server server;
-            var lastLog = await _serverLogService.GetLastLog();
+            var lastLog = _serverLogService.GetLastLog().Result;
             if (sendRandomServer)
             {
                 var serverNotToReturnId = lastLog?.ServerId ?? 0;
@@ -284,7 +284,7 @@ namespace Project.Application.Features.Services
                     var random = _random.Value;
                     var index = random.Next(enumerable.Count());
                     server = enumerable.ElementAt(index);
-                    return server;
+                    return Task.FromResult(server);
                 }
             }
             if (lastLog == null)
@@ -296,9 +296,9 @@ namespace Project.Application.Features.Services
             else
             {
                 var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-                server = lastServerIndex < 1 ? servers.LastOrDefault() : servers.ElementAt(lastServerIndex + 1);
+                server = lastServerIndex < 1 ? servers.LastOrDefault() : servers.Where(x => x.Id != lastServerIndex).LastOrDefault();
             }
-            return server;
+            return Task.FromResult(server);
 
         }
 
