@@ -296,7 +296,7 @@ namespace Project.Application.Features.Services
             else
             {
                 var lastServerIndex = servers.Select(x => x.Id).ToList().IndexOf(lastLog.ServerId);
-                server = lastServerIndex < 1 ? servers.LastOrDefault() : servers.Where(x => x.Id != lastServerIndex).SingleOrDefault();
+                server = lastServerIndex <= 1 ? servers.LastOrDefault() : servers.LastOrDefault(x => x.Id != lastServerIndex);
             }
             return Task.FromResult(server);
 
