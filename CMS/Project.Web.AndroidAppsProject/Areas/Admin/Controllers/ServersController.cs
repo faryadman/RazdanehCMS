@@ -135,6 +135,20 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             }
             return Json(new { status = "1", message = "done successfully" });
         }
+
+        [Route("/admin/[controller]/getZoneIds")]
+        public async Task<IActionResult> GetZoneIds()
+        {
+            try
+            {
+                await _domainService.InitZoneId();
+                return Json(new { status = "1", message = "done successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "0", message = ex.Message });
+            }
+        }
         public async Task<IActionResult> RefreshSubdomain(string ids)
         {
             foreach (var item in ids.Split("_"))

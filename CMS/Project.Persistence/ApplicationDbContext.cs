@@ -16,6 +16,19 @@ namespace Project.Persistence
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            //var user = new User
+            //{
+            //    Id = "1",
+            //    UserName = "admin",
+            //    NormalizedUserName = "ADMIN",
+            //    Email = "admin@bhsht.top",
+            //    NormalizedEmail = "ADMIN@bhsht.top",
+            //    EmailConfirmed = true,
+            //    PasswordHash = new PasswordHasher<User>().HashPassword(null, "Admin@123")
+            //};
+            //modelBuilder.Entity<User>().HasData(user);
+            //modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "admin", NormalizedName = "admin".ToUpper() });
+
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
