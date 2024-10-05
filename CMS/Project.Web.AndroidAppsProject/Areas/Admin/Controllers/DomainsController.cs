@@ -35,6 +35,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _domainService.Create(input);
             return Json(new { status = "1", message = "done successfully" });
         }
+        public async Task<IActionResult> CheckZoneId()
+        {
+            await _domainService.CheckZoneId();
+            return Json(new { status = "1", message = "done successfully" });
+        }
         public async Task<IActionResult> DeleteDomain(int id)
         {
             await _domainService.Delete(id);

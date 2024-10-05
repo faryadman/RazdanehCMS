@@ -39,6 +39,27 @@ namespace Project.Application.Features.Services
                 await Update(domain);
             }
         }
+        public async Task CheckZoneId()
+        {
+            var queryable = _domainRepository.FindQueryable(a => string.IsNullOrEmpty(a.ZoneId) && a.IsActive == true).Select(
+                d => new DomainDTO()
+                {
+                    IsActive = true,
+                    ZoneId = null,
+                    DomainName = d.DomainName,
+                    FileName = d.FileName,
+                    Id = d.Id,
+                    IsDeleted = false,
+                    UpdatedAt = DateTime.Now
+                });
+            var domains = await queryable.ToListAsync();
+            foreach (var domain in domains)
+            {
+                domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
+                await Update(domain);
+            }
+
+        }
 
         public async Task<List<DomainDTO>> GetAll()
         {

@@ -59,7 +59,23 @@ function newDomain() {
     $('#domainModal').modal();
     swal.close();
 }
-
+function checkZoneId() {
+    loading();
+    $.ajax({
+        type: "GET",
+        url: serversBaseUrl + '/checkZoneId',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            domainsTable.clear().draw();
+            renderdomains(true);
+            swal.close();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("بروز اشکال در اتصال به اینترنت");
+        }
+    });
+}
 
 function deletedomain(id) {
     Swal.fire({

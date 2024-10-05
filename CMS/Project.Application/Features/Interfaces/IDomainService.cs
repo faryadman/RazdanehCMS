@@ -21,5 +21,6 @@ namespace Project.Application.Features.Interfaces
         Task ChangeSubDomain();
         Task ChangeDomain();
         Task InitZoneId();
+        Task CheckZoneId();
     }
 }
