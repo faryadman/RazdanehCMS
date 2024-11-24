@@ -397,6 +397,7 @@ namespace Project.Application.Features.Services
                     zoneDictionary[zone1.Name] = zone1.Id;
                 }
             }
+
             // اگر زون با این دامنه در دیکشنری وجود داشته باشد، آن را بازگردانی کنید
             if (zoneDictionary.TryGetValue(cfDomain, out var zoneId))
             {
@@ -404,8 +405,9 @@ namespace Project.Application.Features.Services
             }
 
             var cfClient2 = GetCloudFlareClient();
+
             // در غیر این صورت، زون مربوط به دامنه را جستجو و به دیکشنری اضافه کنید
-            var zone = cfClient2.GetAllZonesAsync().Result.FirstOrDefault(z => z.Name == cfDomain);
+            var zone = cfClient2.GetAllZonesAsync().Result.FirstOrDefault(z => z.Name == cfDomain.Trim());
             if (zone != null)
             {
                 zoneDictionary[zone.Name] = zone.Id;
@@ -425,7 +427,7 @@ namespace Project.Application.Features.Services
 
             if (cnameRecord != null)
             {
-                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, newCnameValue, cnameContent, authCfValueTuple().apiKey, authCfValueTuple().email);
+                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, newCnameValue.Trim(), cnameContent.Trim(), authCfValueTuple().apiKey, authCfValueTuple().email);
             }
             else
             {
@@ -436,7 +438,7 @@ namespace Project.Application.Features.Services
         private async Task CreateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
         {
             var cloudflare = new CloudflareApiClient();
-            await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, authCfValueTuple().apiKey, authCfValueTuple().email);
+            await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue.Trim(), cnameContent.Trim(), authCfValueTuple().apiKey, authCfValueTuple().email);
         }
 
         private async Task Update(DomainDTO domain)

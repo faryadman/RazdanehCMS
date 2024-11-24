@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Application.DTOs.Group;
 using Project.Application.Features.Interfaces;
-using Project.Application.Features.Services;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
@@ -28,7 +27,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             var data = await _groupService.GetFiltered(isAd);
             return Json(data);
-        } 
+        }
         public IActionResult AdIndex()
         {
             return View();
@@ -58,7 +57,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _groupService.Delete(id);
-            await _serverService.DeleteByGroupId(id);
+            //await _serverService.DeleteByGroupId(id);
             return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> MassDelete(string ids)
@@ -66,7 +65,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             foreach (var item in ids.Split("_"))
             {
                 await _groupService.Delete(int.Parse(item));
-                await _serverService.DeleteByGroupId(int.Parse(item));
+                //  await _serverService.DeleteByGroupId(int.Parse(item));
             }
             return Json(new { status = "1", message = "done successfully" });
         }

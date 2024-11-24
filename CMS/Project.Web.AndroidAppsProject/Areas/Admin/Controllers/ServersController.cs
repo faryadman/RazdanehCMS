@@ -227,5 +227,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var data = _serverLogService.GetAllLogsStatistics();
             return Json(data);
         }
+        [Route("/admin/[controller]/getStatisticsServer")]
+        public IActionResult GetStatisticsServer(string password)
+        {
+            if (password != "Ad")
+            {
+                return Unauthorized(new { Message = "Invalid Password" });
+            }
+            var data = _serverLogService.GetAllLogsStatistics();
+            return Json(data);
+        }
     }
 }

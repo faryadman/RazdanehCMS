@@ -83,7 +83,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                     if (!string.IsNullOrEmpty(line))
                     {
                         // ذخیره داده‌های جدا ساخته شده در لیستی یا در دیتابیس 
-                        await _domainService.Create(new CreateDomainDTO() { DomainName = line, FileName = _FileName });
+                        await _domainService.Create(new CreateDomainDTO() { DomainName = line.Trim(), FileName = _FileName });
                     }
                 }
                 return RedirectToAction("Index");
