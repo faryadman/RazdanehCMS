@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Project.Application.DTOs.Domain;
 using Project.Application.Features.Interfaces;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "admin,user")]
     public class DomainsController : Controller
     {
         private readonly IDomainService _domainService;

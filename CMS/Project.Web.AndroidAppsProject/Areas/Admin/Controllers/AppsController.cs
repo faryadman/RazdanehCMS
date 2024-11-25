@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.Features.Interfaces;
@@ -7,7 +6,6 @@ using Project.Application.Features.Interfaces;
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "admin")]
     public class AppsController : Controller
     {
         private readonly IAppSettingService _appSettingService;
