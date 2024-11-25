@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Project.Application.DTOs.Server;
 using Project.Application.Features.Interfaces;
@@ -7,8 +6,6 @@ using Project.Application.Features.Interfaces;
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "admin")]
-    [Authorize(Roles = "user")]
     public class ServersController : Controller
     {
         private readonly IServerService _serverService;
