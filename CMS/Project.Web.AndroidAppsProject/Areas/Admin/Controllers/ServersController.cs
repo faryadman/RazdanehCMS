@@ -16,7 +16,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         private readonly IDomainService _domainService;
         private readonly IMemoryCache _memoryCache;
         private readonly IConfiguration _configuration;
-
+        private readonly string? _password;
         public ServersController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, IDomainService domainService, IMemoryCache memoryCache, IConfiguration configuration)
 
         {
@@ -26,6 +26,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             _domainService = domainService;
             _memoryCache = memoryCache;
             _configuration = configuration;
+            _password = Environment.GetEnvironmentVariable("API_PASSWORD");
         }
 
         public IActionResult Index(int? groupId, int? appId)
@@ -230,7 +231,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         [Route("/admin/[controller]/getStatisticsServer")]
         public IActionResult GetStatisticsServer(string password)
         {
-            if (password != "Ad")
+            if (_password == null)
+            {
+                return StatusCode(500, new { Message = "Environment variable 'API_PASSWORD' is not set." });
+            }
+            if (password != _password)
             {
                 return Unauthorized(new { Message = "Invalid Password" });
             }

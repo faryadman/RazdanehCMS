@@ -6,7 +6,7 @@ using Project.Application.Features.Interfaces;
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,user")]
     public class DomainsController : Controller
     {
         private readonly IDomainService _domainService;
