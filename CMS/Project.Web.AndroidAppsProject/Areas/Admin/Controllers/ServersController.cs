@@ -8,6 +8,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "admin")]
+    [Authorize(Roles = "user")]
     public class ServersController : Controller
     {
         private readonly IServerService _serverService;
