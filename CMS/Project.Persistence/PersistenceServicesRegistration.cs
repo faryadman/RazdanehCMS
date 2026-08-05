@@ -13,7 +13,7 @@ namespace Project.Persistence
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 //options.UseLazyLoadingProxies();
-                options.EnableSensitiveDataLogging(true);
+                /*options.EnableSensitiveDataLogging(true);*/
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
@@ -30,6 +30,7 @@ namespace Project.Persistence
             services.AddScoped<IDomainRepository, DomainRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<IIpRepository, IpRepository>();
+            services.AddScoped<IIpConfigRepository, IpConfigRepository>();
             return services;
         }
     }

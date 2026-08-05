@@ -1,4 +1,7 @@
-﻿using Project.Application.DTOs.Server;
+﻿using Newtonsoft.Json.Linq;
+using Project.Application.DTOs.Server;
+using Project.Application.DTOs.ServerLog;
+using Project.Domain.Entities;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -11,10 +14,15 @@ namespace Project.Application.Features.Interfaces
         Task<ServerDTO> GetServerStatistics(int serverId);
         Task Create(CreateServerDTO input);
         Task<ServerDTO> Detail(int id);
+        Task<ServerDTO> Detail(string id);
         Task Delete(int id);
         Task Duplicate(int id);
         Task DeleteByGroupId(int groupId);
         Task Edit(EditServerDTO input);
         Task ToggleIsAvailableInput(int id);
+        Task SuccessServerLog(AddServerLogDTO input);
+        Task FailedServerLog(AddServerLogDTO input);
+        Task<string> EditServer(Server server, JObject updatedJsonObject);
+        Task UpdateServer(ServerDTO server);
     }
 }

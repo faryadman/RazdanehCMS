@@ -155,12 +155,10 @@ function getAlllogs() {
     $.ajax({
         type: "GET",
         url: logsBaseUrl + '/GetAllLogsStatistics',
-        contentType: "loglication/json; charset=utf-8",
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
-            console.log(result);
-            //logsTable.clear().draw();
-            renderlogsCard(result);
+            renderlogsCard(result.result);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");

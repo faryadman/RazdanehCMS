@@ -61,7 +61,7 @@
                                 <div class="card-header">
                                     <h4 class="card-title">لیست IP ها</h4>
 
-                                    <button class="btn btn-danger ml-3" onclick="DeleteSelectedItems('/admin/ip',getip,false)">حذف</button>
+                                    <button class="btn btn-danger ml-3" onclick="DeleteAll()">حذف همه</button>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
@@ -69,11 +69,9 @@
                                             <table class="table nowrap scroll-horizontal-vertical" style="width:100%!important" id="ipTable">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="col"></th>
                                                         <th scope="col">IP</th>
                                                         <th scope="col">Update At</th>
                                                         <th scope="col">TCP</th>
-                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>

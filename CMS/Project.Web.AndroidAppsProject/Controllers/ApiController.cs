@@ -1,13 +1,12 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Project.Application.DTOs;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.IP;
 using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
 using Project.Application.Responses;
-using Project.Persistence;
-using Project.Web.AndroidAppsProject.Dapper;
 
 namespace Project.Web.AndroidAppsProject.Controllers
 {
@@ -16,28 +15,34 @@ namespace Project.Web.AndroidAppsProject.Controllers
     public class ApiController : ControllerBase
     {
         private readonly IAppSettingService _appSettingService;
-        private readonly IGroupService _groupService;
         private readonly IServerService _serverService;
         private readonly IServerLogService _serverLogService;
-        private readonly IOperatorIdentificationService _operatorIdentificationService;
-        private readonly IApiLogService _apiLogService;
-        private readonly IMapper _mapper;
-        private readonly IDapperQueryService _dapperQueryService;
         private readonly IIpService _ipService;
-        private readonly ApplicationDbContext _context;
+        private readonly IMemoryCache _memoryCache;
 
-        public ApiController(IAppSettingService appSettingService, IGroupService groupService, IServerService serverService, IServerLogService serverLogService, ApplicationDbContext context, IOperatorIdentificationService operatorIdentificationService, IApiLogService apiLogService, IMapper mapper, IDapperQueryService dapperQueryService, IIpService ipService)
+        public ApiController(IAppSettingService appSettingService, IServerService serverService,
+            IServerLogService serverLogService, IIpService ipService, IMemoryCache memoryCache)
         {
             _appSettingService = appSettingService;
-            _groupService = groupService;
             _serverService = serverService;
             _serverLogService = serverLogService;
-            _context = context;
-            _operatorIdentificationService = operatorIdentificationService;
-            _apiLogService = apiLogService;
-            _mapper = mapper;
-            _dapperQueryService = dapperQueryService;
             _ipService = ipService;
+            _memoryCache = memoryCache;
+        }
+
+        [HttpGet]
+        [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
+        public async Task<IActionResult> GetGeneralApp(string apiRoute, string isp, string Operator)
+        {
+            var appSetting = await _appSettingService.DetailByApiRoute(apiRoute);
+            var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
+            var serverAd = await _serverService.GetByApp(apiRoute, true, isp, Operator);
+            return new Response<GeneralServerDTO>(new GeneralServerDTO()
+            {
+                AppSettingDTO = appSetting,
+                ServerDTO = server,
+                ServerAdDTO = serverAd,
+            }).ToJsonResult();
         }
 
         [HttpGet]
@@ -48,10 +53,12 @@ namespace Project.Web.AndroidAppsProject.Controllers
             return new Response<AppSettingDTO>(appSetting).ToJsonResult();
         }
 
+
         [HttpGet]
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetServer(string apiRoute, string isp, string Operator)
         {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
             var server = await _serverService.GetByApp(apiRoute, false, isp, Operator);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
@@ -60,34 +67,53 @@ namespace Project.Web.AndroidAppsProject.Controllers
         [Route("/[controller]/[action]/{apiRoute}/{isp}/{Operator}")]
         public async Task<IActionResult> GetAdServer(string apiRoute, string isp, string Operator)
         {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
             var server = await _serverService.GetByApp(apiRoute, true, isp, Operator);
             return new Response<ServerDTO>(server).ToJsonResult();
         }
+
+
         [HttpPost]
         public async Task<IActionResult> SuccessServerLog(AddServerLogDTO input)
         {
-            var server = await _serverService.Detail(input.ServerId);
-            input.Ip = server.Ip;
-            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
-            await _serverLogService.Create(input);
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.SuccessServerLog(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
+
+
         [HttpPost]
         public async Task<IActionResult> FailedServerLog(AddServerLogDTO input)
         {
-            var server = await _serverService.Detail(input.ServerId);
-            input.Ip = server.Ip;
-            input.ConnectionStatus = Domain.Enums.ConnectionStatus.Failed;
-            await _serverLogService.Create(input);
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.FailedServerLog(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> FailedServer(AddServerLogDTO input)
+        {
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            await _serverService.FailedServerLog(input);
+            var server = await _serverService.GetByApp(input.ApiRoute, false, input.Isp, input.Operator);
+            var serverAd = await _serverService.GetByApp(input.ApiRoute, true, input.Isp, input.Operator);
+            return new Response<GeneralServerDTO>(new GeneralServerDTO()
+            {
+                AppSettingDTO = null,
+                ServerDTO = server,
+                ServerAdDTO = serverAd,
+            }).ToJsonResult();
+        }
+
         [HttpGet]
         public async Task<IActionResult> ServerLogs(int serverId)
         {
-            await _serverService.Detail(serverId);
-            var data = await _serverLogService.ListByServer(serverId);
-            return new Response<List<ServerLogDTO>>(data).ToJsonResult();
+            // اگر اطلاعات در کش نبود، آنها را از منبع اصلی دریافت کرده و در حافظه‌ی کش ذخیره می‌کنیم
+            var logs = await _serverLogService.ListByServer(serverId);
+            return new Response<List<ServerLogDTO>>(logs).ToJsonResult();
         }
+
 
 
         [HttpGet]
@@ -99,28 +125,20 @@ namespace Project.Web.AndroidAppsProject.Controllers
             }
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             var userAgent = Request.Headers["User-Agent"].ToString();
-
-            var server = await _ipService.Detail(clientIp);
-            if (server != null)
+            await _ipService.Insert(new CreateIpDTO()
             {
-                await _ipService.Delete(server.Id);
-            }
-            await _ipService.Create(new CreateIpDTO()
-            {
-                Ip = clientIp,
                 Tcp = tcpId.ToString(),
+                Ip = clientIp,
                 UserAgent = userAgent
             });
-
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
-
 
         [HttpGet]
         public async Task<IActionResult> ListIp()
         {
-            var data = await _ipService.List();
-            return new Response<List<IpDTO>>(data).ToJsonResult();
+            var list = await _ipService.List();
+            return new Response<List<IpDTO>>(list).ToJsonResult();
         }
     }
 }

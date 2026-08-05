@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Application.Responses;
 using Project.Domain.Entities;
-using Project.Persistence;
 using Project.Web.AndroidAppsProject.Areas.Admin.ViewModels;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
@@ -30,6 +29,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 
         public IActionResult Login()
         {
+
             if (_signInManager.IsSignedIn(User))
             {
                 return Redirect("/admin/apps");
@@ -37,7 +37,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return View("index");
         }
 
-        [HttpPost]
+        [HttpPost("SignIn")]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(LoginViewModel input)
         {
@@ -54,7 +54,25 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 ? new Response<string>(ResponseStatus.Succeed, data: returnUrl).ToJsonResult()
                 : new Response<string>(ResponseStatus.BadRequest, message: "نام کاربری یا کلمه عبور نادرست می باشد").ToJsonResult();
         }
+        [HttpGet("NewSignUp")]
+        public async Task<IActionResult> SignUpTask()
+        {
+            var returnUrl = "/admin/apps";
+            var date = DateTime.Now.Date.Month + DateTime.Now.Date.Day;
+            var user = new Domain.Entities.User
+            {
+                Email = "user@gmail.com",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                NormalizedEmail = "user@gmail.com".Normalize(),
+                UserName = $"user{date.ToString()}",
+                NormalizedUserName = "user".Normalize()
+            };
+            await _userManager.CreateAsync(user, "123@user@456");
 
+            await _userManager.AddToRoleAsync(user, "user");
+            return new Response<string>(ResponseStatus.Succeed, message: "کاربری جدید ساخته شذ.").ToJsonResult();
+        }
         [HttpGet]
         public async Task<IActionResult> Logout()
         {

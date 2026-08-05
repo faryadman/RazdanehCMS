@@ -4,11 +4,6 @@ using Project.Application.DTOs.OperatorIdentification;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
 using Project.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.Features.Services
 {
@@ -31,14 +26,14 @@ namespace Project.Application.Features.Services
 
         public async Task Delete(int id)
         {
-            await _operatorIdentificationRepository.Delete(id);
+            await _operatorIdentificationRepository.Remove(id);
         }
 
         public async Task<List<OperatorIdentificationDTO>> GetAll(bool isIsp)
         {
             var data = await _operatorIdentificationRepository.FindAsync(x => x.IsIsp == isIsp);
 
-            return _mapper.Map<List<OperatorIdentificationDTO>>(data.OrderByDescending(x=>x.Id));
+            return _mapper.Map<List<OperatorIdentificationDTO>>(data.OrderByDescending(x => x.Id));
         }
 
         public async Task<List<OperatorIdentificationDTO>> GetAll()

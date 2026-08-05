@@ -2,8 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Project.Application.Features.Interfaces;
 using Project.Application.Features.Services;
-//using Project.Application.Features.Interfaces;
-//using Project.Application.Features.Services;
 using Project.Application.Profiles;
 using System.Reflection;
 
@@ -30,6 +28,7 @@ namespace Project.Application
             services.AddScoped<IDomainService, DomainService>();
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<IIpService, IpService>();
+            services.AddScoped<IIPConfigService, IpConfigService>();
 
             return services;
         }

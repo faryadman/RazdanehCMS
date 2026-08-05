@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Project.Application.Features.Interfaces;
 using Project.Application.Responses;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "admin")]
     public class IpController : Controller
     {
         private readonly IIpService _ipService;
@@ -17,9 +19,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             return View();
         }
+        //TODO: dont need int id! delete it.
         public async Task<IActionResult> DeleteIp(int id)
         {
-            await _ipService.Delete(id);
+            await _ipService.Delete();
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
         }
         public async Task<IActionResult> MassDelete(string ids)

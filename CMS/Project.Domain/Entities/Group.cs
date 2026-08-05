@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Project.Domain.Entities.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project.Domain.Entities
 {
+    [Index(nameof(Group.Id), IsUnique = true)]
     public class Group : BaseEntity
     {
+        [StringLength(128)]
         public string Title { get; set; }
         public bool IsAd { get; set; }
-        public ICollection<Server> servers { get; set; }
+        public virtual ICollection<Server> servers { get; set; }
     }
 }

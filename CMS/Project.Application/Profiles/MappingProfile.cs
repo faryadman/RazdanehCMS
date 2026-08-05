@@ -55,6 +55,7 @@ namespace Project.Application.Profiles
 
             #region apilog
             CreateMap<ApiLog, ApiLogDTO>().ReverseMap();
+            CreateMap<ApiLogDTO, ServerLog>().ReverseMap();
             #endregion
 
             #region operator
@@ -83,10 +84,12 @@ namespace Project.Application.Profiles
             CreateMap<Job, JobDTO>().ReverseMap();
 
             #endregion
+
             #region ip
 
             CreateMap<SaveIP, IpDTO>().ReverseMap();
             CreateMap<CreateIpDTO, SaveIP>().ReverseMap();
+            CreateMap<CreateIpDTO, IpDTO>().ReverseMap();
 
             #endregion
         }

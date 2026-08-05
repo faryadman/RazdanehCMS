@@ -1,74 +1,156 @@
-﻿using CloudFlare.NET;
+﻿using DNTPersianUtils.Core;
 using Hangfire;
-using Microsoft.AspNetCore.Authorization;
+using Hangfire.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Job;
 using Project.Application.DTOs.Job.DomainJob;
-using Project.Application.DTOs.Server;
-using Project.Application.Extensions;
-using Project.Application.Features;
 using Project.Application.Features.Interfaces;
 
 namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "admin")]
     public class JobController : Controller
     {
-
         private readonly IServerService _serverService;
-        private readonly IServerLogService _serverLogService;
-        private readonly IBlackListService _blackListService;
-        private readonly ICronJobInfoService _cronJobInfoService;
         private readonly IDomainService _domainService;
+        private readonly IIPConfigService _configService;
         private readonly IJobService _jobService;
 
-
-        public JobController(IServerService serverService, IBlackListService blackListService, IServerLogService serverLogService, ICronJobInfoService cronJobInfoService, IDomainService domainService, IJobService jobService)
+        public JobController(IServerService serverService, IDomainService domainService, IJobService jobService, IIPConfigService configService)
         {
             _serverService = serverService;
-            _blackListService = blackListService;
-            _serverLogService = serverLogService;
-            _cronJobInfoService = cronJobInfoService;
             _domainService = domainService;
             _jobService = jobService;
+            _configService = configService;
         }
+
         public async Task<IActionResult> Index()
         {
-            var job = await _jobService.LastDetail();
-            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO?>(job.JobConfig);
+            using (var connection = JobStorage.Current.GetConnection())
+            {
+                var recurringJob = connection.GetRecurringJobs();
+                IList<HangfireDTO> hangfireDtos = new List<HangfireDTO>();
+                foreach (var dto in recurringJob)
+                {
+                    hangfireDtos.Add(new HangfireDTO()
+                    {
+                        CreatedAt = dto.CreatedAt.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                        Cron = dto.Cron,
+                        Id = dto.Id,
+                        LastExecTime = dto.LastExecution.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                        NextExecTime = dto.NextExecution.ToFriendlyPersianDateTextify() ?? "نامشخص",
+                    });
+                }
+                ViewData["DetailModels"] = hangfireDtos;
+            }
+            var job = await _jobService.Detail("DomainJob");
+            if (job == null)
+            {
+                return View();
+            }
             ViewBag.Email = job.Email ?? "";
             ViewBag.ApiKey = job.ApiKey ?? "";
             ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
-            ViewBag.JobExpireMinuteTime = jobDto?.JobExpireMinuteTime ?? 0;
-            ViewBag.FailConnectionPercent = jobDto?.FailConnectionPercent ?? 0;
-            ViewBag.FailConnectionCount = jobDto?.FailConnectionCount ?? 0;
             ViewBag.IsActiveJob = job.IsActive;
             return View();
         }
-
+        public async Task<IActionResult> GetDeleteDnsJobData()
+        {
+            var job = await _jobService.Detail("DeleteDnsJob");
+            if (job == null)
+            {
+                return Json(new CreateJobDTO());
+            }
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
+            ViewBag.Email = jobDto.Email ?? "";
+            ViewBag.ApiKey = jobDto.ApiKey ?? "";
+            ViewBag.JobPeriodTime = jobDto.JobPeriodTime ?? 0;
+            ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime ?? 0;
+            ViewBag.IsActiveJob = jobDto.IsActiveJob;
+            return Json(jobDto);
+        }
+        public async Task<IActionResult> GetJobSubdomainData()
+        {
+            var job = await _jobService.Detail("SubDomainJob");
+            if (job == null)
+            {
+                return Json(new CreateJobDTO());
+            }
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
+            ViewBag.Email = job.Email ?? "";
+            ViewBag.ApiKey = job.ApiKey ?? "";
+            ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
+            ViewBag.IsActiveJob = jobDto.IsActiveJob;
+            return Json(jobDto);
+        }
+        public async Task<IActionResult> GetJobDomainData()
+        {
+            var job = await _jobService.Detail("DomainJob");
+            if (job == null)
+            {
+                return Json(new CreateJobDTO());
+            }
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
+            ViewBag.Email = job.Email ?? "";
+            ViewBag.ApiKey = job.ApiKey ?? "";
+            ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
+            ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime ?? 0;
+            ViewBag.FailConnectionPercent = jobDto.FailConnectionPercent ?? 0;
+            ViewBag.FailConnectionCount = jobDto.FailConnectionCount ?? 0;
+            ViewBag.IsActiveJob = job.IsActive;
+            return Json(jobDto);
+        }
+        public async Task<IActionResult> GetJobIpConfigData()
+        {
+            var job = await _jobService.Detail("IpConfigJob");
+            if (job == null)
+            {
+                return Json(new CreateJobDTO());
+            }
+            var jobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(job.JobConfig) ?? new CreateDomainJobDTO();
+            ViewBag.Email = job.Email ?? "";
+            ViewBag.ApiKey = job.ApiKey ?? "";
+            ViewBag.JobPeriodTime = job.JobPeriodTime ?? 0;
+            ViewBag.JobExpireMinuteTime = jobDto.JobExpireMinuteTime ?? 0;
+            ViewBag.FailConnectionPercent = jobDto.FailConnectionPercent ?? 0;
+            ViewBag.FailConnectionCount = jobDto.FailConnectionCount ?? 0;
+            ViewBag.IsActiveJob = job.IsActive;
+            return Json(jobDto);
+        }
         private async Task InsertJob(CreateJobDTO input)
         {
             var job = _jobService.List().Result.Find(j => j.JobName == input.JobName)!;
-            if ((bool)!input.IsActive)
+            if (((bool)!input.IsActive)!)
             {
                 RecurringJob.RemoveIfExists(input.JobName);
                 return;
             }
             if (job != null)
             {
-
                 await _jobService.Delete(job.Id);
-                //create job into hangfire
             }
             await _jobService.CreateJob(input);
-            RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+            switch (input.JobName)
+            {
+                case "DomainJob":
+                    RecurringJob.AddOrUpdate("DomainJob", () => CheckDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+                    break;
+                case "SubDomainJob":
+                    RecurringJob.AddOrUpdate("SubDomainJob", () => CheckSubDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+                    break;
+                case "DeleteDnsJob":
+                    RecurringJob.AddOrUpdate("DeleteDnsJob", () => CheckDeleteDnsDomainJob(), $"*/{input.JobPeriodTime} * * * *");
+                    break;
+                case "IpConfigJob":
+                    RecurringJob.AddOrUpdate("IpConfigJob", () => CheckIpConfigJob(), $"*/{input.JobPeriodTime} * * * *");
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(input.JobName), input.JobName);
+            }
+
 
         }
-
-        public async Task CreateDomainJob(CreateDomainJobDTO input)
+        public async Task<IActionResult> CreateDomainJob(CreateDomainJobDTO input)
         {
             //Insert job to db
             await InsertJob(new CreateJobDTO
@@ -81,7 +163,52 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 JobConfig = JsonConvert.SerializeObject(input),
                 JobExpireMinuteTime = input.JobExpireMinuteTime
             });
-
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> CreateDeleteDnsJobJob(CreateDomainJobDTO input)
+        {
+            //Insert job to db
+            await InsertJob(new CreateJobDTO
+            {
+                ApiKey = input.ApiKey,
+                IsActive = input.IsActiveJob,
+                JobName = "DeleteDnsJob",
+                JobPeriodTime = input.JobPeriodTime,
+                Email = input.Email,
+                JobConfig = JsonConvert.SerializeObject(input),
+                JobExpireMinuteTime = input.JobExpireMinuteTime
+            });
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> CreateSubDomainJob(CreateDomainJobDTO input)
+        {
+            //Insert job to db
+            await InsertJob(new CreateJobDTO
+            {
+                ApiKey = input.ApiKey,
+                IsActive = input.IsActiveJob,
+                JobName = "SubDomainJob",
+                JobPeriodTime = input.JobPeriodTime,
+                Email = input.Email,
+                JobConfig = JsonConvert.SerializeObject(input),
+                JobExpireMinuteTime = input.JobExpireMinuteTime
+            });
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> CreateIpConfigJob(CreateDomainJobDTO input)
+        {
+            //Insert job to db
+            await InsertJob(new CreateJobDTO
+            {
+                ApiKey = input.ApiKey,
+                IsActive = input.IsActiveJob,
+                JobName = "IpConfigJob",
+                JobPeriodTime = input.JobPeriodTime,
+                Email = input.Email,
+                JobConfig = JsonConvert.SerializeObject(input),
+                JobExpireMinuteTime = input.JobExpireMinuteTime
+            });
+            return Json(new { status = "1", message = "done successfully" });
         }
         public async Task CheckDomainJob()
         {
@@ -89,11 +216,11 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             var serverIds = await _serverService.GetActiveIds();
             var list = await _jobService.List();
 
-            var jobDto = list.FirstOrDefault(job => job.JobName == "DomainJob")?.JobConfig;
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "DomainJob");
             if (jobDto == null)
                 return;
 
-            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto);
+            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
 
             foreach (var id in serverIds)
             {
@@ -114,94 +241,52 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                     percentFailConnection >= domainJobDto.FailConnectionPercent &&
                     failConnection >= domainJobDto.FailConnectionCount)
                 {
-                    await ChangeDomain(id);
+                    await _domainService.ChangeDomain(id.ToString());
                 }
             }
         }
-        public async Task<IActionResult> ChangeDomain(int serverId, bool deleteDomain = true)
+        public async Task CheckSubDomainJob()
         {
+            var list = await _jobService.List();
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "SubDomainJob");
+            if (jobDto == null)
+                return;
+            await _domainService.ChangeSubDomain();
 
-            ViewBag.ServerId = serverId;
-            var domains = await _domainService.GetAll();
-            if (domains is not { Count: > 0 }) return Json(new { status = "2", message = "domain don't exist!" });
-            var server = await _serverService.Detail(serverId);
-            var config = server.Config;
-            var currentDomainValue = domains?[0].DomainName;
-            var jsonObject = JObject.Parse(config);
-
-            // Your Cloudflare API credentials
-            var cfEmail = "hamednadarkhani1993@gmail.com";
-            var cfApiKey = "c31b2d5ee16f7a7a3d092fc5a5755768cff1a";
-
-            // Your Cloudflare zone ID and domain name
-            var cfZoneId = string.Empty;
-            var cfDomain = currentDomainValue;
-
-            // The new CNAME value
-            var newCnameValue = !deleteDomain ?
-                jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString() : GenerateWordExtention.GenerateWords(5)[0]; // create new word VALUE
-            var cnameContent = server.CurrentDomainValue;
-            // Set up Cloudflare API client
-            var auth = new CloudFlareAuth(cfEmail, cfApiKey);
-            var cfClient = new CloudFlareClient(auth);
-            var zones = await cfClient.GetAllZonesAsync();
-            foreach (var zone in zones)
-            {
-                if (zone.Name == cfDomain)
-                    cfZoneId = new IdentifierTag(zone.Id);
-
-            }
-            // Get the list of DNS records in the zone
-            var dnsRecords = await cfClient.GetDnsRecordsAsync(cfZoneId);
-
-            // Find the CNAME record based on its name
-            var cnameRecord = dnsRecords.Result.FirstOrDefault(record => record.Type == DnsRecordType.CNAME);
-            var cloudflare = new CloudflareApiClient();
-            if (cnameRecord != null)
-            {
-                // Update the CNAME record with the new value
-                await cloudflare.UpdateDnsRecordAsync(cfZoneId, cnameRecord.Id, newCnameValue, cnameContent, cfApiKey, cfEmail);
-            }
-            else
-            {
-                // Create the CNAME record with the new value
-                await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, cfApiKey, cfEmail); ;
-            }
-
-            var cnameValue = $"{newCnameValue}.{cfDomain}";
-            // Change value serverName
-            jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"] = cnameValue;
-
-            // Change value Host
-            jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"] = cnameValue;
-
-            var updatedJsonString = jsonObject.ToString();
-            server.Config = updatedJsonString;
-
-            await _serverService.Edit(new EditServerDTO()
-            {
-                Config = server.Config,
-                ServerName = server.ServerName,
-                ConfigValue = server.ConfigValue,
-                ConfigKey = server.ConfigKey,
-                Ip = server.Ip,
-                IsForHamraheAvval = server.IsForHamraheAvval,
-                IsForIrancell = server.IsForIrancell,
-                ItemId = server.Id,
-                Location = server.Location,
-                CurrentDomainValue = server.CurrentDomainValue,
-                IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow
-            });
-            if (deleteDomain)
-            {
-                if (domains != null) await _domainService.Delete(domains[0].Id);
-            }
-            return RedirectToAction("Index");
         }
-        public void Test()
+        public async Task CheckDeleteDnsDomainJob()
         {
+            var list = await _jobService.List();
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "DeleteDnsJob");
+            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
+            if (jobDto == null)
+                return;
+            await _domainService.DeleteDnsAsync(expireMinuteOn: domainJobDto?.JobExpireMinuteTime.ToString());
+        }
+        public async Task CheckIpConfigJob()
+        {
+            var serverIds = await _serverService.GetActiveIds();
+            var list = await _jobService.List();
 
+            var jobDto = list.OrderByDescending(x => x.Id).LastOrDefault(job => job.JobName == "IpConfigJob");
+            if (jobDto == null)
+                return;
+
+            var domainJobDto = JsonConvert.DeserializeObject<CreateDomainJobDTO>(jobDto.JobConfig);
+
+            foreach (var id in serverIds)
+            {
+                var server = await _serverService.GetServerStatistics(id);
+                if (server?.AllLogsStatistics == null)
+                    continue;
+                var start = server.DomainDateTime;
+                var now = DateTime.Now;
+                var ts = now.Subtract(start);
+                if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime)
+                {
+                    await _configService.GenerateUpdateAsync(id.ToString(), jobDto.Email, jobDto.ApiKey);
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Project.Application.DTOs.Domain;
+﻿using Newtonsoft.Json.Linq;
+using Project.Application.DTOs.Domain;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -8,6 +9,18 @@ namespace Project.Application.Features.Interfaces
         Task<List<DomainDTO>> GetByFilter(int filter);
         Task Create(CreateDomainDTO input);
         Task Delete(int id);
-        Task DeleteInactiveDomain();
+        Task Remove();
+        Task<List<DomainDTO>> ListInactiveDomain();
+        JObject SetServerAddressStrings(string config, string newAddress);
+        string GetServerAddressStrings(string config);
+        Task<string> ChangeDomain(string zoneId);
+        Task<string> ChangeSubDomain(string serverId);
+        Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn);
+        Task<string> DeleteDnsAsync(string serverId = null, string expireMinuteOn = null);
+        Task<string> CreateDnsAsync(string serverId);
+        Task ChangeSubDomain();
+        Task ChangeDomain();
+        Task InitZoneId();
+        Task CheckZoneId();
     }
 }

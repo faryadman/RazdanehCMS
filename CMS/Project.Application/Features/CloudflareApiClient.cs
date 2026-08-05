@@ -1,4 +1,5 @@
 ﻿using CloudFlare.NET;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace Project.Application.Features
@@ -6,7 +7,8 @@ namespace Project.Application.Features
     public class CloudflareApiClient
     {
 
-        public async Task UpdateDnsRecordAsync(string zoneId, string recordId, string newCname, string cnameContent, string apiKey, string email)
+        public async Task UpdateDnsRecordAsync(string zoneId, string recordId, string newCname, string cnameContent,
+            string apiKey, string email)
         {
 
             var apiUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordId}";
@@ -20,7 +22,8 @@ namespace Project.Application.Features
                 name = newCname,
                 content = cnameContent,
                 ttl = 1,
-                proxied = false
+                proxied = false,
+                comment = DateTime.Now.ToString()
             };
 
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
@@ -37,7 +40,8 @@ namespace Project.Application.Features
             }
         }
 
-        public async Task CreateDnsRecordAsync(string zoneId, string newCname, string cnameContent, string apiKey, string email)
+        public async Task CreateDnsRecordAsync(string zoneId, string newCname, string cnameContent, string apiKey,
+            string email)
         {
             var apiUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records";
 
@@ -51,7 +55,8 @@ namespace Project.Application.Features
                 name = newCname,
                 content = cnameContent,
                 ttl = 1,
-                proxied = false
+                proxied = false,
+                comment = DateTime.Now.ToString()
             };
 
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
@@ -68,22 +73,76 @@ namespace Project.Application.Features
             }
         }
 
-    }
+        public async Task<IList<CnameRecord>> GetAllRecords(string zoneId, string apiKey, string email)
+        {
+            try
+            {
+                // ساخت URL API برای دریافت تمام رکوردهای CNAME در منطقه
+                var apiUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records?type=CNAME";
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("X-Auth-Email", email);
+                httpClient.DefaultRequestHeaders.Add("X-Auth-Key", apiKey);
 
-    public class CloudflareZoneResponse
-    {
-        public List<CloudflareZone> Result { get; set; }
-        public ResultInfo ResultInfo { get; set; }
-    }
+                var response = await httpClient.GetAsync(apiUrl);
+                if (!response.IsSuccessStatusCode) return new List<CnameRecord>();
+                var content = await response.Content.ReadAsStringAsync();
+                var records = JsonConvert.DeserializeObject<CnameRecords>(content);
+                return records.result.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task DeleteCnameRecords(string zoneId, string recordToDeleteId, string apiKey, string email)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("X-Auth-Email", email);
+                httpClient.DefaultRequestHeaders.Add("X-Auth-Key", apiKey);
+                var deleteUrl = $"https://api.cloudflare.com/client/v4/zones/{zoneId}/dns_records/{recordToDeleteId}";
+                await httpClient.DeleteAsync(deleteUrl);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        }
 
-    public class CloudflareZone
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
+        public class CnameRecords
+        {
+            public bool success { get; set; }
+            public List<CnameRecord> result { get; set; }
+        }
 
-    public class ResultInfo
-    {
-        public int Count { get; set; }
+        public class CnameRecord
+        {
+            public string id { get; set; }
+
+            public string name { get; set; }
+
+            public string comment { get; set; }
+
+        }
+
+
+        public class CloudflareZoneResponse
+        {
+            public List<CloudflareZone> Result { get; set; }
+            public ResultInfo ResultInfo { get; set; }
+        }
+
+        public class CloudflareZone
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public class ResultInfo
+        {
+            public int Count { get; set; }
+        }
     }
 }

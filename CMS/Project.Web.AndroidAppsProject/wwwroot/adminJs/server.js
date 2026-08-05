@@ -1,31 +1,54 @@
 ﻿let serversTable = $('#serversTable').DataTable();
-
+let lastPage = getLastPage();
 let serversBaseUrl = "/admin/servers";
 let formUrl;
+
+function getLastPage() {
+    return localStorage.getItem('lastPage');
+}
+function reloadTableAndGoToPage(pageNumber) {
+    serversTable.page(pageNumber - 1).draw(false);
+}
+
+function saveLastPage() {
+    // حذف رویداد
+    serversTable.off('draw.dt');
+
+    serversTable.on('draw.dt').on('draw.dt', function () {
+        console.log('شماره صفحه فعلی: ', serversTable.page.info().page + 1);
+        localStorage.setItem('lastPage', serversTable.page.info().page + 1);
+    });
+}
 
 function getservers(isAd, filter) {
     filter = filter == undefined ? 1 : filter;
     let groupId = $('#selectedgroupId').val();
     let appId = $('#selectedappId').val();
+
     $.ajax({
         type: "GET",
         url: serversBaseUrl + '/List?groupId=' + groupId + '&appId=' + appId + '&isAd=' + isAd + '&filter=' + filter,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
-            console.log(result);
             serversTable.clear().draw();
             renderservers(result);
+            // تنظیم رویداد بعد از تغییر صفحه
+            saveLastPage()
+
+            // بازگشت به صفحه مورد نظر
+            let currentPageNumber = lastPage !== null ? lastPage : 1;
+            reloadTableAndGoToPage(currentPageNumber);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");
-
         }
     });
 
 }
 
 function renderservers(data) {
+    console.log(data);
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
@@ -49,19 +72,30 @@ function renderservers(data) {
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let isNewSubDomain = '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeSubDomain?serverId=' + item.id + '" >Refresh SubDomain</a></div>'
-        let isNewDomain = item.isNewDomain ? '<div>' + item.currentDomainValue + '<br><a class="btn btn-success btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '">Refresh Domain</a><br/>' + isNewSubDomain + '</div>' :
-            '<div><br><a class="btn btn-primary btn-sm" href="' + serversBaseUrl + '/changeDomain?serverId=' + item.id + '" >Refresh Domain</a><br/>' + isNewSubDomain + '</div>';
+        let buttonRefreshDomain = '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>';
+        let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
+        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
+        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
+
+        let buttons = item.currentDomainValue +
+            buttonRefreshDomain +
+            buttonRefreshSubDomain +
+            buttonCreateDnsRecord +
+            buttonDeleteDnsRecord;
+
         let config = item.config;
         let configObject = JSON.parse(config);
+        console.log(configObject);
         var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
+        var hostName = configObject.outbounds[0]?.streamSettings?.wsSettings?.headers?.Host;
+
 
         let addedRow = serversTable.row.add([
             deleteChekbox,
             item.id,
             isAdServer,
-            isNewDomain,
-            '<span class="badge badge-dark">' + serverName + '<hr/>' + item.updatedAtFormatted +'</span>',
+            buttons,
+            '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted + '</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
             '<span class="badge badge-dark">' + item.group.title + '</span>',
@@ -106,6 +140,12 @@ function goDomain() {
     window.location.href = url;
     swal.close();
 }
+function goIpList() {
+    loading();
+    let url = '/admin/ipconfig';
+    window.location.href = url;
+    swal.close();
+}
 function submitForm() {
     loading();
     let form = document.getElementById('serverForm');
@@ -136,6 +176,123 @@ function submitForm() {
     })
 }
 
+function subdomainRefresh(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/changeSubDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function domainRefresh(id) {
+    saveLastPage();
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/changeDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function createDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/CreateDnsRecord?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function deleteAllDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/DeleteDnsRecord?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
 function submitAdForm() {
     loading();
     let form = document.getElementById('serverForm');
@@ -354,7 +511,6 @@ let refreshId = setInterval(function () {
 $('#serversTable').on('change', '.isAvailableInput', function () {
     loading();
     let input = $(this);
-    console.log(itemId);
     let model = {
         id: input.attr('data-item-id')
     }
@@ -426,3 +582,51 @@ function duplicate(id) {
         }
     });
 }
+function onClickChangeServerAddresses() {
+    loading();
+    $('#changeServerAddressModal').modal();
+    swal.close();
+}
+function onClickDeleteDns() {
+    loading();
+    $('#onClickDeleteDns').modal();
+    swal.close();
+}
+
+function onClickChangeServerAddressSubmit() {
+    $('#changeServerAddressModal').modal('toggle');
+    loading();
+    let result = $('#addressInput').val();
+    let model = {
+        address: result
+    }
+    $.ajax({
+        type: "POST",
+        url: serversBaseUrl + '/ChangeServerAddressInput',
+        data: model,
+        dataType: "json",
+        success: function (data) {
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            data.status == "0" ? swal.fire('', data.message, 'error') : swal.fire('', data.message, 'success');
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            swal.close();
+            alert(" بروز اشکال در اتصال به اینترنت ");
+
+        }
+    });
+}
+
+$('#selectAllCheckbox').change(function () {
+    var isChecked = $(this).prop('checked');
+    $('.deleteCheckbox').prop('checked', isChecked).each(function () {
+        var itemId = $(this).attr('data-item-id');
+        $(this).val(itemId);
+    });
+});
+
+

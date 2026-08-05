@@ -1,9 +1,5 @@
 ﻿using Project.Application.DTOs.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Project.Domain.Enums;
 
 namespace Project.Application.DTOs.ApiLog
 {
@@ -11,5 +7,6 @@ namespace Project.Application.DTOs.ApiLog
     {
         public int AppSettingId { get; set; }
         public int ServerId { get; set; }
+        public ConnectionStatus ConnectionStatus { get; set; }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Project.Domain.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project.Application.DTOs.ServerLog
 {
@@ -20,6 +15,7 @@ namespace Project.Application.DTOs.ServerLog
         public string Org { get; set; }
         public string Country { get; set; }
         public string Operator { get; set; }
+        public string ApiRoute { get; set; }
         public ConnectionStatus ConnectionStatus { get; set; }
     }
 }

@@ -26,19 +26,22 @@ function renderdomains(data) {
         let item = data[i];
         console.log(item)
         let deleteButton;
+
         if (item.isActive == 1) {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
         }
         else {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" disabled>Delete</button>';
         }
+        let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
 
         domainsTable.row.add([
+            deleteChekbox,
             (i + 1),
             item.id,
             item.domainName,
+            item.zoneId,
             '<div>  ' + item.fileName + '  <hr/> ' + item.updatedAtFormatted + ' </div>',
-            deleteButton
         ]).node().setAttribute('data-row-id', item.id);
 
         if (isOdd) {
@@ -56,7 +59,23 @@ function newDomain() {
     $('#domainModal').modal();
     swal.close();
 }
-
+function checkZoneId() {
+    loading();
+    $.ajax({
+        type: "GET",
+        url: serversBaseUrl + '/checkZoneId',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+            domainsTable.clear().draw();
+            renderdomains(true);
+            swal.close();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("بروز اشکال در اتصال به اینترنت");
+        }
+    });
+}
 
 function deletedomain(id) {
     Swal.fire({
@@ -228,6 +247,10 @@ function deleteInactiveDomain() {
                         getdomains(true);
                     }
                     data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    setTimeout(function () {
+                        swal.close();
+                        $('#filterdomainsModal').modal('toggle');
+                    }, 4000)
                 }
             })
         }

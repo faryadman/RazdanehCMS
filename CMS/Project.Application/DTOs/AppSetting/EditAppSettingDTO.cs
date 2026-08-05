@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Project.Application.DTOs.AppSetting
 {
@@ -34,5 +29,6 @@ namespace Project.Application.DTOs.AppSetting
         public bool IsLogAllowed { get; set; }
         public bool IsAdServerAllowed { get; set; }
         public long TimerCounter { get; set; }
+        public bool IsGdprAllowed { get; set; }
     }
 }

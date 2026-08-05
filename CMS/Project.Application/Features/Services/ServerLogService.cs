@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Project.Application.Contracts.Persistence;
+using Project.Application.DTOs.ApiLog;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 
 namespace Project.Application.Features.Services
 {
@@ -21,11 +23,9 @@ namespace Project.Application.Features.Services
 
         public async Task Create(AddServerLogDTO input)
         {
-
             var model = new ServerLog
             {
                 Operator = Domain.Enums.Operator.Unknown,
-                //Operator = input.Operator == "Irancell" ? Domain.Enums.Operator.Irancell : Domain.Enums.Operator.HamraheAvval,
                 ConnectionStatus = input.ConnectionStatus,
                 Ip = input.Ip,
                 ServerId = input.ServerId,
@@ -35,88 +35,87 @@ namespace Project.Application.Features.Services
                 Isp = input.Isp,
                 Org = input.Org
             };
-
-            var Operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
-            //var operatorIdentifications = await _operatorIdentificationService.GetAll();
-
-            //if (!string.IsNullOrWhiteSpace(input.Operator))
-            //{
-            //    var operatorIdentification = operatorIdentifications.FirstOrDefault(x => !x.IsIsp && x.Text.Equals(input.Operator));
-            //    if (operatorIdentification != null)
-            //    {
-            //        model.Operator = operatorIdentification.Operator;
-            //    }
-            //}
-
-            //if (!string.IsNullOrWhiteSpace(input.Isp))
-            //{
-            //    var operatorIdentification = operatorIdentifications.FirstOrDefault(x => x.IsIsp && x.Text.Equals(input.Isp));
-            //    if (operatorIdentification != null)
-            //    {
-            //        model.Operator = operatorIdentification.Operator;
-            //    }
-            //}
-            model.Operator = Operator;
+            var @operator = await _operatorIdentificationService.GetOperator(input.Isp, input.Operator);
+            model.Operator = @operator;
             await _serverLogRepository.Add(model);
         }
 
         public async Task<List<ServerLogDTO>> ListByServer(int serverId)
         {
-            var data = await _serverLogRepository.FindAsync(x => x.ServerId == serverId);
+            var data = await _serverLogRepository.FindAsync(x => x.ServerId == serverId && x.IsActive == true);
 
             return _mapper.Map<List<ServerLogDTO>>(data.OrderByDescending(x => x.Id));
         }
 
-        public async Task<List<ServerLogDTO>> List()
+
+        public async Task<List<ServerLog>> List()
         {
             var data = await _serverLogRepository.GetAll();
 
-            return _mapper.Map<List<ServerLogDTO>>(data.OrderByDescending(x => x.Id));
+            return data.ToList();
         }
-        public async Task<ServerLogStatisticsDTO> GetAllLogsStatistics()
+        public Task<ServerLogStatisticsDTO> GetAllLogsStatistics()
         {
-            var logs = await _serverLogRepository.GetAll();
+            var logs = _serverLogRepository.GetAllQueryable();
 
-            var data = new ServerLogStatisticsDTO();
-            data.AllLogsStatistics = logs.Count() != 0 ? new ServerLogStatistics
+            var data = new ServerLogStatisticsDTO
             {
-                Count = logs.Count(),
-                FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed).Count(),
-                SuccessCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful).Count(),
-            } : null;
+                AllLogsStatistics = new ServerLogStatistics
+                {
+                    Count = logs.Count(),
+                    FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed),
+                    SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful),
+                },
+                HamraheAvvalLogsStatistics = new ServerLogStatistics
+                {
+                    Count = logs.Count(y => y.Operator == Operator.HamraheAvval),
+                    FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
+                    SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
+                },
+                IrancellLogsStatistics = new ServerLogStatistics
+                {
+                    Count = logs.Count(y => y.Operator == Operator.Irancell),
+                    FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
+                    SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
+                },
+                UnknownLogsStatistics = new ServerLogStatistics
+                {
+                    Count = logs.Count(y => y.Operator == Operator.Unknown),
+                    FailCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
+                    SuccessCount = logs.Count(y => y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
+                }
+            };
 
-            data.HamraheAvvalLogsStatistics = logs.Where(y => y.Operator == Domain.Enums.Operator.HamraheAvval).Count() != 0 ? new ServerLogStatistics
-            {
-                Count = logs.Where(y => y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
-                FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
-                SuccessCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.HamraheAvval).Count(),
-            } : null;
-
-            data.IrancellLogsStatistics = logs.Where(y => y.Operator == Domain.Enums.Operator.Irancell).Count() != 0 ? new ServerLogStatistics
-            {
-                Count = logs.Where(y => y.Operator == Domain.Enums.Operator.Irancell).Count(),
-                FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.Irancell).Count(),
-                SuccessCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.Irancell).Count(),
-            } : null;
-
-            data.UnknownLogsStatistics = logs.Where(y => y.Operator == Domain.Enums.Operator.Unknown).Count() != 0 ? new ServerLogStatistics
-            {
-                Count = logs.Where(y => y.Operator == Domain.Enums.Operator.Unknown).Count(),
-                FailCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Failed && y.Operator == Domain.Enums.Operator.Unknown).Count(),
-                SuccessCount = logs.Where(y => y.ConnectionStatus == Domain.Enums.ConnectionStatus.Successful && y.Operator == Domain.Enums.Operator.Unknown).Count(),
-            } : null;
-
-            return data;
+            return Task.FromResult(data);
         }
-
+        public async Task Delete(ServerLog log)
+        {
+            await _serverLogRepository.RemoveWithoutSaveChange(log);
+            await _serverLogRepository.SaveChangesTask();
+        }
+        public async Task Delete(int id)
+        {
+            await _serverLogRepository.Remove(id);
+        }
         public async Task DeleteServerLogs(int count = 100000)
         {
             var list = await _serverLogRepository.GetAll();
             if (list.Count <= 0) return;
             foreach (var log in list)
             {
-                await _serverLogRepository.Remove(log.Id);
+                await _serverLogRepository.RemoveWithoutSaveChange(log);
             }
+            await _serverLogRepository.SaveChangesTask();
+        }
+        public void RestServerLogs()
+        {
+            DeleteServerLogs().GetAwaiter().GetResult();
+        }
+        public Task<ApiLogDTO> GetLastLog()
+        {
+            var query = _serverLogRepository.FindQueryable(x => x.IsActive == true).OrderByDescending(x => x.Id);
+            var model = query.LastOrDefault();
+            return Task.FromResult(_mapper.Map<ApiLogDTO>(model));
         }
     }
 }

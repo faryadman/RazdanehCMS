@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Project.Application.DTOs.BlackList;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Project.Application.DTOs.Server;
 using Project.Application.Features.Interfaces;
 using Project.Application.Responses;
@@ -12,10 +11,11 @@ namespace Project.Web.AndroidAppsProject.Controllers
     public class ServersController : ControllerBase
     {
         private readonly IServerService _serverService;
-
-        public ServersController(IServerService serverService)
+        private readonly IMemoryCache _memoryCache;
+        public ServersController(IServerService serverService, IMemoryCache memoryCache)
         {
             _serverService = serverService;
+            _memoryCache = memoryCache;
         }
 
         public async Task<IActionResult> List(int? groupId, int? appId, bool isAd)
@@ -23,6 +23,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
             var data = await _serverService.GetWithFilter(groupId, appId, isAd);
             return new Response<List<ServerDTO>>(data).ToJsonResult();
         }
+
         public async Task<IActionResult> Create(CreateServerDTO input)
         {
             await _serverService.Create(input);

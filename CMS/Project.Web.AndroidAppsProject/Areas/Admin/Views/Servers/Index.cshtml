@@ -81,39 +81,66 @@
                                     </button>
                                     <br />
 
-                                    <button class="btn btn-warning" onclick="goDomain()">
-                                         دامنه ها
+                                    <button class="btn btn-warning ml-2" onclick="goDomain()">
+                                        لیست دامنه ها
                                     </button>
-                                    <br/>
+                                    <button class="btn btn-adn ml-2" onclick="goIpList()">
+                                          ip سرور ها
+                                    </button>
+                                    <br />
+                                    <div class="border card-body dot2 rounded rounded-2 ml-2">
+
+                                        <button class="btn btn-outline-success ml-2" onclick="RefreshDomainSelectedItems(serversBaseUrl, getservers, false)">
+                                            رفرش دامنه ها
+                                        </button>
+
+           
+                                        <button class="btn btn-outline-info ml-2" onclick="RefreshSubDomainSelectedItems(serversBaseUrl, getservers, false)">
+                                            رفرش زیردامنه ها
+                                        </button>
+
+                                        <button class="btn btn-outline-danger ml-2" onclick="DnsDeleteSelectedItems(serversBaseUrl, getservers, false)">
+                                            حذف dns ها
+                                        </button>
+
+                                        <button class="btn btn-outline-warning ml-2" onclick="onClickChangeServerAddresses()">
+                                            تنظیم آدرس همه سرور ها
+                                        </button>
+
+                                    </div>
+                                    <br />
                                 </div>
 
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
                                         <div class="table-responsive">
-                                            <table class="table nowrap scroll-horizontal-vertical" style="width:100%!important" id="serversTable">
+                                            <table class="table nowrap scroll-horizontal-vertical" style="width: 100% !important" id="serversTable">
+
                                                 <thead>
-                                                    <tr>
-                                                        <th scope="col"></th>
-                                                        <th scope="col">Id</th>
-                                                        <th scope="col">isAdServer</th>
-                                                        <th scope="col">Domain</th>
-                                                        <th scope="col">HostName</th>
-                                                        <th scope="col">Location</th>
-                                                        <th scope="col">Ip</th>
-                                                        <th scope="col">GroupTitle</th>
-                                                        <th scope="col">IsAvailable</th>
-                                                        <th scope="col">isForHamraheAvval</th>
-                                                        <th scope="col">IsForIrancell</th>
-                                                        <th scope="col">AllLogsStatistics</th>
-                                                        <th scope="col">IrancellLogsStatistics</th>
-                                                        <th scope="col">HamraheAvvalLogsStatistics</th>
-                                                        <th scope="col">UnknownLogsStatistics</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
+                                                <tr>
+                                                    <th>
+                                                       @* <input type="checkbox" id="selectAllCheckbox" />*@
+                                                    </th>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">isAdServer</th>
+                                                    <th scope="col">Domain</th>
+                                                    <th scope="col">HostName</th>
+                                                    <th scope="col">Location</th>
+                                                    <th scope="col">Ip</th>
+                                                    <th scope="col">GroupTitle</th>
+                                                    <th scope="col">IsAvailable</th>
+                                                    <th scope="col">isForHamraheAvval</th>
+                                                    <th scope="col">IsForIrancell</th>
+                                                    <th scope="col">AllLogsStatistics</th>
+                                                    <th scope="col">IrancellLogsStatistics</th>
+                                                    <th scope="col">HamraheAvvalLogsStatistics</th>
+                                                    <th scope="col">UnknownLogsStatistics</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>
@@ -156,7 +183,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Config"></label>
-                            <textarea rows="6" asp-for="Config" type="text" class="form-control" required></textarea>
+                            <textarea style="direction: ltr; text-align: left;" rows="6" asp-for="Config" type="text" class="form-control" required></textarea>
                         </div>
                         <div class="form-group">
                             <label asp-for="ConfigKey"></label>
@@ -258,4 +285,28 @@
     </div>
 </div>
 
+    <div class="modal fade" id="changeServerAddressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change server address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="filterServerForm">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input id="addressInput" type="text" class="form-control" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
+                    <button onclick="onClickChangeServerAddressSubmit()" type="button" class="btn btn-success">تایید</button>
+                </div>
+            </div>
+        </div>
+    </div>
 

@@ -2,6 +2,10 @@
 {
     public interface ICronJobService
     {
-        Task Reset();
+        Task ResetServerLog();
+        Task ResetServerSubDomain();
+        Task ResetServerDomain();
+        Task ResetServerDns();
+        Task CheckZoneId();
     }
 }

@@ -1,21 +1,16 @@
-using DNTCommon.Web.Core;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Project.Application;
-using Project.Application.Features.Interfaces;
 using Project.Application.Filters;
 using Project.Application.Middlewares;
 using Project.Domain.Entities;
-//using Project.Infrastructure;
 using Project.Persistence;
-using Project.Web.AndroidAppsProject;
 using Project.Web.AndroidAppsProject.CronJob;
 using Project.Web.AndroidAppsProject.Dapper;
+using Serilog;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -25,11 +20,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.ConfigureApplicationServices();
-//builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
 builder.Services.AddSingleton<IDapperQueryService, DapperQueryService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddMemoryCache(options =>
+{
+    options.ExpirationScanFrequency = TimeSpan.FromMinutes(1);
+});
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -93,20 +92,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     //using Microsoft.AspNetCore.Authentication.Cookies;
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
     options.SlidingExpiration = true;
-    //options.Events.OnRedirectToLogin = context =>
-    //{
-    //    if (PublicHelper.IsAdminContext(context))
-    //    {
-    //        var redirectPath = new Uri(context.RedirectUri);
-    //        context.Response.Redirect("/admin/account/login" + redirectPath.Query);
-    //    }
-    //    else
-    //    {
-    //        context.Response.Redirect(context.RedirectUri);
-    //    }
-
-    //    return Task.CompletedTask;
-    //};
 });
 
 
@@ -127,7 +112,11 @@ builder.Services
     {
         options.ViewLocationFormats.Add("/{0}.cshtml");
     });
-
+string path = builder.Configuration["Serilog:path"];
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(path, rollingInterval: RollingInterval.Hour)
+    .MinimumLevel.Warning()
+    .CreateLogger(); builder.Host.UseSerilog();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -147,7 +136,7 @@ app.UseResponseCompression();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = context =>
-    context.Context.Response.Headers.Add("Cache-Control", "public, max-age=2592000")
+    context.Context.Response.Headers.Append("Cache-Control", $"public, max-age={TimeSpan.FromMinutes(10).TotalSeconds}")
 });
 
 
@@ -156,9 +145,29 @@ app.UseHangfireServer();
 app.UseHangfireDashboard();
 
 RecurringJob.AddOrUpdate(
-    "myrecurringjob",
-    () =>  app.Services.GetService<ICronJobService>().Reset(),
-    Cron.MinuteInterval(10));
+    "logDeleterJob",
+    () => app.Services.GetService<ICronJobService>()!.ResetServerLog(),
+Cron.MinuteInterval(10));
+
+//RecurringJob.AddOrUpdate(
+//    "SubDomainJob",
+//    () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
+//    Cron.MinuteInterval(30));
+
+//RecurringJob.AddOrUpdate(
+//    "DomainJob",
+//    () => app.Services.GetService<ICronJobService>()!.ResetServerDomain(),
+//    Cron.MinuteInterval(2));
+
+RecurringJob.AddOrUpdate(
+    "CheckZoneId",
+    () => app.Services.GetService<ICronJobService>()!.CheckZoneId(),
+     Cron.MinuteInterval(45));
+//RecurringJob.AddOrUpdate(
+
+//"DeleteDnsJob",
+//() => app.Services.GetService<ICronJobService>()!.ResetServerDns(),
+//Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 
@@ -169,11 +178,10 @@ app.UseSession();
 app.Use(async (context, next) =>
 {
     string path = context.Request.Path;
-
     if (path.EndsWith(".css") || path.EndsWith(".js") || path.EndsWith(".jpg") || path.EndsWith(".jpeg") || path.EndsWith(".png"))
     {
-        //Set css and js files to be cached for 7 days
-        TimeSpan maxAge = new(7, 0, 0, 0);     //7 days
+        //Set css and js files to be cached for 10 minutes
+        TimeSpan maxAge = new(0, 0, 5, 0);     //    10 minutes
         context.Response.Headers.Append("Cache-Control", "max-age=" + maxAge.TotalSeconds.ToString("0"));
     }
     else
