@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Project.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -14,16 +14,16 @@ namespace Project.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        private IQueryable<T> ActiveEntities => _dbContext.Set<T>();
+        private IQueryable<T> ActiveEntities => _dbContext.Set<T>().AsQueryable();
 
         public async Task<T> Get(int id)
         {
-            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => (e as BaseEntity).Id == id);
+            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<T> GetNoTracking(int id)
         {
-            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => (e as BaseEntity).Id == id);
+            return await ActiveEntities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<IReadOnlyList<T>> GetAll()
@@ -54,7 +54,7 @@ namespace Project.Persistence.Repositories
             var entity = await Get(id);
             if (entity != null)
             {
-                (entity as BaseEntity).IsActive = false;
+                entity.IsActive = false;
                 _dbContext.Entry(entity).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
@@ -65,7 +65,7 @@ namespace Project.Persistence.Repositories
             var entity = await Get(id);
             if (entity != null)
             {
-                (entity as BaseEntity).IsActive = true;
+                entity.IsActive = true;
                 _dbContext.Entry(entity).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
@@ -73,7 +73,7 @@ namespace Project.Persistence.Repositories
 
         public async Task<bool> Exist(int id)
         {
-            return await ActiveEntities.AnyAsync(e => (e as BaseEntity).Id == id);
+            return await ActiveEntities.AnyAsync(e => e.Id == id);
         }
 
         public async Task<bool> Exist(Expression<Func<T, bool>> predicate)

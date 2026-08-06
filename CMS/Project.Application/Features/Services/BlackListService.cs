@@ -48,7 +48,7 @@ namespace Project.Application.Features.Services
         {
             var query = _blackListRepository.GetAllQueryable();
 
-            query = query.Where(x => x.IsActive);
+            query = query.Where(x => x.IsActive==true);
 
             if (serverId != null)
                 query = query.Where(x => x.ServerId == serverId.Value);

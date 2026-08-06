@@ -37,16 +37,12 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             return View("index");
         }
 
-        [HttpPost("SignIn")]
-        //[ValidateAntiForgeryToken]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SignIn(LoginViewModel input)
         {
             var returnUrl = "/admin/apps";
-            var find = await _userManager.FindByNameAsync(input.Username);
-            if (find == null)
-            {
-                return new Response<string>(ResponseStatus.BadRequest, message: "نام کاربری یا کلمه عبور نادرست می باشد").ToJsonResult();
-            }
+        
 
             var result = await _signInManager.PasswordSignInAsync(input.Username, input.Password, true, lockoutOnFailure: false);
 
@@ -54,25 +50,25 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 ? new Response<string>(ResponseStatus.Succeed, data: returnUrl).ToJsonResult()
                 : new Response<string>(ResponseStatus.BadRequest, message: "نام کاربری یا کلمه عبور نادرست می باشد").ToJsonResult();
         }
-        [HttpGet("NewSignUp")]
-        public async Task<IActionResult> SignUpTask()
-        {
-            var returnUrl = "/admin/apps";
-            var date = DateTime.Now.Date.Month + DateTime.Now.Date.Day;
-            var user = new Domain.Entities.User
-            {
-                Email = "user@gmail.com",
-                EmailConfirmed = true,
-                LockoutEnabled = false,
-                NormalizedEmail = "user@gmail.com".Normalize(),
-                UserName = $"user{date.ToString()}",
-                NormalizedUserName = "user".Normalize()
-            };
-            await _userManager.CreateAsync(user, "123@user@456");
+        //[HttpGet("NewSignUp")]
+        //public async Task<IActionResult> SignUpTask()
+        //{
+        //    var returnUrl = "/admin/apps";
+        //    var date = DateTime.Now.Date.Month + DateTime.Now.Date.Day;
+        //    var user = new Domain.Entities.User
+        //    {
+        //        Email = "user@gmail.com",
+        //        EmailConfirmed = true,
+        //        LockoutEnabled = false,
+        //        NormalizedEmail = "user@gmail.com".Normalize(),
+        //        UserName = $"user{date.ToString()}",
+        //        NormalizedUserName = "user".Normalize()
+        //    };
+        //    await _userManager.CreateAsync(user, "123@user@456");
 
-            await _userManager.AddToRoleAsync(user, "user");
-            return new Response<string>(ResponseStatus.Succeed, message: "کاربری جدید ساخته شذ.").ToJsonResult();
-        }
+        //    await _userManager.AddToRoleAsync(user, "user");
+        //    return new Response<string>(ResponseStatus.Succeed, message: "کاربری جدید ساخته شذ.").ToJsonResult();
+        //}
         [HttpGet]
         public async Task<IActionResult> Logout()
         {

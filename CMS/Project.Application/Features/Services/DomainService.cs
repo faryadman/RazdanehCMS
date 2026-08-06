@@ -64,14 +64,14 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => !x.IsDeleted));
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted==false && x.IsActive==true));
             return model;
         }
 
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
             var query = _domainRepository.GetAllQueryable();
-            query = filter == 1 ? query.Where(x => x.IsActive) : query.Where(x => !x.IsActive);
+            query = filter == 1 ? query.Where(x => x.IsActive==true) : query.Where(x => x.IsActive==false);
             var data = await query.ToListAsync();
             var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
             return list;

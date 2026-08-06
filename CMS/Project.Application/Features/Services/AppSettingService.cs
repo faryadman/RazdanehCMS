@@ -30,7 +30,7 @@ namespace Project.Application.Features.Services
         public async Task<List<MinimalAppSettingDTO>> GetAll()
         {
             var data = await _appSettingRepository.GetAll();
-            return _mapper.Map<List<MinimalAppSettingDTO>>(data.OrderByDescending(x => x.UpdatedAt));
+            return _mapper.Map<List<MinimalAppSettingDTO>>(data.Where(x => x.IsActive).OrderByDescending(x => x.UpdatedAt));
         }
         public async Task Create(CreateAppSettingDTO input)
         {

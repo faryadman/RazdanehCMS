@@ -34,7 +34,7 @@ namespace Project.Application.Features.Services
             else
             {
                 var ips = await _ipRepository.GetAll();
-                var models = _mapper.Map<List<IpDTO>>(ips.OrderByDescending(i => i.Id).ToList());
+                var models = _mapper.Map<List<IpDTO>>(ips.OrderByDescending(i => i.Id).Where(i => i.IsActive == true).ToList());
                 _memoryCache.Set("ListIp", models, _cacheEntryOptions);
                 return models;
             }

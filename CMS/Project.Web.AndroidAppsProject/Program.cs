@@ -83,7 +83,6 @@ builder.Services.AddHangfire(opts =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.AccessDeniedPath = "/admin/account";
     options.Cookie.Name = "YourAppCookieName";
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
@@ -215,5 +214,47 @@ app.UseMvc(routes =>
       template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
 });
+
+// Seed an initial admin role and user if they do not exist
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        var roleExists = roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult();
+        if (!roleExists)
+        {
+            roleManager.CreateAsync(new IdentityRole("admin")).GetAwaiter().GetResult();
+        }
+
+        var adminUserName = "admin";
+        var adminUser = userManager.FindByNameAsync(adminUserName).GetAwaiter().GetResult();
+        if (adminUser == null)
+        {
+            var user = new User
+            {
+                UserName = adminUserName,
+                NormalizedUserName = adminUserName.ToUpper(),
+                Email = "admin@local",
+                NormalizedEmail = "admin@local".ToUpper(),
+                EmailConfirmed = true,
+                LockoutEnabled = false
+            };
+
+            var createResult = userManager.CreateAsync(user, "Admin@123").GetAwaiter().GetResult();
+            if (createResult.Succeeded)
+            {
+                userManager.AddToRoleAsync(user, "admin").GetAwaiter().GetResult();
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // Swallow exceptions during seeding to avoid stopping the app; consider logging in real scenarios
+    }
+}
 
 app.Run();
