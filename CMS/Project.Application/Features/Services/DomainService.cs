@@ -64,7 +64,7 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted==false && x.IsActive==true));
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted==false));
             return model;
         }
 
