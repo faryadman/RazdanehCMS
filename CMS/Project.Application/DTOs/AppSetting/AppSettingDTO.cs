@@ -34,5 +34,10 @@ namespace Project.Application.DTOs.AppSetting
         public bool IsAdServerAllowed { get; set; }
         public long TimerCounter { get; set; }
         public bool IsGdprAllowed { get; set; }
+
+        public bool IsAcAllowed { get; set; }
+        public bool IsSpAllowed { get; set; }
+        public bool IsTimeToStopAllowed { get; set; }
+        public int TimeToStop { get; set; }
     }
 }

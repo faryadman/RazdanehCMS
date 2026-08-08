@@ -36,14 +36,14 @@ namespace Project.Application.Features.Services
         {
             var data = await _groupRepository.GetAll();
 
-            return _mapper.Map<List<GroupDTO>>(data.OrderByDescending(x => x.UpdatedAt));
+            return _mapper.Map<List<GroupDTO>>(data.OrderByDescending(x => x.UpdatedAt).Where(x => x.IsActive == true));
         }
 
         public async Task<List<GroupDTO>> GetFiltered(bool isAd)
         {
             var data = await _groupRepository.FindAsync(x => x.IsAd == isAd);
 
-            return _mapper.Map<List<GroupDTO>>(data.OrderByDescending(x => x.UpdatedAt));
+            return _mapper.Map<List<GroupDTO>>(data.OrderByDescending(x => x.UpdatedAt).Where(x => x.IsActive == true));
         }
     }
 }

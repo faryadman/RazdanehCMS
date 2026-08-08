@@ -2,7 +2,7 @@
 
 namespace Project.Application.Contracts.Persistence
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : Project.Domain.Entities.Base.BaseEntity
     {
         Task<IReadOnlyList<T>> GetAll();
         Task<T> Add(T entity);

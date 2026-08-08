@@ -1,12 +1,73 @@
-﻿let domainsTable = $('#domainsTable').DataTable();
+﻿let domainsTable;
 
 let serversBaseUrl = "/admin/domains";
 let formUrl;
 
+$(document).ready(function () {
+    // initialize DataTable after DOM is ready
+    domainsTable = $('#domainsTable').DataTable();
+
+    // select all
+    $('#selectAll').on('change', function () {
+        $('.deleteCheckbox').prop('checked', $(this).is(':checked'));
+    });
+
+    // delete all visible rows on current DataTable page
+    $('#deleteAllVisibleBtn').on('click', function () {
+        // collect ids from rows on current page
+        const nodes = domainsTable.rows({ page: 'current' }).nodes().to$();
+        const ids = [];
+        nodes.each(function () {
+            const rowId = $(this).attr('data-row-id');
+            if (rowId) ids.push(rowId.toString());
+        });
+        if (ids.length === 0) { toastr.error('No items on current page'); return; }
+
+        Swal.fire({
+            title: '',
+            text: confirmDeleteQuestion,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonClass: 'btn btn-primary',
+            cancelButtonClass: 'btn btn-danger ml-1',
+            buttonsStyling: false,
+        }).then(function (result) {
+            if (result.value) {
+                loading();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Domains/MassDelete',
+                    data: { ids: ids.join('_') },
+                    success: function (resp) {
+                        getdomains(1);
+                        resp.status == '0' ? Swal.fire('', resp.message, 'error') : Swal.fire('', resp.message, 'success');
+                    },
+                    error: function (xhr) {
+                        toastr.error('Delete failed');
+                    }
+                });
+            }
+        });
+    });
+
+    // collect and call existing helper
+    $('#deleteSelectedBtn').on('click', function () {
+        // make sure admin.js global ids array is reset
+        idsToBeDeleted = [];
+        $('.deleteCheckbox:checked').each(function () {
+            idsToBeDeleted.push($(this).data('item-id').toString());
+        });
+        if (idsToBeDeleted.length === 0) { toastr.error('Please choose an item first'); return; }
+        // pass a reload callback to refresh list after delete
+        DeleteSelectedItems('/Admin/Domains', function () { getdomains(1); }, null);
+    });
+});
 function getdomains(filter) {
     $.ajax({
         type: "GET",
-        url: serversBaseUrl + '/list?filter=1',
+        url: serversBaseUrl + '/list?filter=' + encodeURIComponent(filter ? 1 : 0),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
@@ -27,7 +88,8 @@ function renderdomains(data) {
         console.log(item)
         let deleteButton;
 
-        if (item.isActive == 1) {
+        // handle boolean or numeric isActive
+        if (item.isActive == true || item.isActive == 1) {
             deleteButton = '<button  class="btn btn-sm btn-danger" onclick="deletedomain(' + item.id + ')" >Delete</button>';
         }
         else {
@@ -67,8 +129,8 @@ function checkZoneId() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
-            domainsTable.clear().draw();
-            renderdomains(true);
+            // refresh active list after check
+            getdomains(1);
             swal.close();
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
@@ -122,10 +184,10 @@ function submitDomainForm() {
         contentType: false,
         processData: false,
         success: function (data) {
-            if (window.location.pathname.toLowerCase() == '/admin/domain'.toLowerCase()) {
-                getdomains(false);
+            if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
+                getdomains(1);
             } else {
-                getdomains(true);
+                getdomains(0);
             }
             document.getElementById('domainForm').reset();
             $('#domainModal').modal('toggle');

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.Persistence;
 
@@ -11,9 +12,10 @@ using Project.Persistence;
 namespace Project.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260805211515_update-appsettings")]
+    partial class updateappsettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,7 +255,7 @@ namespace Project.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<bool?>("IsAcAllowed")
+                    b.Property<bool>("IsAcAllowed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsActive")
@@ -265,19 +267,19 @@ namespace Project.Persistence.Migrations
                     b.Property<bool>("IsAdmobActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsGdprAllowed")
+                    b.Property<bool>("IsGdprAllowed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsLogAllowed")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsSpAllowed")
+                    b.Property<bool>("IsSpAllowed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSplashActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsTimeToStopAllowed")
+                    b.Property<bool>("IsTimeToStopAllowed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsUpdateForce")
@@ -303,7 +305,7 @@ namespace Project.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("TimeToStop")
+                    b.Property<int>("TimeToStop")
                         .HasColumnType("int");
 
                     b.Property<long>("TimerCounter")
