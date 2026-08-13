@@ -1,0 +1,1567 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-08-08T21:52:50.2181026Z",
+  "analysisEndTime": "2026-08-08T21:52:58.0391001Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 6,
+      "issues": 8,
+      "incidents": 52,
+      "effort": 52
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 8,
+        "Optional": 10,
+        "Potential": 34,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 27,
+        "Project": 6,
+        "Api": 19
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "CMS\\Project.Application\\Project.Application.csproj",
+      "startingProject": true,
+      "issues": 8,
+      "storyPoints": 20,
+      "properties": {
+        "appName": "Project.Application",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 112,
+        "numberOfCodeFiles": 112,
+        "linesTotal": 3868,
+        "linesOfCode": 3868,
+        "totalApiScanned": 4584,
+        "minLinesOfCodeToChange": 11,
+        "maxLinesOfCodeToChange": 11
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "3d304ae2-4e81-4004-9c73-9f7247f98f3f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore, and replace with new package Microsoft.EntityFrameworkCore 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "31f3b2dd-f8c2-47ff-b33f-ca3d5c98a01d",
+          "ruleId": "NuGet.0001",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "CloudFlare.NET, 0.1.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "CloudFlare.NET, 0.1.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "CloudFlare.NET, 0.1.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "CloudFlare.NET, 0.1.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "CloudFlare.NET 0.1.1",
+            "properties": {
+              "PackageId": "CloudFlare.NET",
+              "PackageVersion": "0.1.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "15151012-390c-445f-902f-c5eb924d1d39",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Tools 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "2cc98186-b719-4948-addb-72cb89b2f64a",
+          "ruleId": "NuGet.0004",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "AutoMapper, 12.0.1\n\nRecommendation:\n\nAutoMapper, 16.2.0",
+              "protected": "AutoMapper, 12.0.1\n\nRecommendation:\n\nAutoMapper, 16.2.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "AutoMapper, 12.0.1\n\nRecommendation:\n\nAutoMapper, 16.2.0",
+            "protectedSnippet": "AutoMapper, 12.0.1\n\nRecommendation:\n\nAutoMapper, 16.2.0",
+            "label": "AutoMapper 12.0.1",
+            "properties": {
+              "PackageId": "AutoMapper",
+              "PackageVersion": "12.0.1",
+              "PackageNewVersion": "16.2.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "4b0528f4-e726-498a-a845-bee577a12adb",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1\n\nRecommendation:\n\nThe functionality of this package is now included directly in AutoMapper.\nRemove AutoMapper.Extensions.Microsoft.DependencyInjection, and replace with new package AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1",
+              "protected": "AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1\n\nRecommendation:\n\nThe functionality of this package is now included directly in AutoMapper.\nRemove AutoMapper.Extensions.Microsoft.DependencyInjection, and replace with new package AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1\n\nRecommendation:\n\nThe functionality of this package is now included directly in AutoMapper.\nRemove AutoMapper.Extensions.Microsoft.DependencyInjection, and replace with new package AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1",
+            "protectedSnippet": "AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1\n\nRecommendation:\n\nThe functionality of this package is now included directly in AutoMapper.\nRemove AutoMapper.Extensions.Microsoft.DependencyInjection, and replace with new package AutoMapper.Extensions.Microsoft.DependencyInjection, 12.0.1",
+            "label": "AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1",
+            "properties": {
+              "PackageId": "AutoMapper.Extensions.Microsoft.DependencyInjection",
+              "PackageVersion": "12.0.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5e31193d-4335-434e-a855-fbd368297f48",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+              "protected": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+            "protectedSnippet": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+            "label": "Microsoft.AspNetCore.Http.Abstractions 2.2.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Http.Abstractions",
+              "PackageVersion": "2.2.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0e251e32-1d0f-4e56-bfd6-5da0d138be07",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+              "protected": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+            "protectedSnippet": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+            "label": "Microsoft.AspNetCore.Http.Features 5.0.17",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Http.Features",
+              "PackageVersion": "5.0.17",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "fc4d31a8-fe69-422b-afff-843f0eb7104c",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Mvc.Formatters.Json, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Mvc.Formatters.Json, and replace with new package Microsoft.AspNetCore.Mvc.Formatters.Json, 2.3.11",
+              "protected": "Microsoft.AspNetCore.Mvc.Formatters.Json, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Mvc.Formatters.Json, and replace with new package Microsoft.AspNetCore.Mvc.Formatters.Json, 2.3.11"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Microsoft.AspNetCore.Mvc.Formatters.Json, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Mvc.Formatters.Json, and replace with new package Microsoft.AspNetCore.Mvc.Formatters.Json, 2.3.11",
+            "protectedSnippet": "Microsoft.AspNetCore.Mvc.Formatters.Json, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Mvc.Formatters.Json, and replace with new package Microsoft.AspNetCore.Mvc.Formatters.Json, 2.3.11",
+            "label": "Microsoft.AspNetCore.Mvc.Formatters.Json 2.2.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Mvc.Formatters.Json",
+              "PackageVersion": "2.2.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0e6ec51a-cd21-4195-a848-b29cce33fc5e",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Project.Application.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "0a6afdfe-b9bb-4b75-9ff9-09e8196e58f7",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\DomainService.cs",
+            "snippet": "var expireTimeSpan = TimeSpan.FromMinutes(expireTimeInMinutes);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 333,
+            "column": 24
+          }
+        },
+        {
+          "incidentId": "07a4626c-a2da-475d-ad87-3eec5116ee80",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\AppSettingService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "db889bc3-54d3-49ea-9ec0-4a1e153a7623",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\AppSettingService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0070f4fe-1453-4b06-9650-d69cc1a52f23",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\IpService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 21,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "934045d8-f548-43c4-96d1-e0e5da61a6ad",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\IpService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 21,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "41bafcda-9de3-4bcd-8f09-5f6c36570d06",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\ServerService.cs",
+            "snippet": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 380,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2b38f499-b56d-49ae-8f5d-ee950fdf8ab2",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)\r\n            };",
+              "protected": "M:System.TimeSpan.FromHours(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\ServerService.cs",
+            "snippet": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromHours(System.Double)",
+            "label": "M:System.TimeSpan.FromHours(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 243,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "314b6563-9976-4322-8ff0-156bcb848153",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\ServerService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1f170a84-0cac-4782-8248-7299bbcc4ab5",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\Services\\ServerService.cs",
+            "snippet": "_cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "76fad8aa-a433-4166-8e02-9c74168b7c7c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change - Streaming HTTP responses enabled by default in browser HTTP clients ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var content = await response.Content.ReadAsStringAsync();",
+              "protected": "T:System.Net.Http.HttpContent"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\Features\\CloudflareApiClient.cs",
+            "snippet": "var content = await response.Content.ReadAsStringAsync();",
+            "protectedSnippet": "T:System.Net.Http.HttpContent",
+            "label": "T:System.Net.Http.HttpContent",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/default-http-streaming.md",
+                "isCustom": false
+              }
+            ],
+            "line": 87,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "ec9d1e6f-28df-48c7-85a9-57593db34d14",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "CMS\\Project.Application\\Project.Application.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.AddAutoMapper(Assembly.GetExecutingAssembly());",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Application\\ApplicationServicesRegistration.cs",
+            "snippet": "services.AddAutoMapper(Assembly.GetExecutingAssembly());",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "line": 13,
+            "column": 12
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "CMS\\Project.Domain\\Project.Domain.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "Project.Domain",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 17,
+        "numberOfCodeFiles": 17,
+        "linesTotal": 320,
+        "linesOfCode": 320,
+        "totalApiScanned": 484,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "5179eb96-c2a5-4adb-86d9-43a9b10df66d",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Domain\\Project.Domain.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Abstractions, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Abstractions, and replace with new package Microsoft.EntityFrameworkCore.Abstractions 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Abstractions, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Abstractions, and replace with new package Microsoft.EntityFrameworkCore.Abstractions 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Domain\\Project.Domain.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Abstractions, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Abstractions, and replace with new package Microsoft.EntityFrameworkCore.Abstractions 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Abstractions, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Abstractions, and replace with new package Microsoft.EntityFrameworkCore.Abstractions 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Abstractions 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Abstractions",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "7a52bbe9-c2ec-4d15-ba9e-1705f4f4fe46",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Domain\\Project.Domain.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Identity.Stores, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.Extensions.Identity.Stores, and replace with new package Microsoft.Extensions.Identity.Stores 10.0.10",
+              "protected": "Microsoft.Extensions.Identity.Stores, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.Extensions.Identity.Stores, and replace with new package Microsoft.Extensions.Identity.Stores 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Domain\\Project.Domain.csproj",
+            "snippet": "Microsoft.Extensions.Identity.Stores, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.Extensions.Identity.Stores, and replace with new package Microsoft.Extensions.Identity.Stores 10.0.10",
+            "protectedSnippet": "Microsoft.Extensions.Identity.Stores, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.Extensions.Identity.Stores, and replace with new package Microsoft.Extensions.Identity.Stores 10.0.10",
+            "label": "Microsoft.Extensions.Identity.Stores 6.0.11",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Identity.Stores",
+              "PackageVersion": "6.0.11",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "4eea9997-3a93-41d1-a0dc-5f80388bcc3b",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Domain\\Project.Domain.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Domain\\Project.Domain.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 4,
+      "properties": {
+        "appName": "Project.Infrastructure",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 4,
+        "numberOfCodeFiles": 4,
+        "linesTotal": 175,
+        "linesOfCode": 175,
+        "totalApiScanned": 203,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "6740a12f-558f-48f0-8e31-75f4ea85301c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+              "protected": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+            "snippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+            "protectedSnippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+            "label": "Microsoft.Extensions.Options.ConfigurationExtensions 6.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Options.ConfigurationExtensions",
+              "PackageVersion": "6.0.0",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "80434f59-76c5-48d9-8a40-9ae6f2440b09",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+              "protected": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+            "snippet": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+            "protectedSnippet": "Microsoft.AspNetCore.Http.Features, 5.0.17\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Features, and replace with new package Microsoft.AspNetCore.Http.Features, 5.0.17",
+            "label": "Microsoft.AspNetCore.Http.Features 5.0.17",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Http.Features",
+              "PackageVersion": "5.0.17",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "db81d251-c8da-4f3e-be88-4a4ca02ce66a",
+          "ruleId": "NuGet.0004",
+          "projectPath": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "RestSharp, 107.3.0\n\nRecommendation:\n\nRestSharp, 114.0.0",
+              "protected": "RestSharp, 107.3.0\n\nRecommendation:\n\nRestSharp, 114.0.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+            "snippet": "RestSharp, 107.3.0\n\nRecommendation:\n\nRestSharp, 114.0.0",
+            "protectedSnippet": "RestSharp, 107.3.0\n\nRecommendation:\n\nRestSharp, 114.0.0",
+            "label": "RestSharp 107.3.0",
+            "properties": {
+              "PackageId": "RestSharp",
+              "PackageVersion": "107.3.0",
+              "PackageNewVersion": "114.0.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f3c83d7c-be60-4f72-8e1b-8ed311175a10",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Infrastructure\\Project.Infrastructure.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 7,
+      "properties": {
+        "appName": "Project.Persistence",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 98,
+        "numberOfCodeFiles": 98,
+        "linesTotal": 35959,
+        "linesOfCode": 35959,
+        "totalApiScanned": 52342,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "ab470e3d-8aba-4ebd-a39d-19641512c554",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.10",
+              "protected": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.10",
+            "protectedSnippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Identity.EntityFrameworkCore, and replace with new package Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.10",
+            "label": "Microsoft.AspNetCore.Identity.EntityFrameworkCore 6.0.11",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageVersion": "6.0.11",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "1da99031-144b-4148-80ea-24782b59de7c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Proxies, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Proxies, and replace with new package Microsoft.EntityFrameworkCore.Proxies 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Proxies, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Proxies, and replace with new package Microsoft.EntityFrameworkCore.Proxies 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Proxies, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Proxies, and replace with new package Microsoft.EntityFrameworkCore.Proxies 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Proxies, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Proxies, and replace with new package Microsoft.EntityFrameworkCore.Proxies 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Proxies 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Proxies",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "19ae9675-66d2-4c09-aafa-42764f06ea94",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b24cb77c-3615-45f2-bddc-925f5a5d5f85",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.5\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Tools 6.0.5",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "6.0.5",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "83615566-847d-485b-8d7b-d74f03e82b4f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+              "protected": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+            "protectedSnippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 6.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.10",
+            "label": "Microsoft.Extensions.Options.ConfigurationExtensions 6.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Options.ConfigurationExtensions",
+              "PackageVersion": "6.0.0",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "4a0d6c7c-de63-4bcd-a53a-d1208d211e21",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+              "protected": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+            "protectedSnippet": "Microsoft.AspNetCore.Http.Abstractions, 2.2.0\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.AspNetCore.Http.Abstractions, and replace with new package Microsoft.AspNetCore.Http.Abstractions, 2.3.11",
+            "label": "Microsoft.AspNetCore.Http.Abstractions 2.2.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Http.Abstractions",
+              "PackageVersion": "2.2.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "74cd87a6-c760-479a-805c-ae411658ab24",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Persistence\\Project.Persistence.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+      "startingProject": true,
+      "issues": 6,
+      "storyPoints": 15,
+      "properties": {
+        "appName": "Project.Web.AndroidAppsProject",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 1589,
+        "numberOfCodeFiles": 53,
+        "linesTotal": 526155,
+        "linesOfCode": 5094,
+        "totalApiScanned": 35000,
+        "minLinesOfCodeToChange": 8,
+        "maxLinesOfCodeToChange": 8
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "9b242599-d44c-40c9-8427-dbe1af9fd1c7",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Mvc.NewtonsoftJson, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Mvc.NewtonsoftJson, and replace with new package Microsoft.AspNetCore.Mvc.NewtonsoftJson 10.0.10",
+              "protected": "Microsoft.AspNetCore.Mvc.NewtonsoftJson, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Mvc.NewtonsoftJson, and replace with new package Microsoft.AspNetCore.Mvc.NewtonsoftJson 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.AspNetCore.Mvc.NewtonsoftJson, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Mvc.NewtonsoftJson, and replace with new package Microsoft.AspNetCore.Mvc.NewtonsoftJson 10.0.10",
+            "protectedSnippet": "Microsoft.AspNetCore.Mvc.NewtonsoftJson, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Mvc.NewtonsoftJson, and replace with new package Microsoft.AspNetCore.Mvc.NewtonsoftJson 10.0.10",
+            "label": "Microsoft.AspNetCore.Mvc.NewtonsoftJson 6.0.11",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
+              "PackageVersion": "6.0.11",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5457bec0-c3f0-4b74-9155-4127c2965ab4",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 6.0.11",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "6.0.11",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "391ea97b-0f8b-4fdf-9a71-809670bfb794",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 6.0.11\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Tools 6.0.11",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "6.0.11",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "bf7ea3c5-9121-47ce-a240-40ece8f0f00d",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Caching.Memory, 8.0.0-preview.7.23375.6\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.10",
+              "protected": "Microsoft.Extensions.Caching.Memory, 8.0.0-preview.7.23375.6\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.Extensions.Caching.Memory, 8.0.0-preview.7.23375.6\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.10",
+            "protectedSnippet": "Microsoft.Extensions.Caching.Memory, 8.0.0-preview.7.23375.6\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.10",
+            "label": "Microsoft.Extensions.Caching.Memory 8.0.0-preview.7.23375.6",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Caching.Memory",
+              "PackageVersion": "8.0.0-preview.7.23375.6",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "022dded3-3948-4f34-a574-c6acc0a713b0",
+          "ruleId": "NuGet.0004",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nMicrosoft.Data.SqlClient, 7.0.2",
+              "protected": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nMicrosoft.Data.SqlClient, 7.0.2"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nMicrosoft.Data.SqlClient, 7.0.2",
+            "protectedSnippet": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nMicrosoft.Data.SqlClient, 7.0.2",
+            "label": "Microsoft.Data.SqlClient 5.1.0",
+            "properties": {
+              "PackageId": "Microsoft.Data.SqlClient",
+              "PackageVersion": "5.1.0",
+              "PackageNewVersion": "7.0.2",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "9e4153db-a311-42a8-a387-8eaf4aefa1f1",
+          "ruleId": "NuGet.0005",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nAn important security issue exists in this version of the package. It is recommended to update to a newer version.\nhttps://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-0056\nRemove Microsoft.Data.SqlClient, and replace with new package Microsoft.Data.SqlClient, 7.0.2",
+              "protected": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nAn important security issue exists in this version of the package. It is recommended to update to a newer version.\nhttps://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-0056\nRemove Microsoft.Data.SqlClient, and replace with new package Microsoft.Data.SqlClient, 7.0.2"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nAn important security issue exists in this version of the package. It is recommended to update to a newer version.\nhttps://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-0056\nRemove Microsoft.Data.SqlClient, and replace with new package Microsoft.Data.SqlClient, 7.0.2",
+            "protectedSnippet": "Microsoft.Data.SqlClient, 5.1.0\n\nRecommendation:\n\nAn important security issue exists in this version of the package. It is recommended to update to a newer version.\nhttps://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-0056\nRemove Microsoft.Data.SqlClient, and replace with new package Microsoft.Data.SqlClient, 7.0.2",
+            "label": "Microsoft.Data.SqlClient 5.1.0",
+            "properties": {
+              "PackageId": "Microsoft.Data.SqlClient",
+              "PackageVersion": "5.1.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "84721ad0-343e-47a7-a02a-81877cd20375",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "ecbbfafd-9432-4788-9cae-e6c45fd9aba7",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Areas\\Admin\\Controllers\\AppsController.cs",
+            "snippet": "var cacheEntryOptions = new MemoryCacheEntryOptions\r\n            {\r\n                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)\r\n            };",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 44,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4b6af4c5-e7ad-4abf-8992-66ade6276db9",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseStaticFiles(new StaticFileOptions\r\n{\r\n    OnPrepareResponse = context =\u003E\r\n    context.Context.Response.Headers.Append(\u0022Cache-Control\u0022, $\u0022public, max-age={TimeSpan.FromMinutes(10).TotalSeconds}\u0022)\r\n});",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "app.UseStaticFiles(new StaticFileOptions\r\n{\r\n    OnPrepareResponse = context =\u003E\r\n    context.Context.Response.Headers.Append(\u0022Cache-Control\u0022, $\u0022public, max-age={TimeSpan.FromMinutes(10).TotalSeconds}\u0022)\r\n});",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 134,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "eeb4cfcd-2b6c-405c-a471-347acde76f60",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler(\u0022/Error\u0022);",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "app.UseExceptionHandler(\u0022/Error\u0022);",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 125,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "f56bcb85-3cea-4aa0-9cca-22cae6abc8c7",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.ExpireTimeSpan = TimeSpan.FromDays(7);",
+              "protected": "M:System.TimeSpan.FromDays(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "options.ExpireTimeSpan = TimeSpan.FromDays(7);",
+            "protectedSnippet": "M:System.TimeSpan.FromDays(System.Double)",
+            "label": "M:System.TimeSpan.FromDays(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 87,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "3206c699-28ee-49f4-925b-aff4168ff7fe",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddIdentity\u003CUser, IdentityRole\u003E(options =\u003E\r\n{\r\n    options.Password.RequireDigit = false;\r\n    options.Password.RequiredLength = 6;\r\n    options.Password.RequiredUniqueChars = 0;\r\n    options.Password.RequireLowercase = false;\r\n    options.Password.RequireUppercase = false;\r\n    options.Password.RequireNonAlphanumeric = false;\r\n    options.User.RequireUniqueEmail = false;\r\n})\r\n.AddRoleManager\u003CRoleManager\u003CIdentityRole\u003E\u003E()\r\n.AddDefaultTokenProviders()\r\n.AddEntityFrameworkStores\u003CApplicationDbContext\u003E();",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "builder.Services.AddIdentity\u003CUser, IdentityRole\u003E(options =\u003E\r\n{\r\n    options.Password.RequireDigit = false;\r\n    options.Password.RequiredLength = 6;\r\n    options.Password.RequiredUniqueChars = 0;\r\n    options.Password.RequireLowercase = false;\r\n    options.Password.RequireUppercase = false;\r\n    options.Password.RequireNonAlphanumeric = false;\r\n    options.User.RequireUniqueEmail = false;\r\n})\r\n.AddRoleManager\u003CRoleManager\u003CIdentityRole\u003E\u003E()\r\n.AddDefaultTokenProviders()\r\n.AddEntityFrameworkStores\u003CApplicationDbContext\u003E();",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 64,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "93bb683d-a842-46f7-aba1-056efd7b623c",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6. Add package reference to Microsoft.AspNetCore.Identity.EntityFrameworkCore, 8.0.6",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddIdentity\u003CUser, IdentityRole\u003E(options =\u003E\r\n{\r\n    options.Password.RequireDigit = false;\r\n    options.Password.RequiredLength = 6;\r\n    options.Password.RequiredUniqueChars = 0;\r\n    options.Password.RequireLowercase = false;\r\n    options.Password.RequireUppercase = false;\r\n    options.Password.RequireNonAlphanumeric = false;\r\n    options.User.RequireUniqueEmail = false;\r\n})\r\n.AddRoleManager\u003CRoleManager\u003CIdentityRole\u003E\u003E()\r\n.AddDefaultTokenProviders()\r\n.AddEntityFrameworkStores\u003CApplicationDbContext\u003E();",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "builder.Services.AddIdentity\u003CUser, IdentityRole\u003E(options =\u003E\r\n{\r\n    options.Password.RequireDigit = false;\r\n    options.Password.RequiredLength = 6;\r\n    options.Password.RequiredUniqueChars = 0;\r\n    options.Password.RequireLowercase = false;\r\n    options.Password.RequireUppercase = false;\r\n    options.Password.RequireNonAlphanumeric = false;\r\n    options.User.RequireUniqueEmail = false;\r\n})\r\n.AddRoleManager\u003CRoleManager\u003CIdentityRole\u003E\u003E()\r\n.AddDefaultTokenProviders()\r\n.AddEntityFrameworkStores\u003CApplicationDbContext\u003E();",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.IdentityEntityFrameworkBuilderExtensions.AddEntityFrameworkStores\u0060\u00601(Microsoft.AspNetCore.Identity.IdentityBuilder)",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 64,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "d57275b8-0fdd-4989-8852-4652b96ed834",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.IdleTimeout = TimeSpan.FromMinutes(10);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "options.IdleTimeout = TimeSpan.FromMinutes(10);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 60,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "649e1ee6-bae5-40b0-b7fa-11a2e6ca5b05",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: New TimeSpan.From*() overloads that take integers ",
+          "projectPath": "CMS\\Project.Web.AndroidAppsProject\\Project.Web.AndroidAppsProject.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.ExpirationScanFrequency = TimeSpan.FromMinutes(1);",
+              "protected": "M:System.TimeSpan.FromMinutes(System.Double)"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.AndroidAppsProject\\Program.cs",
+            "snippet": "options.ExpirationScanFrequency = TimeSpan.FromMinutes(1);",
+            "protectedSnippet": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "label": "M:System.TimeSpan.FromMinutes(System.Double)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/timespan-from-overloads.md",
+                "isCustom": false
+              }
+            ],
+            "line": 29,
+            "column": 4
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "WebApi",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 107,
+        "linesOfCode": 87,
+        "totalApiScanned": 181,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "06999258-de5b-403b-bc4a-6cce28adf516",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.SqlServer, and replace with new package Microsoft.EntityFrameworkCore.SqlServer 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 7.0.9",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "7.0.9",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b10465b6-b968-4d53-88ee-92cc8d649f76",
+          "ruleId": "NuGet.0002",
+          "projectPath": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 7.0.9\n\nRecommendation:\n\nRemove Microsoft.EntityFrameworkCore.Tools, and replace with new package Microsoft.EntityFrameworkCore.Tools 10.0.10",
+            "label": "Microsoft.EntityFrameworkCore.Tools 7.0.9",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "7.0.9",
+              "PackageNewVersion": "10.0.10",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "9b632d04-8980-4d51-99fc-668018f20334",
+          "ruleId": "Project.0002",
+          "projectPath": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "CMS\\Project.Web.Api\\WebApi\\WebApi.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0001": {
+      "id": "NuGet.0001",
+      "isFeature": false,
+      "description": "NuGet package is incompatible with selected target framework.\n\nPackage needs to be upgraded to a version supporting selected project target framework. If there no new package versions supporting new target framework, different package needs to be used and all code needs to be upgraded to new API.",
+      "label": "NuGet package is incompatible",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262529",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0004": {
+      "id": "NuGet.0004",
+      "isFeature": false,
+      "description": "NuGet package contains security vulnerabilities.\n\nPackage needs to be upgraded to a newer version that addresses known security vulnerabilities.",
+      "label": "NuGet package contains security vulnerability",
+      "severity": "Optional",
+      "effort": 1
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
