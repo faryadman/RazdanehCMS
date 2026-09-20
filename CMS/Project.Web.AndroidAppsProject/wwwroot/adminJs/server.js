@@ -73,6 +73,7 @@ function renderservers(data) {
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
         let buttonRefreshDomain = '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>';
+        let buttonRefreshTcp = '<br><button class="btn btn-success btn-sm btn-block" onclick="tcpRefresh(' + item.id + ')">Refresh Tcp</button>';
         let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
         let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
         let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
@@ -212,6 +213,36 @@ function domainRefresh(id) {
     let formData = new FormData(form);
     $.ajax({
         url: serversBaseUrl + `/changeDomain?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+function tcpRefresh(id) {
+    saveLastPage();
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/changeTcp?id=‍${id}`,
         data: formData,
         method: 'POST',
         contentType: false,

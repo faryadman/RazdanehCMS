@@ -125,6 +125,30 @@ namespace Project.Application.Features.Services
                 throw new NotFoundException("سرور یافت نشد");
             }
         }
+        public async Task<string> ChangeTcp(string serverId)
+        {
+            try
+            {
+                var newDomainDto = await GetNewDomain();
+                if (newDomainDto == null) return "No Domain Exist!";
+                var server = await _serverService.Detail(serverId);
+                var zoneId = newDomainDto.ZoneId;
+                var config = server.Config;
+                var newDomain = newDomainDto.DomainName;
+                var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
+
+                UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
+
+                await _serverService.UpdateServer(server);
+                await Delete(newDomainDto.Id);
+                return "Done successfully";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                throw new NotFoundException("سرور یافت نشد");
+            }
+        }
 
         public async Task<string> ChangeSubDomain(string serverId)
         {
