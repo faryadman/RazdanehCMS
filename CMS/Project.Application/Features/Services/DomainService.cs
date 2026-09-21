@@ -137,7 +137,7 @@ namespace Project.Application.Features.Services
                 var newDomain = newDomainDto.DomainName;
                 var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
 
-                UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
+                await UpdateTcpServerConfig(server, config, cnameValue, newDomain, newDomain);
 
                 await _serverService.UpdateServer(server);
                 await Delete(newDomainDto.Id);
@@ -220,7 +220,17 @@ namespace Project.Application.Features.Services
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
         }
+        public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress)
+        {
+            var addressValue = $"{newAddress}";
 
+            var configJson = JObject.Parse(config);
+            UpdateAddressJsonValues(configJson, addressValue);
+
+            server.Config = configJson.ToString();
+            server.IsNewDomain = true;
+            server.DomainDateTime = DateTime.UtcNow;
+        }
         public async Task<string> CreateDnsAsync(string serverId)
         {
             try
@@ -392,6 +402,11 @@ namespace Project.Application.Features.Services
 
             config.SelectToken(serverNamePath)?.Replace($"{newServerName}");
             config.SelectToken(hostPath)?.Replace($"{newHost}");
+        }
+        private static void UpdateAddressJsonValues(JObject config, string newAddress)
+        {
+            const string address = "outbounds[2].settings.vnext[0].address";
+            config.SelectToken(address)?.Replace($"{newAddress}");
         }
 
         private static CloudFlareClient InitializeCloudflareClient(string email, string apiKey)
