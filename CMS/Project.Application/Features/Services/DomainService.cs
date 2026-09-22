@@ -129,18 +129,12 @@ namespace Project.Application.Features.Services
         {
             try
             {
-                var newDomainDto = await GetNewDomain();
-                if (newDomainDto == null) return "No Domain Exist!";
                 var server = await _serverService.Detail(serverId);
-                var zoneId = newDomainDto.ZoneId;
                 var config = server.Config;
-                var newDomain = newDomainDto.DomainName;
-                var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
 
-                await UpdateTcpServerConfig(server, config, cnameValue, newDomain, newDomain);
+                UpdateTcpServerConfig(server, config,"AyJiGAAAR.top");
 
                 await _serverService.UpdateServer(server);
-                await Delete(newDomainDto.Id);
                 return "Done successfully";
             }
             catch (Exception ex)
@@ -325,7 +319,7 @@ namespace Project.Application.Features.Services
             {
                 return null;
             }
-            return domains.FirstOrDefault(x => x.IsActive);
+            return domains.FirstOrDefault(x => !x.IsDeleted);
         }
         private async Task<string> ChangeCnameDomain(string currentDomain, string zoneId, bool isActiveSubDomain = false)
         {
