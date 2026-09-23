@@ -28,7 +28,7 @@ namespace Project.Web.AndroidAppsProject.Controllers
         {
             await _serverService.Create(input);
             return new Response<string>(ResponseStatus.Succeed).ToJsonResult();
-        }
+        } 
         public async Task<IActionResult> Detail(int id)
         {
             var server = await _serverService.Detail(id);

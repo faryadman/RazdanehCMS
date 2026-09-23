@@ -14,12 +14,14 @@ namespace Project.Application.Features.Interfaces
         JObject SetServerAddressStrings(string config, string newAddress);
         string GetServerAddressStrings(string config);
         Task<string> ChangeDomain(string zoneId);
+        Task<string> ChangeTcp(string serverId);
         Task<string> ChangeSubDomain(string serverId);
         Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn);
         Task<string> DeleteDnsAsync(string serverId = null, string expireMinuteOn = null);
         Task<string> CreateDnsAsync(string serverId);
         Task ChangeSubDomain();
         Task ChangeDomain();
+        Task ChangeTcp();
         Task InitZoneId();
         Task CheckZoneId();
     }

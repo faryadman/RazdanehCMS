@@ -132,7 +132,9 @@ namespace Project.Application.Features.Services
                 var server = await _serverService.Detail(serverId);
                 var config = server.Config;
 
-                UpdateTcpServerConfig(server, config,"AyJiGAAAR.top");
+                var newAddress = await GetNewDomain();
+                if (newAddress == null) return "No Address Exist!";
+                UpdateTcpServerConfig(server, config, newAddress.DomainName);
 
                 await _serverService.UpdateServer(server);
                 return "Done successfully";
@@ -258,7 +260,14 @@ namespace Project.Application.Features.Services
                 await ChangeDomain(id.ToString());
             }
         }
-
+        public async Task ChangeTcp()
+        {
+            var serverIds = await _serverService.GetActiveIds();
+            foreach (var id in serverIds)
+            {
+                await ChangeTcp(id.ToString());
+            }
+        }
         public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn)
         {
             try
@@ -399,7 +408,7 @@ namespace Project.Application.Features.Services
         }
         private static void UpdateAddressJsonValues(JObject config, string newAddress)
         {
-            const string address = "outbounds[2].settings.vnext[0].address";
+            const string address = "outbounds[0].settings.vnext[0].address";
             config.SelectToken(address)?.Replace($"{newAddress}");
         }
 

@@ -3,7 +3,7 @@ let confirmRefreshQuestion = "Are you sure for refresh?";
 let idsToBeDeleted = [];
 let idsToBeRefreshed = [];
 
-toastr.options = {
+Swal.options = {
     "closeButton": true,
     "positionClass": 'toast-top-left',
 }

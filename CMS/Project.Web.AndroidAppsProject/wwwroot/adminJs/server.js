@@ -80,6 +80,7 @@ function renderservers(data) {
 
         let buttons = item.currentDomainValue +
             buttonRefreshDomain +
+            buttonRefreshTcp +
             buttonRefreshSubDomain +
             buttonCreateDnsRecord +
             buttonDeleteDnsRecord;
@@ -238,11 +239,11 @@ function domainRefresh(id) {
 }
 function tcpRefresh(id) {
     saveLastPage();
-    loading();
+    
     let form = document.getElementById('serverForm');
     let formData = new FormData(form);
     $.ajax({
-        url: serversBaseUrl + `/changeTcp?id=‍${id}`,
+        url: serversBaseUrl + `/refreshTcp?id=‍${id}`,
         data: formData,
         method: 'POST',
         contentType: false,
@@ -258,13 +259,18 @@ function tcpRefresh(id) {
             data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            let errors = xhr.responseJSON.errors;
-            for (var i = 0; i < errors.length; i++) {
-                toastr.error(errors[i]);
-            }
-            swal.close();
+            const resp = xhr.responseJSON;
+            const errors = (resp && resp.errors) || tryParseErrors(xhr.responseText) || ['An unexpected error occurred'];
+            errors.forEach(e => toastr.error(e));
+            Swal.close && Swal.close(); // prefer consistent Swal usage
         }
     })
+}
+function tryParseErrors(text) {
+    try {
+        const j = JSON.parse(text);
+        return j && j.errors ? j.errors : null;
+    } catch (e) { return null; }
 }
 function createDnsRecord(id) {
     loading();

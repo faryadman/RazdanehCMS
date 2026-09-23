@@ -11,6 +11,7 @@ using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
 using Project.Domain.Enums;
+using System.Text.RegularExpressions;
 
 namespace Project.Application.Features.Services
 {
@@ -318,7 +319,11 @@ namespace Project.Application.Features.Services
 
         public async Task<ServerDTO> Detail(string id)
         {
-            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id.ToString() == id);
+            var digits = Regex.Match(id, @"-?\d+").Value;
+            if (!int.TryParse(digits, out var parsedId) || parsedId == 0)
+                throw new NotFoundException("سرور یافت نشد");
+
+            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == parsedId);
             if (model is not { IsActive: true })
                 throw new NotFoundException("سرور یافت نشد");
 
