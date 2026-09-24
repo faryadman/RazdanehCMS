@@ -2,7 +2,7 @@
 {
     public class NotFoundException : ApplicationException
     {
-        public NotFoundException(string item) : base($"{item} پیدا نشد")
+        public NotFoundException(string item) : base($" خطا : {item}")
         {
         }
         public NotFoundException() : base("اطلاعات مورد نظر پیدا نشد")

@@ -106,7 +106,8 @@ namespace Project.Application.Features.Services
             try
             {
                 var newDomainDto = await GetNewDomain();
-                if (newDomainDto == null) return "No Domain Exist!";
+                if (newDomainDto == null||string.IsNullOrEmpty(newDomainDto.DomainName)||!newDomainDto.IsActive||newDomainDto.IsDeleted)
+                    throw new NotFoundException();
                 var server = await _serverService.Detail(serverId);
                 var zoneId = newDomainDto.ZoneId;
                 var config = server.Config;
@@ -117,7 +118,12 @@ namespace Project.Application.Features.Services
 
                 await _serverService.UpdateServer(server);
                 await Delete(newDomainDto.Id);
-                return "Done successfully";
+                return "انجام شد.";
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
+                throw;
             }
             catch (Exception ex)
             {
@@ -132,25 +138,36 @@ namespace Project.Application.Features.Services
                 var server = await _serverService.Detail(serverId);
                 var config = server.Config;
 
-                var newAddress = await GetNewDomain();
-                if (newAddress == null) return "No Address Exist!";
-                UpdateTcpServerConfig(server, config, newAddress.DomainName);
+                var domain = await GetNewDomain();
+                if (domain == null || domain.DomainName == null || !domain.IsActive || domain.IsDeleted)
+                    throw new NotFoundException();
+                var newCnameValue = GenerateWordExtention.GenerateWords(5)[0];
+                var cnameValue = $"{newCnameValue}";
+                var addressValue = $"{cnameValue}.{domain.DomainName}";
+                UpdateTcpServerConfig(server, config, addressValue);
 
                 await _serverService.UpdateServer(server);
-                return "Done successfully";
+                return "انجام شد.";
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
+                throw;
             }
             catch (Exception ex)
             {
                 // Handle exceptions here
-                throw new NotFoundException("سرور یافت نشد");
-            }
+                throw new NotFoundException("دامنه یافت نشد");
+            } 
         }
-
         public async Task<string> ChangeSubDomain(string serverId)
         {
             try
             {
+
                 var server = await _serverService.Detail(serverId);
+                if(server == null)
+                    throw new NotFoundException("سرور یافت نشد");
                 var config = server.Config;
                 var jsonObject = JObject.Parse(config);
                 var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
@@ -158,6 +175,8 @@ namespace Project.Application.Features.Services
                 var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
                 var hostName = $"{hostString?[1]}.{hostString?[2]}";
                 var domainDto = await GetDomain(serverName);
+                if (domainDto == null || string.IsNullOrEmpty(domainDto.DomainName) || !domainDto.IsActive || domainDto.IsDeleted)
+                    throw new NotFoundException();
                 var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, domainDto.ZoneId, true);
                 if (cnameValue != "fail")
                 {
@@ -167,6 +186,11 @@ namespace Project.Application.Features.Services
                 await _serverService.UpdateServer(server);
 
                 return "Done successfully";
+            }
+            catch (NotFoundException)
+            {
+                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
+                throw;
             }
             catch (Exception ex)
             {
@@ -218,10 +242,10 @@ namespace Project.Application.Features.Services
         }
         public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress)
         {
-            var addressValue = $"{newAddress}";
+        
 
             var configJson = JObject.Parse(config);
-            UpdateAddressJsonValues(configJson, addressValue);
+            UpdateAddressJsonValues(configJson, newAddress);
 
             server.Config = configJson.ToString();
             server.IsNewDomain = true;
@@ -328,7 +352,7 @@ namespace Project.Application.Features.Services
             {
                 return null;
             }
-            return domains.FirstOrDefault(x => !x.IsDeleted);
+            return domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive);
         }
         private async Task<string> ChangeCnameDomain(string currentDomain, string zoneId, bool isActiveSubDomain = false)
         {
