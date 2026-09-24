@@ -2,6 +2,7 @@
 using CloudFlare.Client.Api.Zones.DnsRecord;
 using Microsoft.Extensions.Options;
 using Project.Application.Exceptions;
+using Project.Domain.Entities;
 
 namespace Project.Application.Features
 {
@@ -145,7 +146,27 @@ namespace Project.Application.Features
             }
             throw new NotFoundException("Failed to create DNS record.");
         }
+        public async Task<IList<CnameRecord>> GetAllZonesAsync(string domainName,CancellationToken ct)
+        {
+            try
+            {
+                using var client = CreateClient();
 
+                var zones = await client.Zones.GetAsync(new CloudFlare.Client.Api.Zones.ZoneFilter { Name = domainName }, cancellationToken: ct);
+                return zones.Result.Select(zone => new CnameRecord
+                {
+                    id = zone.Id,
+                    name = zone.Name,
+                    content = zone.Status.ToString()
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw new NotFoundException("Failed to get DNS records.");
+            }
+        }
         public async Task<IList<CnameRecord>> GetAllZonesAsync(CancellationToken ct)
         {
             try

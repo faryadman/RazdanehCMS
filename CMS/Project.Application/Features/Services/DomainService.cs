@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudFlare.Client.Client.Zones;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -37,6 +38,11 @@ namespace Project.Application.Features.Services
             foreach (var domain in from domain in domains where domain != null where domain.IsActive != false where string.IsNullOrEmpty(domain.ZoneId) select domain)
             {
                 domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
+                if(string.IsNullOrEmpty(domain.ZoneId))
+                {
+                    Log.Error($"ZoneId not found for domain: {domain.DomainName}");
+                    throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
+                }
                 await Update(domain);
             }
         }
@@ -57,6 +63,11 @@ namespace Project.Application.Features.Services
             foreach (var domain in domains)
             {
                 domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
+                if(string.IsNullOrEmpty(domain.ZoneId))
+                {
+                    Log.Error($"ZoneId not found for domain: {domain.DomainName}");
+                    throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
+                }
                 await Update(domain);
             }
 
@@ -494,34 +505,13 @@ namespace Project.Application.Features.Services
 
         private async Task<string> GetCloudflareZoneId(string cfDomain)
         {
-            // اگر لیست زون‌ها خالی باشد، ابتدا آن را دریافت کنید
-            if (zoneDictionary.Count == 0)
+            var cfClient1 = _cloudflareApiClient;
+            var zones = await cfClient1.GetAllZonesAsync(cfDomain, CancellationToken.None);
+            foreach (var zone1 in zones)
             {
-                var cfClient1 = _cloudflareApiClient;
-                var zones = await cfClient1.GetAllZonesAsync(CancellationToken.None);
-                foreach (var zone1 in zones)
-                {
-                    zoneDictionary[zone1.name] = zone1.id;
-                }
+                return zone1.id;
             }
-
-            // اگر زون با این دامنه در دیکشنری وجود داشته باشد، آن را بازگردانی کنید
-            if (zoneDictionary.TryGetValue(cfDomain, out var zoneId))
-            {
-                return zoneId;
-            }
-
-            var cfClient2 = _cloudflareApiClient;
-
-            // در غیر این صورت، زون مربوط به دامنه را جستجو و به دیکشنری اضافه کنید
-            var zone = cfClient2.GetAllZonesAsync(CancellationToken.None).Result.FirstOrDefault(z => z.name == cfDomain.Trim());
-            if (zone != null)
-            {
-                zoneDictionary[zone.name] = zone.id;
-                return zone.id;
-            }
-            // اگر زون پیدا نشد، مقدار خالی یا یک مقدار پیش‌فرض (بسته به نیاز شما) بازگردانی شود
-            return string.Empty;
+            return null; // اگر زون پیدا نشد، null بازگردانید
         }
 
         private async Task UpdateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
