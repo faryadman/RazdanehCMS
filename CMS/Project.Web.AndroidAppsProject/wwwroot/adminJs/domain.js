@@ -162,7 +162,7 @@ function deletedomain(id) {
                 data: vm,
                 success: function (data) {
                     if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
-                        getdomains(false);
+                        getdomains(true);
                     } else {
                         getdomains(true);
                     }
@@ -187,7 +187,7 @@ function submitDomainForm() {
             if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
                 getdomains(1);
             } else {
-                getdomains(0);
+                getdomains(1);
             }
             document.getElementById('domainForm').reset();
             $('#domainModal').modal('toggle');
@@ -304,7 +304,7 @@ function deleteInactiveDomain() {
                 url: serversBaseUrl + '/DeleteInactiveDomain',
                 success: function (data) {
                     if (window.location.pathname.toLowerCase() == '/admin/domains'.toLowerCase()) {
-                        getdomains(false);
+                        getdomains(true);
                     } else {
                         getdomains(true);
                     }

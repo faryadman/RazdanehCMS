@@ -76,6 +76,7 @@ function renderservers(data) {
         let buttonRefreshTcp = '<br><button class="btn btn-success btn-sm btn-block" onclick="tcpRefresh(' + item.id + ')">Refresh Tcp</button>';
         let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
         let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
+        let buttonDeleteTcpDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteTcpDnsRecord(' + item.id + ')">Delete Tcp Dns Record</button></div>';
         let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
 
         let buttons = item.currentDomainValue +
@@ -83,7 +84,8 @@ function renderservers(data) {
             buttonRefreshTcp +
             buttonRefreshSubDomain +
             buttonCreateDnsRecord +
-            buttonDeleteDnsRecord;
+            buttonDeleteDnsRecord +
+            buttonDeleteTcpDnsRecord;
 
         let config = item.config;
         let configObject = JSON.parse(config);
@@ -330,6 +332,36 @@ function deleteAllDnsRecord(id) {
         }
     })
 }
+function deleteTcpDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/DeleteTcpDnsRecord?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+
 function submitAdForm() {
     loading();
     let form = document.getElementById('serverForm');

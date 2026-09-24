@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Domain;
+using Project.Application.Exceptions;
+using Serilog;
 
 namespace Project.Application.Features.Interfaces
 {
@@ -19,6 +21,8 @@ namespace Project.Application.Features.Interfaces
         Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn);
         Task<string> DeleteDnsAsync(string serverId = null, string expireMinuteOn = null);
         Task<string> CreateDnsAsync(string serverId);
+        Task<string> DeleteTcpDnsAsync(string serverId);
+
         Task ChangeSubDomain();
         Task ChangeDomain();
         Task ChangeTcp();

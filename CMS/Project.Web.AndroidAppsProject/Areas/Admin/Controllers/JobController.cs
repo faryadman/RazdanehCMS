@@ -12,6 +12,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
     [Area("Admin")]
     public class JobController : Controller
     {
+
         private readonly IServerService _serverService;
         private readonly IDomainService _domainService;
         private readonly IIPConfigService _configService;

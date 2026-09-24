@@ -216,6 +216,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         {
             return Json(new { status = "1", message = await _domainService.DeleteDnsAsync(id) });
         }
+        public async Task<IActionResult> DeleteTcpDnsRecord(string id)
+        {
+            return Json(new { status = "1", message = await _domainService.DeleteTcpDnsAsync(id) });
+        }
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)
         {

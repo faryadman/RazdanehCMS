@@ -187,6 +187,10 @@ namespace Project.Application.Features.Services
             model.CurrentDomainValue = input.CurrentDomainValue;
             model.IsNewDomain = input.IsNewDomain;
             model.DomainDateTime = input.DomainDateTime;
+            model.UpdatedAt = DateTime.UtcNow;
+            model.UpdatedBy = "Admin";
+            model.ZoneIdLastSynced = DateTime.UtcNow;
+            model.ZoneId = input.ZoneId;
             await _serverRepository.Update(model);
 
         }
@@ -412,6 +416,8 @@ namespace Project.Application.Features.Services
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow,
+                ZoneId = server.ZoneId,
+                ZoneIdLastSynced = server.ZoneIdLastSynced,
             });
             return server.CurrentDomainValue;
         }
@@ -431,6 +437,9 @@ namespace Project.Application.Features.Services
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow,
+                ZoneId = server.ZoneId,
+                ZoneIdLastSynced = server.ZoneIdLastSynced
+
             });
         }
     }

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Project.Application.Features;
 using Project.Application.Features.Interfaces;
 using Project.Application.Features.Services;
 using Project.Application.Profiles;
@@ -11,7 +13,8 @@ namespace Project.Application
 {
     public static class ApplicationServicesRegistration
     {
-        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, ILoggerFactory loggerFactory)
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, ILoggerFactory loggerFactory,
+        IConfiguration configuration)
         {
             {
                 services.AddSingleton(provider =>
@@ -36,7 +39,8 @@ namespace Project.Application
                 services.AddScoped<IJobService, JobService>();
                 services.AddScoped<IIpService, IpService>();
                 services.AddScoped<IIPConfigService, IpConfigService>();
-
+                services.Configure<CloudflareSettings>(configuration.GetSection("CloudflareData"));
+                services.AddSingleton<CloudflareApiClient>();
                 return services;
             }
         }

@@ -27,6 +27,9 @@ namespace Project.Domain.Entities
         public bool IsAd { get; set; }
         [StringLength(256)]
         public string CurrentDomainValue { get; set; }
+        [StringLength(256)]
+        public string? ZoneId { get; set; }
+        public DateTime? ZoneIdLastSynced { get; set; }
         public bool IsNewDomain { get; set; }
         public bool IsForIrancell { get; set; }
         public bool IsForHamraheAvval { get; set; }

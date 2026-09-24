@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.ConfigureApplicationServices(new LoggerFactory());
+builder.Services.ConfigureApplicationServices(new LoggerFactory(), builder.Configuration);
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
