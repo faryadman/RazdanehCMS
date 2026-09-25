@@ -21,6 +21,9 @@ namespace Project.Application.DTOs.Server
         public bool IsForHamraheAvval { get; set; }
         public bool IsNewDomain { get; set; }
         public DateTime DomainDateTime { get; set; }
+        [StringLength(256)]
+        public string? ZoneId { get; set; }
+        public DateTime? ZoneIdLastSynced { get; set; }
 
     }
 }

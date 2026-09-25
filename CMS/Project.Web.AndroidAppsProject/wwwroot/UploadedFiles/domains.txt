@@ -1,0 +1,7 @@
+bluecloudlab-jefferson.lat
+neoroadbox-jefferson.lat
+redcloudline-jefferson.lat
+minirivernet-jefferson.lat
+redrocketnode-jefferson.lat
+skysparknet-jefferson.lat
+smartleafnet-jefferson.lat

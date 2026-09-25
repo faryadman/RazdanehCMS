@@ -148,19 +148,27 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 return Json(new { status = "0", message = ex.Message });
             }
         }
-        public async Task<IActionResult> RefreshSubdomain(string ids)
+        public async Task<IActionResult> RefreshSubdomain(string id)
         {
-            foreach (var item in ids.Split("_"))
+            foreach (var item in id.Split("_"))
             {
                 await _domainService.ChangeSubDomain(item);
             }
             return Json(new { status = "1", message = "done successfully" });
         }
-        public async Task<IActionResult> RefreshDomain(string ids)
+        public async Task<IActionResult> RefreshDomain(string id)
         {
-            foreach (var item in ids.Split("_"))
+            foreach (var item in id.Split("_"))
             {
                 await _domainService.ChangeDomain(item);
+            }
+            return Json(new { status = "1", message = "done successfully" });
+        }
+        public async Task<IActionResult> RefreshTcp(string id)
+        {
+            foreach (var item in id.Split("_"))
+            {
+                await _domainService.ChangeTcp(item);
             }
             return Json(new { status = "1", message = "done successfully" });
         }
@@ -207,6 +215,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteDnsRecord(string id)
         {
             return Json(new { status = "1", message = await _domainService.DeleteDnsAsync(id) });
+        }
+        public async Task<IActionResult> DeleteTcpDnsRecord(string id)
+        {
+            return Json(new { status = "1", message = await _domainService.DeleteTcpDnsAsync(id) });
         }
         [Route("/admin/[controller]/Logs/list")]
         public async Task<IActionResult> LogsList(int serverId)

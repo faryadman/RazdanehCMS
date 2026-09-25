@@ -73,15 +73,19 @@ function renderservers(data) {
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
         let buttonRefreshDomain = '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>';
+        let buttonRefreshTcp = '<br><button class="btn btn-success btn-sm btn-block" onclick="tcpRefresh(' + item.id + ')">Refresh Tcp</button>';
         let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
         let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
+        let buttonDeleteTcpDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteTcpDnsRecord(' + item.id + ')">Delete Tcp Dns Record</button></div>';
         let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
 
         let buttons = item.currentDomainValue +
             buttonRefreshDomain +
+            buttonRefreshTcp +
             buttonRefreshSubDomain +
             buttonCreateDnsRecord +
-            buttonDeleteDnsRecord;
+            buttonDeleteDnsRecord +
+            buttonDeleteTcpDnsRecord;
 
         let config = item.config;
         let configObject = JSON.parse(config);
@@ -235,6 +239,41 @@ function domainRefresh(id) {
         }
     })
 }
+function tcpRefresh(id) {
+    saveLastPage();
+    
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/refreshTcp?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            const resp = xhr.responseJSON;
+            const errors = (resp && resp.errors) || tryParseErrors(xhr.responseText) || ['An unexpected error occurred'];
+            errors.forEach(e => toastr.error(e));
+            Swal.close && Swal.close(); // prefer consistent Swal usage
+        }
+    })
+}
+function tryParseErrors(text) {
+    try {
+        const j = JSON.parse(text);
+        return j && j.errors ? j.errors : null;
+    } catch (e) { return null; }
+}
 function createDnsRecord(id) {
     loading();
     let form = document.getElementById('serverForm');
@@ -293,6 +332,36 @@ function deleteAllDnsRecord(id) {
         }
     })
 }
+function deleteTcpDnsRecord(id) {
+    loading();
+    let form = document.getElementById('serverForm');
+    let formData = new FormData(form);
+    $.ajax({
+        url: serversBaseUrl + `/DeleteTcpDnsRecord?id=‍${id}`,
+        data: formData,
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            console.log('data', data);
+            if (window.location.pathname.toLowerCase() == '/admin/servers'.toLowerCase()) {
+                getservers(false);
+            } else {
+                getservers(true);
+            }
+            document.getElementById('serverForm').reset();
+            data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            let errors = xhr.responseJSON.errors;
+            for (var i = 0; i < errors.length; i++) {
+                toastr.error(errors[i]);
+            }
+            swal.close();
+        }
+    })
+}
+
 function submitAdForm() {
     loading();
     let form = document.getElementById('serverForm');

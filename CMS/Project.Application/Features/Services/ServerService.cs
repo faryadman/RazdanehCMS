@@ -11,6 +11,7 @@ using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Domain.Entities;
 using Project.Domain.Enums;
+using System.Text.RegularExpressions;
 
 namespace Project.Application.Features.Services
 {
@@ -186,6 +187,10 @@ namespace Project.Application.Features.Services
             model.CurrentDomainValue = input.CurrentDomainValue;
             model.IsNewDomain = input.IsNewDomain;
             model.DomainDateTime = input.DomainDateTime;
+            model.UpdatedAt = DateTime.UtcNow;
+            model.UpdatedBy = "Admin";
+            model.ZoneIdLastSynced = DateTime.UtcNow;
+            model.ZoneId = input.ZoneId;
             await _serverRepository.Update(model);
 
         }
@@ -318,7 +323,11 @@ namespace Project.Application.Features.Services
 
         public async Task<ServerDTO> Detail(string id)
         {
-            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id.ToString() == id);
+            var digits = Regex.Match(id, @"-?\d+").Value;
+            if (!int.TryParse(digits, out var parsedId) || parsedId == 0)
+                throw new NotFoundException("سرور یافت نشد");
+
+            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == parsedId);
             if (model is not { IsActive: true })
                 throw new NotFoundException("سرور یافت نشد");
 
@@ -362,9 +371,6 @@ namespace Project.Application.Features.Services
             }
 
             var server = await Detail(input.ServerId);
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"SuccessServerLog_{input.ServerId}_{input.UserId}", server, _cacheEntryOptions);
-
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
             await _serverLogService.Create(input);
@@ -407,6 +413,8 @@ namespace Project.Application.Features.Services
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow,
+                ZoneId = server.ZoneId,
+                ZoneIdLastSynced = server.ZoneIdLastSynced,
             });
             return server.CurrentDomainValue;
         }
@@ -426,6 +434,9 @@ namespace Project.Application.Features.Services
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
                 DomainDateTime = DateTime.UtcNow,
+                ZoneId = server.ZoneId,
+                ZoneIdLastSynced = server.ZoneIdLastSynced
+
             });
         }
     }
