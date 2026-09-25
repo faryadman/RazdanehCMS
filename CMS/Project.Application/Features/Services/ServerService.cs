@@ -371,9 +371,6 @@ namespace Project.Application.Features.Services
             }
 
             var server = await Detail(input.ServerId);
-            // ذخیره اطلاعات در کش با تنظیمات انقضای داده‌ها
-            _memoryCache.Set($"SuccessServerLog_{input.ServerId}_{input.UserId}", server, _cacheEntryOptions);
-
             input.Ip = server.Ip;
             input.ConnectionStatus = Domain.Enums.ConnectionStatus.Successful;
             await _serverLogService.Create(input);

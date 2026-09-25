@@ -9,7 +9,9 @@ using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
 using Project.Application.Extensions;
 using Project.Application.Features.Interfaces;
+using Project.Domain.Entities;
 using Serilog;
+using System.Xml.Linq;
 
 namespace Project.Application.Features.Services
 {
@@ -162,6 +164,7 @@ namespace Project.Application.Features.Services
                 UpdateTcpServerConfig(server, config, newDomain, cnameValue);
 
                 await _serverService.UpdateServer(server);
+                await Delete(domain.Id);
                 return "انجام شد.";
             }
             catch (NotFoundException)
@@ -199,7 +202,7 @@ namespace Project.Application.Features.Services
                 }
 
                 await _serverService.UpdateServer(server);
-
+                await Delete(domainDto.Id);
                 return "Done successfully";
             }
             catch (NotFoundException)
@@ -263,7 +266,7 @@ namespace Project.Application.Features.Services
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                throw new NotFoundException($" به برنامه نویس اطلاع بدهید. {ex.Message}");
+                throw new NullException($"{ex.Message}");
             }
         }
 
@@ -274,12 +277,12 @@ namespace Project.Application.Features.Services
 
             var configJson = JObject.Parse(config);
             UpdateJsonValues(configJson, cnameValue1, cnameValue2);
-
+            var domain = GetDomain(newServerName).Result;
             server.Config = configJson.ToString();
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
             server.ZoneIdLastSynced = DateTime.UtcNow;
-            server.ZoneId = GetDomain(newServerName).Result.ZoneId;
+            server.ZoneId = domain.ZoneId;
         }
         public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress, string newCnameValue)
         {
@@ -289,7 +292,6 @@ namespace Project.Application.Features.Services
 
             var configJson = JObject.Parse(config);
             UpdateAddressJsonValues(configJson, AddressValue, cnameValue1, cnameValue2);
-            server.CurrentDomainValue = AddressValue;
             server.Config = configJson.ToString();
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
@@ -396,8 +398,6 @@ namespace Project.Application.Features.Services
             }
             var domain = domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive && x.DomainName == name);
             return domain;
-
-
         }
         private async Task<DomainDTO> GetNewDomain()
         {
@@ -408,6 +408,7 @@ namespace Project.Application.Features.Services
             }
             return domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive);
         }
+    
         private async Task<string> ChangeCnameDomain(string currentDomain, string zoneId, bool isActiveSubDomain = false)
         {
             try

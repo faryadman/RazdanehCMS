@@ -23,5 +23,8 @@ namespace Project.Application.DTOs.Server
         public bool IsAd { get; set; }
         public bool IsNewDomain { get; set; } = false;
         public DateTime DomainDateTime { get; set; } = DateTime.UtcNow;
+        [StringLength(256)]
+        public string? ZoneId { get; set; }
+        public DateTime? ZoneIdLastSynced { get; set; }
     }
 }
