@@ -840,12 +840,12 @@ div.dt-buttons .btn { padding: 7px 13px !important; font-size: 12.5px !important
 .rd-ic-dark { background: #edeff7; color: #3c4262; }
 
 /* نوار درصد موفقیت/شکست */
-/* ستون فشردهٔ آمار لاگ‌ها (جایگزین ۴ ستون مجزا) */
-.rd-logs { min-width: 172px; max-width: 210px; display: flex; flex-direction: column; gap: 5px; }
-.rd-log-row { display: flex; align-items: center; gap: 7px; padding: 0 !important; }
-.rd-log-name { width: 62px; flex-shrink: 0; font-size: 11px; font-weight: 600; color: var(--rd-muted); }
-.rd-log-count { width: 48px; flex-shrink: 0; font-size: 12px; font-weight: 700; text-align: left; color: var(--rd-text2); }
-.rd-log-row .rd-split { flex: 1; min-width: 34px; height: 6px; margin-top: 0; }
+/* ستون فشردهٔ آمار لاگ‌ها (جایگزین ۴ ستون مجزا) — استایل قطعی، مستقل از قدیمی‌ها */
+.rd-logs { min-width: 168px; display: flex; flex-direction: column; gap: 5px; }
+.rd-log-row { display: flex !important; align-items: center; gap: 7px; padding: 3px 6px !important; background: #fff !important; border-radius: 8px; }
+.rd-log-name { flex: 0 0 62px; font-size: 11px; font-weight: 600; color: var(--rd-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rd-log-count { flex: 0 0 50px; font-size: 12px; font-weight: 700; text-align: left; color: var(--rd-text2); }
+.rd-log-row .rd-split { flex: 1 1 auto; min-width: 30px; height: 6px !important; margin: 0 !important; }
 .rd-log-row .rd-split-legend { display: none; }
 .rd-split { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: #eef0f8; margin-top: 8px; }
 .rd-split .ok { background: var(--rd-success); }
@@ -974,7 +974,17 @@ body:not(.menu-collapsed) .header-navbar { right: calc(var(--rd-side-w) + 18px) 
    جداول: دراپ‌داون عملیات / DNS / آمار
    ========================================================= */
 .rd-row-actions { position: relative; display: inline-flex; }
-.rd-item-dropdown { position: relative; display: inline-block; }
+.rd-item-dropdown { position: relative; display: inline-block; z-index: 5; }
+.rd-item-dropdown:has(.rd-item-menu.show) { z-index: 30; }
+.rd-dns-cell { position: relative; }
+/* دسکتاپ: ظرف اسکرول جدول قلیپ نمی‌کند → منو absolute و درست زیر دکمه می‌ماند */
+@media (min-width: 1200px) {
+    .table-responsive { overflow: visible !important; }
+}
+/* تبلت/موبایل: منو داخل جریان سلول باز می‌شود (جدول اسکرول می‌خورد) */
+@media (max-width: 1199.98px) {
+    .rd-item-menu.show { position: static !important; width: 100%; min-width: 0; margin-top: 8px; }
+}
 .rd-more-btn { width: 34px !important; height: 34px !important; padding: 0 !important; }
 .rd-more-btn svg { width: 16px; height: 16px; color: var(--rd-text2); }
 .rd-more-btn:hover { color: var(--rd-primary) !important; border-color: rgba(88, 80, 236, .45) !important; }

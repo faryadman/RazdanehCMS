@@ -63,29 +63,12 @@
     }
 
     /* ---------- دراپ‌داون منوی ردیف‌ها: قطعی، مستقل از data-api بوت‌استرپ ----------
-       منو با position:fixed و محاسبهٔ JS قرار می‌گیرد؛ نه قلیپ توسط
-       .table-responsive / .card می‌شود و نه از دید خارج می‌شود. */
-    function rdMenuReset($menu) {
-        $menu.removeClass('show').css({ position: '', top: '', left: '', right: '', visibility: '' }).removeData('rdTrigger');
-    }
+       قرارگیری منو کاملاً با CSS است (rd-ops.rtl.css): دسکتاپ = absolute زیر دکمه
+       بدون قلیپ؛ تبلت/موبایل = داخل جریان سلول. هیچ محاسبه‌ای با JS نمی‌شود،
+       پس منو هیچ‌وقت بالای جدول یا بیرون صفحه باز نمی‌شود. */
     function closeAllRdMenus(except) {
-        $('.rd-item-menu.show').each(function () {
-            if (except && this === except[0]) return;
-            rdMenuReset($(this));
-        });
+        $('.rd-item-menu.show').not(except || document).removeClass('show');
         $('[data-rd-toggle="dropdown"]').attr('aria-expanded', 'false');
-    }
-    function rdMenuPosition($btn, $menu) {
-        if (window.innerWidth < 768) return; // موبایل: منو درون سلول (static) باز می‌شود
-        $menu.css({ position: 'fixed', top: 0, left: 0, right: 'auto', visibility: 'hidden' });
-        var mw = $menu.outerWidth(), mh = $menu.outerHeight();
-        var r = $btn[0].getBoundingClientRect();
-        var vw = window.innerWidth, vh = window.innerHeight;
-        var left = r.left;
-        if (left + mw > vw - 8) left = Math.max(8, vw - mw - 8);
-        if (left < 8) left = 8;
-        var top = Math.max(8, r.bottom + 6); // همیشه زیر دکمه (داخل جدول) — فلیپ به بالا نه
-        $menu.css({ top: top + 'px', left: left + 'px', visibility: '' });
     }
     $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
         e.preventDefault();
@@ -95,10 +78,8 @@
         if (!$menu.length) return;
         var wasOpen = $menu.hasClass('show');
         closeAllRdMenus($menu);
-        if (wasOpen) return;
-        $menu.data('rdTrigger', $btn).addClass('show');
-        $btn.attr('aria-expanded', 'true');
-        rdMenuPosition($btn, $menu);
+        $menu.toggleClass('show', !wasOpen);
+        $btn.attr('aria-expanded', wasOpen ? 'false' : 'true');
     });
     $(document).on('click.rdops', '.rd-item-menu .dropdown-item', function () {
         setTimeout(function () { closeAllRdMenus(); }, 0);
@@ -109,18 +90,6 @@
     $(document).on('keyup.rdops', function (e) {
         if (e.key === 'Escape') closeAllRdMenus();
     });
-    /* اسکرول (هر کانتینر، حتی داخل جدول) و رزایز → منو دنبال دکمه بماند، نه اینکه بسته شود */
-    function rdReposition() {
-        $('.rd-item-menu.show').each(function () {
-            var $m = $(this), $b = $m.data('rdTrigger');
-            if (!$b || !$b.length) return;
-            var rect = $b[0].getBoundingClientRect();
-            if (rect.bottom < 0 || rect.top > window.innerHeight) { rdMenuReset($m); return; }
-            rdMenuPosition($b, $m);
-        });
-    }
-    document.addEventListener('scroll', rdReposition, true);
-    $(window).on('resize.rdops', rdReposition);
 
     $(function () {
         /* سایه هدر هنگام اسکرول */
