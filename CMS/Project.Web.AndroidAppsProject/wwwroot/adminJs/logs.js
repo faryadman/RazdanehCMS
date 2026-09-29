@@ -188,32 +188,28 @@ function renderStatistics(item, type) {
     switch (type) {
         case 0:
             className = "irancellLogs logshow p-1";
-            name = "Irancell Logs";
+            name = "ایرانسل";
             break
-
         case 1:
             className = "HamraheAvvalLogs logshow p-1";
-            name = "HamraheAvval Logs";
+            name = "همراه اول";
             break
-
         case 2:
             className = "unknownLogs logshow p-1";
-            name = "Unknown Logs";
+            name = "نامشخص";
             break
         default:
             className = "AllLogs logshow p-1";
-            name = "All Logs";
+            name = "کل لاگ‌ها";
     }
 
+    var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
 
-    let statistics = item != null ? '<div class="col-lg-3 col-sm-6 col-12 "><div class= "card" ><div class="card-header d-flex align-items-start pb-0 ' + className + '"><div >' +
-        '<h5>Type : ' + name + '</h5><br/>' +
-        '<span>Count : ' + item.count + '</span><br/>' +
-        '<span class="text-success">SCount : ' + item.successCount + '</span><br/>' +
-        '<span class="text-danger">FCount : ' + item.failCount + '</span><br/>' +
-        '<span class="text-success">SPercentage : ' + calculatePercentage(item.successCount, item.count) + '%</span><br/>' +
-        '<span class="text-danger">FPercentage : ' + calculatePercentage(item.failCount, item.count) + '%</span><br/>' +
-        '</div>' : '<div class="' + className + '"></div></div></div>';
+    let statistics = item != null ? '<div class="col-lg-3 col-sm-6 col-12"><div class="card mb-4"><div class="card-header ' + className + '"><h5 class="mb-0" style="font-size:14px">' + name + '</h5></div><div class="card-content rd-stat-card">' +
+        '<span class="mono rd-stat-count" title="تعداد کل">' + fa(item.count) + '</span>' +
+        '<div class="rd-split"><span class="ok" style="width:' + calculatePercentage(item.successCount, item.count) + '%"></span><span class="ko" style="width:' + calculatePercentage(item.failCount, item.count) + '%"></span></div>' +
+        '<div class="rd-split-legend"><span><i style="background:var(--rd-success)"></i>' + fa(item.successCount) + ' موفق</span><span><i style="background:var(--rd-danger)"></i>' + fa(item.failCount) + ' ناموفق</span></div>' +
+        '</div></div></div>' : '<div class="' + className + '"></div>';
 
     return statistics;
 }

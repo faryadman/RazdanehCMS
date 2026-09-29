@@ -920,3 +920,166 @@ div.dt-buttons .btn { padding: 7px 13px !important; font-size: 12.5px !important
 
 /* سایهٔ کذایی هدر منوی Vuexy */
 .main-menu .shadow-bottom { display: none !important; }
+
+/* =========================================================
+   اصلاح هماهنگی منو (نسخه ۲)
+   ========================================================= */
+
+/* ۱) باز شدن با hover در حالت جمع: متن‌ها باید ظاهر شوند */
+body.menu-collapsed .brand-text,
+body.menu-collapsed .menu-title { transition: opacity .16s ease .09s, visibility .16s ease .09s; }
+body.menu-collapsed .main-menu:hover .navbar-header {
+    padding: 20px 14px 12px !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+}
+body.menu-collapsed .main-menu:hover .navbar-brand { flex-direction: row !important; gap: 11px !important; }
+body.menu-collapsed .main-menu:hover .brand-text { opacity: 1 !important; height: auto !important; }
+body.menu-collapsed .main-menu:hover .menu-title { opacity: 1 !important; visibility: visible !important; width: auto !important; flex: 1 1 auto !important; }
+body.menu-collapsed .main-menu:hover .navigation-main .nav-link { margin: 2px 12px !important; padding: 9px 12px !important; justify-content: flex-start !important; }
+body.menu-collapsed .main-menu:hover .rd-sec { font-size: 10.5px !important; height: auto !important; padding: 16px 24px 7px !important; }
+body.menu-collapsed .main-menu:hover .rd-sec::after { display: none !important; }
+
+/* ۲) هدر: کارت شناورِ هم‌اندازه با سایدبار (پیش‌فرض جمع = 76px) */
+.header-navbar {
+    position: fixed !important;
+    top: 14px !important;
+    left: 18px !important;
+    right: calc(var(--rd-side-w-min) + 18px) !important;
+    width: auto !important;
+    margin: 0 !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--rd-border) !important;
+    box-shadow: var(--rd-shadow-sm) !important;
+    z-index: 1020 !important;
+    transition: right .28s var(--rd-ease) !important;
+}
+body:not(.menu-collapsed) .header-navbar { right: calc(var(--rd-side-w) + 18px) !important; }
+.navbar-container { padding-right: 10px !important; padding-left: 10px !important; }
+
+/* ۳) کارت‌ها: دراپ‌داون داخل جدول قلیپ نشود */
+.card { overflow: visible !important; }
+#basic-horizontal-layouts .card { overflow: hidden !important; }
+
+/* =========================================================
+   جداول: دراپ‌داون عملیات / DNS / آمار
+   ========================================================= */
+.rd-row-actions { position: relative; display: inline-flex; }
+.rd-item-dropdown { position: relative; display: inline-block; }
+.rd-more-btn { width: 34px !important; height: 34px !important; padding: 0 !important; }
+.rd-more-btn svg { width: 16px; height: 16px; color: var(--rd-text2); }
+.rd-more-btn:hover { color: var(--rd-primary) !important; border-color: rgba(88, 80, 236, .45) !important; }
+.rd-item-menu { min-width: 205px; }
+.rd-item-menu .dropdown-item { padding: 8px 13px; gap: 10px; }
+.rd-item-menu .dropdown-item svg { width: 15px; height: 15px; }
+.rd-di {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+}
+.rd-di svg { width: 13.5px; height: 13.5px; }
+.rd-di-primary { background: var(--rd-primary-soft); color: var(--rd-primary-600); }
+.rd-di-success { background: var(--rd-success-soft); color: #0e8a5c; }
+.rd-di-warn { background: var(--rd-warning-soft); color: #b57310; }
+.rd-di-danger { background: var(--rd-danger-soft); color: #c92f29; }
+.rd-di-info { background: var(--rd-info-soft); color: #1873bd; }
+.rd-di-dark { background: #edeff7; color: #3c4262; }
+.rd-danger-item { color: #c92f29 !important; }
+.rd-danger-item .rd-di { background: var(--rd-danger-soft); color: #c92f29; }
+.rd-danger-item:hover { background: var(--rd-danger-soft) !important; color: #c92f29 !important; }
+
+/* سلول DNS */
+.rd-dns-cell { display: flex; align-items: center; gap: 10px; min-width: 168px; }
+.rd-current-domain {
+    font-family: var(--rd-mono) !important;
+    direction: ltr; unicode-bidi: embed;
+    font-size: 11.8px; color: var(--rd-text2);
+    background: #f4f5fb; border: 1px solid var(--rd-border);
+    padding: 3px 9px; border-radius: 8px;
+    max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.rd-dns-btn svg { width: 13px; height: 13px; }
+
+/* سلول IP: دکمه زیر IP */
+#serversTable td div:has(> .mono) { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+#serversTable .btn-primary.btn-sm { padding: 4px 11px !important; font-size: 11.5px !important; border-radius: 8px !important; }
+
+/* آمار لاگ هر سرور (سلول‌های ۴تایی) */
+.rd-stat { min-width: 118px; }
+.rd-stat-count { font-size: 13px; font-weight: 700; color: var(--rd-text); display: inline-block; margin-bottom: 4px; }
+.rd-stat .rd-split { margin-top: 0; }
+.rd-stat .rd-split-legend { margin-top: 4px; font-size: 11px; }
+.rd-check { color: #0e8a5c; font-weight: 800; font-size: 15px; }
+.rd-no { color: #c3c8dd; font-weight: 700; font-size: 14px; }
+
+/* چک‌باکس وضعیت سرور (custom-switch) */
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--rd-primary) !important;
+    border-color: var(--rd-primary) !important;
+}
+.custom-switch .custom-control-input:focus ~ .custom-control-label::before { box-shadow: 0 0 0 3px rgba(88, 80, 236, .15) !important; }
+.custom-control-label::before { border-radius: 999px !important; }
+
+/* حذف نوارهای خاکستری inline (zbra) و هماهنگ با تم */
+#serversTable tbody tr, #serversTable tbody tr.server { background-color: transparent !important; }
+
+/* =========================================================
+   اجزای داشبورد
+   ========================================================= */
+.rd-dash-row { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; margin-bottom: 20px; }
+.rd-serverstat { display: flex; flex-direction: column; gap: 14px; }
+.rd-ss-row { display: flex; align-items: center; gap: 14px; }
+.rd-ss-name {
+    width: 255px; flex-shrink: 0;
+    font-family: var(--rd-mono); direction: ltr; text-align: right;
+    font-size: 12.5px; font-weight: 700; color: var(--rd-text);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+}
+.rd-ss-name .badge { font-size: 9.5px; padding: 2px 8px; }
+.rd-ss-bar { flex: 1; }
+.rd-ss-val { width: 54px; text-align: left; font-size: 12.5px; font-weight: 800; color: var(--rd-text2); }
+.rd-op-row { padding: 6px 0 12px; }
+.rd-op-row + .rd-op-row { border-top: 1px dashed var(--rd-border); }
+.rd-op-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.rd-op-count { font-size: 12px; color: var(--rd-muted); }
+.rd-op-sub { font-size: 11.5px; color: var(--rd-muted); margin-top: 6px; font-weight: 500; }
+@media (max-width: 1100px) {
+    .rd-dash-row { grid-template-columns: 1fr; }
+    .rd-ss-name { width: 180px; }
+}
+
+/* =========================================================
+   ریسپانسیو — موبایل و تبلت
+   ========================================================= */
+@media (max-width: 1199.98px) {
+    /* منو: کشویی از راست */
+    .main-menu { transform: translateX(105%) !important; transition: transform .28s var(--rd-ease) !important; box-shadow: none !important; }
+    body.menu-open .main-menu { transform: translateX(0) !important; width: var(--rd-side-w) !important; box-shadow: -14px 0 44px rgba(11, 16, 32, .35) !important; }
+    body.menu-open .sidenav-overlay { background: rgba(11, 16, 32, .55) !important; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+    body.menu-open .menu-title { opacity: 1 !important; visibility: visible !important; width: auto !important; flex: 1 1 auto !important; }
+    body.menu-open .rd-sec { font-size: 10.5px !important; height: auto !important; padding: 16px 24px 7px !important; }
+    body.menu-open .rd-sec::after { display: none !important; }
+    body.menu-open .navigation-main .nav-link { margin: 2px 12px !important; padding: 9px 12px !important; justify-content: flex-start !important; }
+    body.menu-open .brand-text { opacity: 1 !important; height: auto !important; }
+    body.menu-open .navbar-brand { flex-direction: row !important; gap: 11px !important; }
+    body.menu-open .navbar-header { padding: 20px 14px 12px !important; flex-direction: row !important; justify-content: flex-start !important; align-items: center !important; }
+    /* محتوا و هدر تمام‌عرض */
+    .app-content { margin-right: 0 !important; }
+    .header-navbar { right: 14px !important; }
+    .user-name, .user-status { display: none !important; }
+    .content-wrapper { margin-top: 6.5rem !important; }
+    .content-body { padding: 16px 14px 36px !important; }
+}
+@media (max-width: 767.98px) {
+    .rd-kpi-grid { grid-template-columns: 1fr; }
+    .rd-page-head { flex-direction: column; align-items: flex-start; }
+    .card-content { overflow-x: auto; }
+    .table { font-size: 12.5px !important; }
+    .table thead th { padding: 10px !important; }
+    .table tbody td { padding: 10px !important; }
+    .rd-dns-cell { flex-wrap: wrap; }
+    /* دراپ‌داون‌ها روی موبایل درون سلول باز می‌شوند (جلوگیری از قلیپ) */
+    .rd-item-menu { position: static !important; box-shadow: none !important; border: 1px solid var(--rd-border) !important; margin-top: 6px; width: 100%; }
+    .rd-ss-name { width: 130px; font-size: 11.5px; }
+    .rd-ss-val { width: 44px; }
+}

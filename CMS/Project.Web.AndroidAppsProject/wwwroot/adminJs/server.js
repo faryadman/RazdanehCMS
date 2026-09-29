@@ -54,38 +54,49 @@ function renderservers(data) {
         let item = data[i];
 
         let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
-        let editButton = '<button class="btn btn-sm btn-warning edit" ' +
-            'data-item-id="' + item.id + '"' +
-            'data-item-serverName="' + item.serverName + '"' +
-            'data-item-location="' + item.location + '"' +
-            'data-item-ip="' + item.ip + '"' +
-            '>edit</button>';
-
-        let deleteButton = '<button class="btn btn-sm btn-danger    " onclick="deleteservers(' + item.id + ')">Delete</button>';
-        let duplicateButton = '<button class="btn btn-sm btn-primary    " onclick="duplicate(' + item.id + ')">Duplicate</button>';
-        let blackListButton = '<a class="btn btn-sm btn-dark" href="' + serversBaseUrl + '/blackList?id=' + item.id + '">BlackList</a>';
-        let logsButton = '<a class="btn btn-sm btn-info" href="' + serversBaseUrl + '/logs?serverId=' + item.id + '">Logs</a>';
+        // منوی عملیات ردیف (ویرایش/کپی/لاگ/بلک‌لیست/حذف) — همه کلاس‌ها و رویدادها دست‌نخورده
+        let actionsMenu = '<div class="rd-row-actions"><div class="dropdown rd-item-dropdown">' +
+            '<button class="btn btn-sm btn-light rd-more-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg>' +
+            '</button>' +
+            '<div class="dropdown-menu dropdown-menu-left rd-item-menu">' +
+            '<button class="dropdown-item edit" data-item-id="' + item.id + '" data-item-serverName="' + item.serverName + '" data-item-location="' + item.location + '" data-item-ip="' + item.ip + '" title="ویرایش">' +
+            '<i class="rd-di rd-di-warn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></i>ویرایش</button>' +
+            '<button class="dropdown-item" onclick="duplicate(' + item.id + ')" title="کپی سرور">' +
+            '<i class="rd-di rd-di-info"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></i>کپی سرور</button>' +
+            '<a class="dropdown-item" href="' + serversBaseUrl + '/logs?serverId=' + item.id + '" title="لاگ‌های سرور">' +
+            '<i class="rd-di rd-di-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></i>لاگ‌های سرور</a>' +
+            '<a class="dropdown-item" href="' + serversBaseUrl + '/blackList?id=' + item.id + '" title="بلک‌لیست سرور">' +
+            '<i class="rd-di rd-di-dark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></i>بلک‌لیست سرور</a>' +
+            '<div class="dropdown-divider"></div>' +
+            '<button class="dropdown-item rd-danger-item" onclick="deleteservers(' + item.id + ')" title="حذف">' +
+            '<i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف سرور</button>' +
+            '</div>' +
+            '</div></div>';
         let allLogsStatistics = renderStatistics(item.allLogsStatistics, 3);
         let irancellLogsStatistics = renderStatistics(item.irancellLogsStatistics, 0);
         let hamraheAvvalLogsStatistics = renderStatistics(item.hamraheAvvalLogsStatistics, 1);
         let unknownLogsStatistics = renderStatistics(item.unknownLogsStatistics, 2);
         let isAvailable = item.isAvailable ? "checked" : "";
 
-        let isAdServer = item.isAd ? '<span class="badge badge-success">true</span>' : '<span class="badge badge-danger">false</span>';
-        let buttonRefreshDomain = '<br><button class="btn btn-success btn-sm btn-block" onclick="domainRefresh(' + item.id + ')">Refresh Domain</button>';
-        let buttonRefreshTcp = '<br><button class="btn btn-success btn-sm btn-block" onclick="tcpRefresh(' + item.id + ')">Refresh Tcp</button>';
-        let buttonRefreshSubDomain = '<div><br><button class="btn btn-primary btn-sm btn-block" onclick="subdomainRefresh(' + item.id + ')">Refresh SubDomain</button></div>';
-        let buttonDeleteDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteAllDnsRecord(' + item.id + ')">Delete Dns Record</button></div>';
-        let buttonDeleteTcpDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteTcpDnsRecord(' + item.id + ')">Delete Tcp Dns Record</button></div>';
-        let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
-
-        let buttons = item.currentDomainValue +
-            buttonRefreshDomain +
-            buttonRefreshTcp +
-            buttonRefreshSubDomain +
-            buttonCreateDnsRecord +
-            buttonDeleteDnsRecord +
-            buttonDeleteTcpDnsRecord;
+        let isAdServer = item.isAd ? '<span class="badge badge-success">بله</span>' : '<span class="badge badge-light">خیر</span>';
+        // سلول DNS: دامنه فعلی + منوی عملیات DNS (همان ۶ توابع، کال‌بک‌ها دست‌نخورده)
+        let buttons = '<div class="rd-dns-cell">' +
+            '<span class="mono rd-current-domain" title="دامنه فعلی">' + (item.currentDomainValue || '—') + '</span>' +
+            '<div class="dropdown rd-item-dropdown">' +
+            '<button class="btn btn-sm btn-outline-info rd-dns-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات DNS">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> DNS</button>' +
+            '<div class="dropdown-menu dropdown-menu-left rd-item-menu" style="min-width:236px">' +
+            '<button class="dropdown-item" onclick="domainRefresh(' + item.id + ')" title="Refresh Domain"><i class="rd-di rd-di-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></i>به‌روزرسانی دامنه</button>' +
+            '<button class="dropdown-item" onclick="tcpRefresh(' + item.id + ')" title="Refresh Tcp"><i class="rd-di rd-di-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></i>به‌روزرسانی TCP</button>' +
+            '<button class="dropdown-item" onclick="subdomainRefresh(' + item.id + ')" title="Refresh SubDomain"><i class="rd-di rd-di-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></i>به‌روزرسانی ساب‌دامین</button>' +
+            '<button class="dropdown-item" onclick="createDnsRecord(' + item.id + ')" title="Create Dns Record"><i class="rd-di rd-di-warn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></i>ساخت رکورد DNS</button>' +
+            '<div class="dropdown-divider"></div>' +
+            '<button class="dropdown-item rd-danger-item" onclick="deleteAllDnsRecord(' + item.id + ')" title="Delete Dns Record"><i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف همه رکوردهای DNS</button>' +
+            '<button class="dropdown-item rd-danger-item" onclick="deleteTcpDnsRecord(' + item.id + ')" title="Delete Tcp Dns Record"><i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف رکورد TCP DNS</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
 
         let config = item.config;
         let configObject = JSON.parse(config);
@@ -104,17 +115,13 @@ function renderservers(data) {
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
             '<span class="badge badge-dark">' + item.group.title + '</span>',
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
-            item.isForHamraheAvval,
-            item.isForIrancell,
+            item.isForHamraheAvval ? '<span class="rd-check" title="پشتیبانی همراه اول">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
+            item.isForIrancell ? '<span class="rd-check" title="پشتیبانی ایرانسل">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
             allLogsStatistics,
             irancellLogsStatistics,
             hamraheAvvalLogsStatistics,
             unknownLogsStatistics,
-            blackListButton,
-            logsButton,
-            duplicateButton,
-            editButton,
-            deleteButton
+            actionsMenu
         ]).node();
 
         if (isOdd)
@@ -499,11 +506,9 @@ function renderStatistics(item, type) {
         case 0:
             className = "irancellLogs logshow p-1";
             break
-
         case 1:
             className = "HamraheAvvalLogs logshow p-1";
             break
-
         case 2:
             className = "unknownLogs logshow p-1";
             break
@@ -511,15 +516,17 @@ function renderStatistics(item, type) {
             className = "AllLogs logshow p-1";
     }
 
-    let statistics = item != null ? '<div class="' + className + '">' +
-        '<span>Count : ' + item.count + '</span><br/>' +
-        '<span class="text-success">SCount : ' + item.successCount + '</span><br/>' +
-        '<span class="text-danger">FCount : ' + item.failCount + '</span><br/>' +
-        '<span class="text-success">SPercentage : ' + calculatePercentage(item.successCount, item.count) + '%</span><br/>' +
-        '<span class="text-danger">FPercentage : ' + calculatePercentage(item.failCount, item.count) + '%</span><br/>' +
-        '</div>' : '<div class="' + className + '"></div>';
-
-    return statistics;
+    if (item == null) return '<div class="' + className + '"></div>';
+    var total = item.count || 0;
+    var ok = item.successCount || 0;
+    var ko = item.failCount || 0;
+    var okPct = total ? Math.round(ok / total * 100) : 0;
+    var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
+    return '<div class="' + className + ' rd-stat">' +
+        '<span class="mono rd-stat-count" title="تعداد کل">' + fa(total) + '</span>' +
+        '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
+        '<div class="rd-split-legend"><span><i style="background:var(--rd-success)"></i>' + fa(ok) + '</span><span><i style="background:var(--rd-danger)"></i>' + fa(ko) + '</span></div>' +
+        '</div>';
 }
 
 function calculatePercentage(count, totalCount) {

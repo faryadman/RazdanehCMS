@@ -1,0 +1,152 @@
+@{
+    Layout = "_Admin";
+    ViewBag.PageTitle = "داشبورد";
+}
+@section scripts{
+    <script>
+        $(function () {
+            function faNum(n) {
+                try { return (n || 0).toLocaleString('fa-IR'); } catch (e) { return n; }
+            }
+            function setKpi(sel, v) { $(sel).text(faNum(v)); }
+            $.ajax({
+                url: '/admin/dashboard/GetStats',
+                type: 'GET',
+                dataType: 'json',
+                success: function (d) {
+                    // KPI
+                    setKpi('#kpiTotal', d.totalServers);
+                    setKpi('#kpiAvailable', d.availableServers);
+                    setKpi('#kpiAd', d.adServers);
+                    setKpi('#kpiLogs', d.all.count);
+                    $('#kpiAvailDelta').text(faNum(d.totalServers - d.availableServers) + ' سرور قطع');
+                    $('#kpiLogsDelta').text(faNum(d.all.fail) + ' شکست ثبت‌شده');
+
+                    // دونات نرخ موفقیت
+                    var donut = document.getElementById('rdDonut');
+                    donut.setAttribute('data-ok', d.all.success);
+                    donut.setAttribute('data-ko', d.all.fail);
+                    $('#rdDonutLegendOk').text(faNum(d.all.success));
+                    $('#rdDonutLegendKo').text(faNum(d.all.fail));
+
+                    // تفکیک اپراتورها
+                    var groups = [
+                        { name: 'ایرانسل', g: d.irancell },
+                        { name: 'همراه اول', g: d.hamraheAvval },
+                        { name: 'نامشخص', g: d.unknown }
+                    ];
+                    var max = Math.max(d.irancell.count, d.hamraheAvval.count, d.unknown.count, 1);
+                    var $ops = $('#rdOpList').empty();
+                    groups.forEach(function (x) {
+                        var pct = x.g.count ? Math.round(x.g.success / x.g.count * 100) : 100;
+                        var color = pct >= 95 ? 'var(--rd-success)' : (pct >= 80 ? 'var(--rd-warning)' : 'var(--rd-danger)');
+                        var w = Math.max(4, Math.round(x.g.count / max * 100));
+                        $ops.append(
+                            '<div class="rd-op-row">' +
+                                '<div class="rd-op-top"><span class="rd-op-name">' + x.name + '</span><span class="mono rd-op-count">' + faNum(x.g.count) + '</span></div>' +
+                                '<div class="rd-hbar"><div class="rd-hbar-fill" style="width:' + w + '%;background:' + color + '"></div></div>' +
+                                '<div class="rd-op-sub">نرخ موفقیت ' + faNum(pct) + '٪ — ' + faNum(x.g.fail) + ' شکست</div>' +
+                            '</div>'
+                        );
+                    });
+
+                    // وضعیت سرورها
+                    var $ss = $('#rdServerStat').empty();
+                    (d.servers || []).forEach(function (s) {
+                        var pct = s.count ? Math.round(s.successCount / s.count * 100) : 0;
+                        var color = pct >= 95 ? 'var(--rd-success)' : (pct >= 80 ? 'var(--rd-warning)' : 'var(--rd-danger)');
+                        var st = s.isAvailable
+                            ? '<span class="rd-status up" style="margin-right:8px"><span class="dot"></span>فعال</span>'
+                            : '<span class="rd-status down" style="margin-right:8px"><span class="dot"></span>قطع</span>';
+                        $ss.append(
+                            '<div class="rd-ss-row">' +
+                                '<span class="rd-ss-name">' + (s.name || '—') + (s.isAd ? ' <span class="badge badge-warning" style="font-size:10px;padding:2px 8px">تبلیغاتی</span>' : '') + st + '</span>' +
+                                '<span class="rd-ss-bar"><div class="rd-hbar" style="margin-top:0"><div class="rd-hbar-fill" style="width:' + Math.max(2, pct) + '%;background:' + color + '"></div></div></span>' +
+                                '<span class="rd-ss-val" style="' + (pct < 80 ? 'color:#c92f29' : '') + '">' + faNum(pct) + '٪</span>' +
+                            '</div>'
+                        );
+                    });
+                    if (!(d.servers || []).length) {
+                        $ss.append('<div style="color:var(--rd-muted);font-size:13px;padding:10px 0">سروری ثبت نشده است.</div>');
+                    }
+
+                    // زیرعنوان
+                    $('#rdDashSub').text('نمای کلی سرورها و لاگ‌ها — ' + faNum(d.all.count) + ' لاگ در مجموع');
+
+                    // انیمیشن‌های تم (شمارش، دونات، نوارها)
+                    if (window.RDOps && RDOps.refresh) RDOps.refresh(document);
+                },
+                error: function () {
+                    $('#rdDashSub').text('خطا در دریافت آمار');
+                }
+            });
+        });
+    </script>
+}
+<div class="content-body">
+    <div class="rd-page-head">
+        <div>
+            <div class="rd-page-title">
+                <span class="rd-tile"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+                داشبورد عملیات
+            </div>
+            <div class="rd-page-sub" id="rdDashSub">در حال دریافت آمار…</div>
+        </div>
+        <div class="rd-actions">
+            <button class="btn btn-outline-dark btn-sm" onclick="location.reload()">
+                <i class="rd-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></i>
+                به‌روزرسانی
+            </button>
+            <a asp-area="admin" asp-controller="Servers" asp-action="Index" class="btn btn-primary btn-sm">لیست سرور ها</a>
+        </div>
+    </div>
+
+    <div class="rd-kpi-grid">
+        <div class="rd-kpi">
+            <div class="rd-kpi-icon rd-ic-primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div>
+            <div><div class="rd-kpi-label">کل سرورها</div><div class="rd-kpi-value" id="kpiTotal">—</div><div class="rd-kpi-delta" style="color:var(--rd-muted)">در گروه‌ها</div></div>
+        </div>
+        <div class="rd-kpi">
+            <div class="rd-kpi-icon rd-ic-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div><div class="rd-kpi-label">سرورهای در دسترس</div><div class="rd-kpi-value" id="kpiAvailable">—</div><div class="rd-kpi-delta" style="color:#c92f29" id="kpiAvailDelta"></div></div>
+        </div>
+        <div class="rd-kpi">
+            <div class="rd-kpi-icon rd-ic-warning"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+            <div><div class="rd-kpi-label">سرورهای تبلیغاتی</div><div class="rd-kpi-value" id="kpiAd">—</div><div class="rd-kpi-delta" style="color:#b57310">گروه تبلیغات</div></div>
+        </div>
+        <div class="rd-kpi">
+            <div class="rd-kpi-icon rd-ic-info"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <div><div class="rd-kpi-label">کل لاگ‌ها</div><div class="rd-kpi-value" id="kpiLogs">—</div><div class="rd-kpi-delta" style="color:#1873bd" id="kpiLogsDelta"></div></div>
+        </div>
+    </div>
+
+    <div class="rd-dash-row">
+        <div class="card">
+            <div class="card-header"><div class="card-title">نرخ موفقیت لاگ‌ها</div></div>
+            <div class="card-content">
+                <div class="rd-donut-wrap">
+                    <div class="rd-donut" id="rdDonut" data-ok="0" data-ko="0"></div>
+                    <div class="rd-donut-legend">
+                        <div class="dl"><i style="background:var(--rd-success)"></i> موفق <b id="rdDonutLegendOk">۰</b></div>
+                        <div class="dl"><i style="background:var(--rd-danger)"></i> ناموفق <b id="rdDonutLegendKo">۰</b></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><div class="card-title">تفکیک بر اساس اپراتور</div></div>
+            <div class="card-content">
+                <div id="rdOpList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><div class="card-title">وضعیت سرورها (نرخ موفقیت لاگ)</div></div>
+        <div class="card-content">
+            <div class="rd-serverstat" id="rdServerStat">
+                <div style="color:var(--rd-muted);font-size:13px;padding:10px 0">در حال دریافت…</div>
+            </div>
+        </div>
+    </div>
+</div>

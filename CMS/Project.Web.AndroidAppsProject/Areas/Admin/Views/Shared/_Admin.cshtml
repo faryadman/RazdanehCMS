@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/custom-rtl.css">
     <!-- END: Custom CSS-->
     <link href="~/app-assets/fonts/font.css" rel="stylesheet" />
-    <link href="~/app-assets/rd-ops.rtl.css?v=20260928a" rel="stylesheet" />
+    <link href="~/app-assets/rd-ops.rtl.css?v=20260929a" rel="stylesheet" />
     <link href="~/app-assets/jqueryUI/jquery-ui.min.css" rel="stylesheet" />
 
     <style>
@@ -156,6 +156,12 @@
         <div class="shadow-bottom"></div>
         <div class="main-menu-content">
                         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+                <li class="nav-item">
+                    <a asp-area="admin" asp-controller="Dashboard" asp-action="Index" class="nav-link">
+                        <i class="ficon rd-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></i>
+                        <span class="menu-title">داشبورد</span>
+                    </a>
+                </li>
                 <li class="rd-sec"><span class="d-inline-block">زیرساخت</span></li>
                 <li class="nav-item">
                     <a asp-area="admin" asp-controller="Servers" asp-action="Index" class="nav-link">
@@ -283,7 +289,7 @@
     <script src="~/app-assets/jqueryUI/jquery-ui.min.js"></script>
     <script src="~/jquery.cookie.js"></script>
     <script src="~/adminJs/admin.js"></script>
-        <script src="~/adminJs/rd-ops.js?v=20260928a"></script>
+        <script src="~/adminJs/rd-ops.js?v=20260929a"></script>
     <script>
         $('#menuButton').on('click', function () {
             setTimeout(function () {
