@@ -85,7 +85,8 @@ a { text-decoration: none; }
    ========================================================= */
 .main-menu {
     width: var(--rd-side-w) !important;
-    background: linear-gradient(180deg, var(--rd-side-bg) 0%, var(--rd-side-bg2) 100%) !important;
+    background-color: #0b1020 !important;
+    background-image: linear-gradient(180deg, var(--rd-side-bg, #0b1020) 0%, var(--rd-side-bg2, #111a38) 100%) !important;
     border: none !important;
     box-shadow: -14px 0 44px rgba(11, 16, 32, .18) !important;
     transition: width .28s var(--rd-ease) !important;
