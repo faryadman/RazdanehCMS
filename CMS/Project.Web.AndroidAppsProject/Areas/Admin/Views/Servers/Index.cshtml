@@ -22,7 +22,7 @@
     <script src="~/app-assets/js/scripts/components.js"></script>
     <!-- END: Theme JS-->
     <!-- BEGIN: Page JS-->
-    <script src="~/adminJs/server.js?v=20260930e"></script>
+    <script src="~/adminJs/server.js?v=20260930f"></script>
 }
 
     @section scripts{
@@ -59,57 +59,27 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <br/>
-                                    <h4 class="card-title">
-                                         لیست سرور ها
-                                    </h4>
-                                    <br/>
-                                    <br />
-
-                                    <button class="btn btn-success" onclick="newserver()">
-                                        جدید
-                                    </button>
-                                    <br />
-
-                                    <button class="btn btn-danger ml-2" onclick="DeleteSelectedItems(serversBaseUrl, getservers, false)">
-                                         حذف
-                                    </button>
-                                    <br />
-
-                                    <button class="btn btn-primary ml-2" onclick="filterservers()">
-                                         فیلتر
-                                    </button>
-                                    <br />
-
-                                    <button class="btn btn-warning ml-2" onclick="goDomain()">
-                                        لیست دامنه ها
-                                    </button>
-                                    <button class="btn btn-adn ml-2" onclick="goIpList()">
-                                          ip سرور ها
-                                    </button>
-                                    <br />
-                                    <div class="border card-body dot2 rounded rounded-2 ml-2">
-
-                                        <button class="btn btn-outline-success ml-2" onclick="RefreshDomainSelectedItems(serversBaseUrl, getservers, false)">
-                                            رفرش دامنه ها
-                                        </button>
-
-           
-                                        <button class="btn btn-outline-info ml-2" onclick="RefreshSubDomainSelectedItems(serversBaseUrl, getservers, false)">
-                                            رفرش زیردامنه ها
-                                        </button>
-
-                                        <button class="btn btn-outline-danger ml-2" onclick="DnsDeleteSelectedItems(serversBaseUrl, getservers, false)">
-                                            حذف dns ها
-                                        </button>
-
-                                        <button class="btn btn-outline-warning ml-2" onclick="onClickChangeServerAddresses()">
-                                            تنظیم آدرس همه سرور ها
-                                        </button>
-
-                                    </div>
-                                    <br />
-                                </div>
+                                                                <div class="rd-toolbar">
+                                                                    <div class="rd-tb-title"><span class="rd-tb-bar" aria-hidden="true"></span><h4 class="card-title mb-0">لیست سرور ها</h4></div>
+                                                                    <div class="rd-tb-group" role="group" aria-label="عملیات اصلی">
+                                                                    <button class="btn btn-success rd-tb-btn" onclick="newserver()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></i>جدید</button>
+                                                                    <button class="btn btn-danger rd-tb-btn" onclick="DeleteSelectedItems(serversBaseUrl, getservers, false)"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف</button>
+                                                                    <button class="btn btn-primary rd-tb-btn" onclick="filterservers()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></i>فیلتر</button>
+                                                                    </div>
+                                                                    <span class="rd-tb-sep" aria-hidden="true"></span>
+                                                                    <div class="rd-tb-group" role="group" aria-label="لیست‌ها">
+                                                                    <button class="btn btn-warning rd-tb-btn" onclick="goDomain()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></i><wbr>لیست دامنه ها</button>
+                                                                    <button class="btn btn-adn rd-tb-btn" onclick="goIpList()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></i>ip سرور ها</button>
+                                                                    </div>
+                                                                    <span class="rd-tb-sep" aria-hidden="true"></span>
+                                                                    <div class="rd-tb-group" role="group" aria-label="عملیات گروهی">
+                                                                    <button class="btn btn-outline-success rd-tb-btn" onclick="RefreshDomainSelectedItems(serversBaseUrl, getservers, false)"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></i>رفرش دامنه ها</button>
+                                                                    <button class="btn btn-outline-info rd-tb-btn" onclick="RefreshSubDomainSelectedItems(serversBaseUrl, getservers, false)"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></i>رفرش زیردامنه ها</button>
+                                                                    <button class="btn btn-outline-danger rd-tb-btn" onclick="DnsDeleteSelectedItems(serversBaseUrl, getservers, false)"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></i>حذف dns ها</button>
+                                                                    <button class="btn btn-outline-warning rd-tb-btn" onclick="onClickChangeServerAddresses()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></i>تنظیم آدرس همه سرور ها</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">

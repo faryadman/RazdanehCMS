@@ -1119,3 +1119,19 @@ body:not(.menu-collapsed) .header-navbar { right: calc(var(--rd-side-w) + 18px) 
     body.menu-collapsed .rd-sec { padding: 16px 24px 7px !important; font-size: 10.5px !important; height: auto !important; text-align: right !important; }
     body.menu-collapsed .rd-sec::after { display: none !important; }
 }
+
+/* ============================================================
+   Toolbar — نوار اکشن بالای جدول‌ها (v9)
+   ============================================================ */
+.rd-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:8px 2px 4px}
+.rd-tb-title{display:flex;align-items:center;gap:10px;margin-inline-end:auto;min-width:0}
+.rd-tb-bar{width:4px;height:26px;border-radius:99px;background:linear-gradient(180deg,#4f7cff,#8b5cf6);flex:none}
+.rd-tb-title .card-title{margin:0;font-size:1.02rem;font-weight:800;line-height:1.3}
+.rd-tb-group{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.rd-tb-sep{width:1px;height:26px;background:rgba(122,134,178,.28);flex:none}
+.rd-toolbar .btn{display:inline-flex;align-items:center;gap:7px;border-radius:10px;padding:.5rem .95rem;font-weight:600;font-size:.86rem;line-height:1.35;box-shadow:0 1px 2px rgba(16,24,64,.08);transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.rd-toolbar .btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(16,24,64,.15);filter:brightness(1.04)}
+.rd-toolbar .btn:active{transform:translateY(0);box-shadow:0 2px 5px rgba(16,24,64,.12)}
+.rd-tb-ic{display:inline-flex;width:16px;height:16px;flex:none}
+.rd-tb-ic svg{width:16px;height:16px;display:block}
+@media (max-width:1200px){.rd-tb-sep{display:none}}
