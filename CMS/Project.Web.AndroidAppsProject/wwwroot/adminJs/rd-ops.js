@@ -66,7 +66,7 @@
        منو با position:fixed و محاسبهٔ JS قرار می‌گیرد؛ نه قلیپ توسط
        .table-responsive / .card می‌شود و نه از دید خارج می‌شود. */
     function rdMenuReset($menu) {
-        $menu.removeClass('show').css({ position: '', top: '', left: '', right: '', visibility: '' });
+        $menu.removeClass('show').css({ position: '', top: '', left: '', right: '', visibility: '' }).removeData('rdTrigger');
     }
     function closeAllRdMenus(except) {
         $('.rd-item-menu.show').each(function () {
@@ -83,8 +83,10 @@
         var vw = window.innerWidth, vh = window.innerHeight;
         var left = r.left;
         if (left + mw > vw - 8) left = Math.max(8, vw - mw - 8);
-        var top = r.bottom + 6;
-        if (top + mh > vh - 8) top = Math.max(8, r.top - mh - 6); // اگر جا نبود، بالای دکمه
+        if (left < 8) left = 8;
+        var top = r.bottom + 6; // پیش‌فرض: زیر دکمه
+        if (top + mh > vh - 8 && r.top - mh - 6 > 8) top = r.top - mh - 6; // فلیپ فقط اگر بالا جا باشد
+        if (top + mh > vh - 8) top = Math.max(8, vh - mh - 8); // وگرنه محکم به پایینِ صفحه
         $menu.css({ top: top + 'px', left: left + 'px', visibility: '' });
     }
     $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
@@ -96,7 +98,7 @@
         var wasOpen = $menu.hasClass('show');
         closeAllRdMenus($menu);
         if (wasOpen) return;
-        $menu.addClass('show');
+        $menu.data('rdTrigger', $btn).addClass('show');
         $btn.attr('aria-expanded', 'true');
         rdMenuPosition($btn, $menu);
     });
@@ -109,9 +111,18 @@
     $(document).on('keyup.rdops', function (e) {
         if (e.key === 'Escape') closeAllRdMenus();
     });
-    /* اسکرول (هر کانتینر، حتی داخل جدول) و رزایز → بستن منو */
-    document.addEventListener('scroll', function () { closeAllRdMenus(); }, true);
-    $(window).on('resize.rdops', function () { closeAllRdMenus(); });
+    /* اسکرول (هر کانتینر، حتی داخل جدول) و رزایز → منو دنبال دکمه بماند، نه اینکه بسته شود */
+    function rdReposition() {
+        $('.rd-item-menu.show').each(function () {
+            var $m = $(this), $b = $m.data('rdTrigger');
+            if (!$b || !$b.length) return;
+            var rect = $b[0].getBoundingClientRect();
+            if (rect.bottom < 0 || rect.top > window.innerHeight) { rdMenuReset($m); return; }
+            rdMenuPosition($b, $m);
+        });
+    }
+    document.addEventListener('scroll', rdReposition, true);
+    $(window).on('resize.rdops', rdReposition);
 
     $(function () {
         /* سایه هدر هنگام اسکرول */

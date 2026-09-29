@@ -840,6 +840,13 @@ div.dt-buttons .btn { padding: 7px 13px !important; font-size: 12.5px !important
 .rd-ic-dark { background: #edeff7; color: #3c4262; }
 
 /* نوار درصد موفقیت/شکست */
+/* ستون فشردهٔ آمار لاگ‌ها (جایگزین ۴ ستون مجزا) */
+.rd-logs { min-width: 172px; max-width: 210px; display: flex; flex-direction: column; gap: 5px; }
+.rd-log-row { display: flex; align-items: center; gap: 7px; padding: 0 !important; }
+.rd-log-name { width: 62px; flex-shrink: 0; font-size: 11px; font-weight: 600; color: var(--rd-muted); }
+.rd-log-count { width: 48px; flex-shrink: 0; font-size: 12px; font-weight: 700; text-align: left; color: var(--rd-text2); }
+.rd-log-row .rd-split { flex: 1; min-width: 34px; height: 6px; margin-top: 0; }
+.rd-log-row .rd-split-legend { display: none; }
 .rd-split { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: #eef0f8; margin-top: 8px; }
 .rd-split .ok { background: var(--rd-success); }
 .rd-split .ko { background: var(--rd-danger); }

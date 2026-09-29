@@ -73,10 +73,7 @@ function renderservers(data) {
             '<i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف سرور</button>' +
             '</div>' +
             '</div></div>';
-        let allLogsStatistics = renderStatistics(item.allLogsStatistics, 3);
-        let irancellLogsStatistics = renderStatistics(item.irancellLogsStatistics, 0);
-        let hamraheAvvalLogsStatistics = renderStatistics(item.hamraheAvvalLogsStatistics, 1);
-        let unknownLogsStatistics = renderStatistics(item.unknownLogsStatistics, 2);
+        let logsCell = renderLogsCell(item.allLogsStatistics, item.irancellLogsStatistics, item.hamraheAvvalLogsStatistics, item.unknownLogsStatistics);
         let isAvailable = item.isAvailable ? "checked" : "";
 
         let isAdServer = item.isAd ? '<span class="badge badge-success">بله</span>' : '<span class="badge badge-light">خیر</span>';
@@ -117,10 +114,7 @@ function renderservers(data) {
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
             item.isForHamraheAvval ? '<span class="rd-check" title="پشتیبانی همراه اول">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
             item.isForIrancell ? '<span class="rd-check" title="پشتیبانی ایرانسل">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
-            allLogsStatistics,
-            irancellLogsStatistics,
-            hamraheAvvalLogsStatistics,
-            unknownLogsStatistics,
+            logsCell,
             actionsMenu
         ]).node();
 
@@ -526,6 +520,27 @@ function renderStatistics(item, type) {
         '<span class="mono rd-stat-count" title="تعداد کل">' + fa(total) + '</span>' +
         '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
         '<div class="rd-split-legend"><span><i style="background:var(--rd-success)"></i>' + fa(ok) + '</span><span><i style="background:var(--rd-danger)"></i>' + fa(ko) + '</span></div>' +
+        '</div>';
+}
+
+/* ستون فشردهٔ «آمار لاگ‌ها» — جایگزین ۴ ستون مجزا (کلاس‌های AllLogs/Irancell/HamraheAvval/unknown حفظ شده) */
+function renderLogsCell(all, irc, hv, unk) {
+    var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
+    function row(cls, name, item) {
+        if (item == null) return '<div class="' + cls + ' logshow p-1 rd-log-row"><span class="rd-log-name">' + name + '</span><span class="mono rd-log-count">—</span></div>';
+        var total = item.count || 0, ok = item.successCount || 0, ko = item.failCount || 0;
+        var okPct = total ? Math.round(ok / total * 100) : 0;
+        return '<div class="' + cls + ' logshow p-1 rd-log-row">' +
+            '<span class="rd-log-name">' + name + '</span>' +
+            '<span class="mono rd-log-count" title="کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '">' + fa(total) + '</span>' +
+            '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
+            '</div>';
+    }
+    return '<div class="rd-logs">' +
+        row('AllLogs', 'کل', all) +
+        row('irancellLogs', 'ایرانسل', irc) +
+        row('HamraheAvvalLogs', 'همراه اول', hv) +
+        row('unknownLogs', 'نامشخص', unk) +
         '</div>';
 }
 
