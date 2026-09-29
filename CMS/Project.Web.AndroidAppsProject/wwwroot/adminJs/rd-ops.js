@@ -62,6 +62,29 @@
         renderHbars($scope);
     }
 
+    /* ---------- دراپ‌داون منوی ردیف‌ها (قطعی، مستقل از data-api بوت‌استرپ) ---------- */
+    $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $btn = $(this);
+        var $menu = $btn.siblings('.dropdown-menu').first();
+        if (!$menu.length) return;
+        var wasOpen = $menu.hasClass('show');
+        closeAllRdMenus($menu);
+        $menu.toggleClass('show', !wasOpen);
+        $btn.attr('aria-expanded', wasOpen ? 'false' : 'true');
+    });
+    function closeAllRdMenus(except) {
+        $('.rd-item-menu.show').not(except || document).removeClass('show');
+        $('[data-rd-toggle="dropdown"]').attr('aria-expanded', 'false');
+    }
+    $(document).on('click.rdops', function (e) {
+        if (!$(e.target).closest('.rd-item-dropdown').length) closeAllRdMenus();
+    });
+    $(document).on('keyup.rdops', function (e) {
+        if (e.key === 'Escape') closeAllRdMenus();
+    });
+
     $(function () {
         /* سایه هدر هنگام اسکرول */
         var $header = $('.header-navbar');

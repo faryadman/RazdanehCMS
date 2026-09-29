@@ -56,7 +56,7 @@ function renderservers(data) {
         let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
         // منوی عملیات ردیف (ویرایش/کپی/لاگ/بلک‌لیست/حذف) — همه کلاس‌ها و رویدادها دست‌نخورده
         let actionsMenu = '<div class="rd-row-actions"><div class="dropdown rd-item-dropdown">' +
-            '<button class="btn btn-sm btn-light rd-more-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات">' +
+            '<button class="btn btn-sm btn-light rd-more-btn" type="button" data-rd-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات">' +
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg>' +
             '</button>' +
             '<div class="dropdown-menu dropdown-menu-left rd-item-menu">' +
@@ -84,7 +84,7 @@ function renderservers(data) {
         let buttons = '<div class="rd-dns-cell">' +
             '<span class="mono rd-current-domain" title="دامنه فعلی">' + (item.currentDomainValue || '—') + '</span>' +
             '<div class="dropdown rd-item-dropdown">' +
-            '<button class="btn btn-sm btn-outline-info rd-dns-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات DNS">' +
+            '<button class="btn btn-sm btn-outline-info rd-dns-btn" type="button" data-rd-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات DNS">' +
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> DNS</button>' +
             '<div class="dropdown-menu dropdown-menu-left rd-item-menu" style="min-width:236px">' +
             '<button class="dropdown-item" onclick="domainRefresh(' + item.id + ')" title="Refresh Domain"><i class="rd-di rd-di-success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></i>به‌روزرسانی دامنه</button>' +
