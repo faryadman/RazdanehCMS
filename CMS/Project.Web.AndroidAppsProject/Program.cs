@@ -142,7 +142,20 @@ app.UseStaticFiles(new StaticFileOptions
 
 
 app.UseHangfireServer();
-app.UseHangfireDashboard();
+// داشبورد Hangfire: مسیر ثابت /hangfire — با احراز هویتِ پنل (کوکی مشترک) محافظت می‌شود
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/hangfire") && context.User.Identity?.IsAuthenticated != true)
+    {
+        context.Response.Redirect("/admin/account");
+        return;
+    }
+    await next();
+});
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "Razdaneh — Hangfire"
+});
 
 RecurringJob.AddOrUpdate(
     "logDeleterJob",
