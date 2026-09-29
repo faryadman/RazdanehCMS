@@ -62,7 +62,31 @@
         renderHbars($scope);
     }
 
-    /* ---------- دراپ‌داون منوی ردیف‌ها (قطعی، مستقل از data-api بوت‌استرپ) ---------- */
+    /* ---------- دراپ‌داون منوی ردیف‌ها: قطعی، مستقل از data-api بوت‌استرپ ----------
+       منو با position:fixed و محاسبهٔ JS قرار می‌گیرد؛ نه قلیپ توسط
+       .table-responsive / .card می‌شود و نه از دید خارج می‌شود. */
+    function rdMenuReset($menu) {
+        $menu.removeClass('show').css({ position: '', top: '', left: '', right: '', visibility: '' });
+    }
+    function closeAllRdMenus(except) {
+        $('.rd-item-menu.show').each(function () {
+            if (except && this === except[0]) return;
+            rdMenuReset($(this));
+        });
+        $('[data-rd-toggle="dropdown"]').attr('aria-expanded', 'false');
+    }
+    function rdMenuPosition($btn, $menu) {
+        if (window.innerWidth < 768) return; // موبایل: منو درون سلول (static) باز می‌شود
+        $menu.css({ position: 'fixed', top: 0, left: 0, right: 'auto', visibility: 'hidden' });
+        var mw = $menu.outerWidth(), mh = $menu.outerHeight();
+        var r = $btn[0].getBoundingClientRect();
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var left = r.left;
+        if (left + mw > vw - 8) left = Math.max(8, vw - mw - 8);
+        var top = r.bottom + 6;
+        if (top + mh > vh - 8) top = Math.max(8, r.top - mh - 6); // اگر جا نبود، بالای دکمه
+        $menu.css({ top: top + 'px', left: left + 'px', visibility: '' });
+    }
     $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -71,19 +95,23 @@
         if (!$menu.length) return;
         var wasOpen = $menu.hasClass('show');
         closeAllRdMenus($menu);
-        $menu.toggleClass('show', !wasOpen);
-        $btn.attr('aria-expanded', wasOpen ? 'false' : 'true');
+        if (wasOpen) return;
+        $menu.addClass('show');
+        $btn.attr('aria-expanded', 'true');
+        rdMenuPosition($btn, $menu);
     });
-    function closeAllRdMenus(except) {
-        $('.rd-item-menu.show').not(except || document).removeClass('show');
-        $('[data-rd-toggle="dropdown"]').attr('aria-expanded', 'false');
-    }
+    $(document).on('click.rdops', '.rd-item-menu .dropdown-item', function () {
+        setTimeout(function () { closeAllRdMenus(); }, 0);
+    });
     $(document).on('click.rdops', function (e) {
         if (!$(e.target).closest('.rd-item-dropdown').length) closeAllRdMenus();
     });
     $(document).on('keyup.rdops', function (e) {
         if (e.key === 'Escape') closeAllRdMenus();
     });
+    /* اسکرول (هر کانتینر، حتی داخل جدول) و رزایز → بستن منو */
+    document.addEventListener('scroll', function () { closeAllRdMenus(); }, true);
+    $(window).on('resize.rdops', function () { closeAllRdMenus(); });
 
     $(function () {
         /* سایه هدر هنگام اسکرول */
