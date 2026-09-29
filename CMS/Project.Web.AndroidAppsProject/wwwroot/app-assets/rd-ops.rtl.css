@@ -978,7 +978,7 @@ body:not(.menu-collapsed) .header-navbar { right: calc(var(--rd-side-w) + 18px) 
 .rd-more-btn { width: 34px !important; height: 34px !important; padding: 0 !important; }
 .rd-more-btn svg { width: 16px; height: 16px; color: var(--rd-text2); }
 .rd-more-btn:hover { color: var(--rd-primary) !important; border-color: rgba(88, 80, 236, .45) !important; }
-.rd-item-menu { min-width: 205px; z-index: 1050; }
+.rd-item-menu { min-width: 205px; z-index: 1050; max-height: calc(100vh - 24px); overflow-y: auto; }
 .rd-item-menu .dropdown-item { padding: 8px 13px; gap: 10px; }
 .rd-item-menu .dropdown-item svg { width: 15px; height: 15px; }
 .rd-di {

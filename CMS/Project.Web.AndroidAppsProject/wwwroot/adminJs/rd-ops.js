@@ -84,9 +84,7 @@
         var left = r.left;
         if (left + mw > vw - 8) left = Math.max(8, vw - mw - 8);
         if (left < 8) left = 8;
-        var top = r.bottom + 6; // پیش‌فرض: زیر دکمه
-        if (top + mh > vh - 8 && r.top - mh - 6 > 8) top = r.top - mh - 6; // فلیپ فقط اگر بالا جا باشد
-        if (top + mh > vh - 8) top = Math.max(8, vh - mh - 8); // وگرنه محکم به پایینِ صفحه
+        var top = Math.max(8, r.bottom + 6); // همیشه زیر دکمه (داخل جدول) — فلیپ به بالا نه
         $menu.css({ top: top + 'px', left: left + 'px', visibility: '' });
     }
     $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
