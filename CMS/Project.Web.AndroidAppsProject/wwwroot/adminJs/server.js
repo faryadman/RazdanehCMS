@@ -107,6 +107,7 @@ function renderservers(data) {
             item.id,
             isAdServer,
             buttons,
+            actionsMenu,
             '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted + '</span>',
             item.location,
             '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
@@ -114,8 +115,7 @@ function renderservers(data) {
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
             item.isForHamraheAvval ? '<span class="rd-check" title="پشتیبانی همراه اول">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
             item.isForIrancell ? '<span class="rd-check" title="پشتیبانی ایرانسل">✓</span>' : '<span class="rd-no" title="پشتیبانی ندارد">—</span>',
-            logsCell,
-            actionsMenu
+            logsCell
         ]).node();
 
         if (isOdd)
@@ -527,12 +527,12 @@ function renderStatistics(item, type) {
 function renderLogsCell(all, irc, hv, unk) {
     var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
     function row(cls, name, item) {
-        if (item == null) return '<div class="' + cls + ' logshow p-1 rd-log-row"><span class="rd-log-name">' + name + '</span><span class="mono rd-log-count">—</span></div>';
+        if (item == null) return '<div class="' + cls + ' logshow p-1 rd-log-row"><div class="rd-log-top"><span class="rd-log-name">' + name + '</span><span class="mono rd-log-count">—</span></div></div>';
         var total = item.count || 0, ok = item.successCount || 0, ko = item.failCount || 0;
         var okPct = total ? Math.round(ok / total * 100) : 0;
         return '<div class="' + cls + ' logshow p-1 rd-log-row">' +
-            '<span class="rd-log-name">' + name + '</span>' +
-            '<span class="mono rd-log-count" title="کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '">' + fa(total) + '</span>' +
+            '<div class="rd-log-top"><span class="rd-log-name">' + name + '</span>' +
+            '<span class="mono rd-log-count" title="کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '">' + fa(total) + '</span></div>' +
             '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
             '</div>';
     }
