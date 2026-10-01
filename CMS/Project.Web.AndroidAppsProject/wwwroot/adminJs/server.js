@@ -31,6 +31,7 @@ function getservers(isAd, filter) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
+            rdServersData = result;
             serversTable.clear().draw();
             renderservers(result);
             // تنظیم رویداد بعد از تغییر صفحه
@@ -39,6 +40,7 @@ function getservers(isAd, filter) {
             // بازگشت به صفحه مورد نظر
             let currentPageNumber = lastPage !== null ? lastPage : 1;
             reloadTableAndGoToPage(currentPageNumber);
+            applyServerView();
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert(" بروز اشکال در اتصال به اینترنت ");
@@ -47,15 +49,8 @@ function getservers(isAd, filter) {
 
 }
 
-function renderservers(data) {
-    console.log(data);
-    let isOdd = true;
-    for (var i = 0; i < data.length; i++) {
-        let item = data[i];
-
-        let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
-        // منوی عملیات ردیف (ویرایش/کپی/لاگ/بلک‌لیست/حذف) — همه کلاس‌ها و رویدادها دست‌نخورده
-        let actionsMenu = '<div class="rd-row-actions"><div class="dropdown rd-item-dropdown">' +
+function rdBuildActionsMenu(item) {
+    return '<div class="rd-row-actions"><div class="dropdown rd-item-dropdown">' +
             '<button class="btn btn-sm btn-light rd-more-btn" type="button" data-rd-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات">' +
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg>' +
             '</button>' +
@@ -73,14 +68,10 @@ function renderservers(data) {
             '<i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف سرور</button>' +
             '</div>' +
             '</div></div>';
-        let logsCell = renderLogsCell(item.allLogsStatistics, item.irancellLogsStatistics, item.hamraheAvvalLogsStatistics, item.unknownLogsStatistics);
-        let isAvailable = item.isAvailable ? "checked" : "";
+}
 
-        let isAdServer = item.isAd ? '<span class="badge badge-success">بله</span>' : '<span class="badge badge-light">خیر</span>';
-        // سلول DNS: دامنه فعلی + منوی عملیات DNS (همان ۶ توابع، کال‌بک‌ها دست‌نخورده)
-        let buttons = '<div class="rd-dns-cell">' +
-            '<span class="mono rd-current-domain" title="دامنه فعلی">' + (item.currentDomainValue || '—') + '</span>' +
-            '<div class="dropdown rd-item-dropdown">' +
+function rdBuildDnsDropdown(item) {
+    return '<div class="dropdown rd-item-dropdown">' +
             '<button class="btn btn-sm btn-outline-info rd-dns-btn" type="button" data-rd-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="عملیات DNS">' +
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> DNS</button>' +
             '<div class="dropdown-menu dropdown-menu-left rd-item-menu" style="min-width:236px">' +
@@ -92,7 +83,26 @@ function renderservers(data) {
             '<button class="dropdown-item rd-danger-item" onclick="deleteAllDnsRecord(' + item.id + ')" title="Delete Dns Record"><i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف همه رکوردهای DNS</button>' +
             '<button class="dropdown-item rd-danger-item" onclick="deleteTcpDnsRecord(' + item.id + ')" title="Delete Tcp Dns Record"><i class="rd-di rd-di-danger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف رکورد TCP DNS</button>' +
             '</div>' +
-            '</div>' +
+            '</div>';
+}
+
+function renderservers(data) {
+    console.log(data);
+    let isOdd = true;
+    for (var i = 0; i < data.length; i++) {
+        let item = data[i];
+
+        let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
+        // منوی عملیات ردیف (ویرایش/کپی/لاگ/بلک‌لیست/حذف) — همه کلاس‌ها و رویدادها دست‌نخورده
+        let actionsMenu = rdBuildActionsMenu(item);
+        let logsCell = renderLogsCell(item.allLogsStatistics, item.irancellLogsStatistics, item.hamraheAvvalLogsStatistics, item.unknownLogsStatistics);
+        let isAvailable = item.isAvailable ? "checked" : "";
+
+        let isAdServer = item.isAd ? '<span class="badge badge-success">بله</span>' : '<span class="badge badge-light">خیر</span>';
+        // سلول DNS: دامنه فعلی + منوی عملیات DNS (همان ۶ توابع، کال‌بک‌ها دست‌نخورده)
+        let buttons = '<div class="rd-dns-cell"' +
+            '<span class="mono rd-current-domain" title="دامنه فعلی">' + (item.currentDomainValue || '—') + '</span>' +
+            rdBuildDnsDropdown(item) +
             '</div>';
 
         let config = item.config;
@@ -423,7 +433,7 @@ function deleteservers(id) {
     });
 }
 
-$('#serversTable').on('click', '.edit', function () {
+$(document).on('click', '.edit', function () {
     loading();
     let item = $(this);
     initializeGroupSelectList();
@@ -599,7 +609,7 @@ let refreshId = setInterval(function () {
 }, 100);
 
 
-$('#serversTable').on('change', '.isAvailableInput', function () {
+$(document).on('change', '.isAvailableInput', function () {
     loading();
     let input = $(this);
     let model = {
@@ -721,3 +731,133 @@ $('#selectAllCheckbox').change(function () {
 });
 
 
+
+
+/* ============================================================
+   نمای کارت‌بندی + جستجو (v11)
+   ============================================================ */
+let rdServersData = [];
+let rdViewMode = (function () { try { return localStorage.getItem('rdServersView') || 'list'; } catch (e) { return 'list'; } })();
+let rdSearchTerm = '';
+let rdSearchTimer = null;
+
+function rdEsc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function rdServerConfigFields(item) {
+    let serverName = '', hostName = '';
+    try {
+        let cfg = JSON.parse(item.config || '{}');
+        let o = cfg && cfg.outbounds && cfg.outbounds[0];
+        if (o && o.streamSettings) {
+            serverName = (o.streamSettings.tlsSettings && o.streamSettings.tlsSettings.serverName) || '';
+            hostName = (o.streamSettings.wsSettings && o.streamSettings.wsSettings.headers && o.streamSettings.wsSettings.headers.Host) || '';
+        }
+    } catch (e) { }
+    return { serverName: serverName || item.serverName || '', hostName: hostName };
+}
+
+function rdSearchMatch(item) {
+    if (!rdSearchTerm) return true;
+    let t = rdSearchTerm.toLowerCase();
+    let f = rdServerConfigFields(item);
+    let hay = [item.id, f.serverName, f.hostName, item.serverName, item.ip, item.location, item.currentDomainValue, item.group && item.group.title].join(' | ').toLowerCase();
+    return hay.indexOf(t) !== -1;
+}
+
+function rdCardItem(item) {
+    let f = rdServerConfigFields(item);
+    let dot = item.isAvailable ? '<span class="rd-card-dot ok" title="فعال"></span>' : '<span class="rd-card-dot ko" title="غیرفعال"></span>';
+    let ad = item.isAd ? '<span class="rd-card-tag" title="سرور تبلیغاتی">تبلیغاتی</span>' : '';
+    let av = item.isAvailable ? 'checked' : '';
+    let logs = renderLogsCell(item.allLogsStatistics, item.irancellLogsStatistics, item.hamraheAvvalLogsStatistics, item.unknownLogsStatistics);
+    let row = function (k, v) { return '<div class="rd-card-row"><span class="rd-card-k">' + k + '</span><span class="rd-card-v">' + v + '</span></div>'; };
+    return '<article class="rd-card" data-id="' + item.id + '">' +
+        '<div class="rd-card-head">' + dot +
+        '<span class="rd-card-title mono" title="' + rdEsc(f.serverName) + '">' + rdEsc(f.serverName || '—') + '</span>' +
+        ad +
+        '<div class="rd-card-actions">' + rdBuildDnsDropdown(item) + rdBuildActionsMenu(item) + '</div>' +
+        '</div>' +
+        '<div class="rd-card-body">' +
+        row('DNS', '<span class="mono" title="' + rdEsc(item.currentDomainValue || '') + '">' + rdEsc(item.currentDomainValue || '—') + '</span>') +
+        (f.hostName ? row('Host', '<span class="mono">' + rdEsc(f.hostName) + '</span>') : '') +
+        row('آدرس IP', '<span class="mono">' + rdEsc(item.ip || '—') + '</span>') +
+        row('مکان', rdEsc(item.location || '—')) +
+        row('گروه', '<span class="badge badge-dark">' + rdEsc(item.group && item.group.title || '—') + '</span>') +
+        row('بروزرسانی', rdEsc(item.updatedAtFormatted || '—')) +
+        '</div>' +
+        '<div class="rd-card-foot">' +
+        '<div class="rd-card-flags">' +
+        '<label class="rd-card-avail" title="فعال / غیرفعال"><input type="checkbox" class="isAvailableInput" data-item-id="' + item.id + '" id="customSwitchC' + item.id + '" ' + av + '><span class="rd-card-avail-tx">' + (item.isAvailable ? 'فعال' : 'غیرفعال') + '</span></label>' +
+        (item.isForHamraheAvval ? '<span class="rd-flag" title="پشتیبانی همراه اول">همراه اول ✓</span>' : '<span class="rd-flag rd-flag-off" title="پشتیبانی ندارد">همراه اول</span>') +
+        (item.isForIrancell ? '<span class="rd-flag" title="پشتیبانی ایرانسل">ایرانسل ✓</span>' : '<span class="rd-flag rd-flag-off" title="پشتیبانی ندارد">ایرانسل</span>') +
+        '</div>' +
+        '<div class="rd-logs">' + logs + '</div>' +
+        '</div>' +
+        '</article>';
+}
+
+function renderServerCards() {
+    let wrap = document.getElementById('rdCardsWrap');
+    if (!wrap) return;
+    let data = rdServersData.filter(rdSearchMatch);
+    let groups = [], map = {};
+    for (let i = 0; i < data.length; i++) {
+        let it = data[i];
+        let g = (it.group && it.group.title) || 'بدون گروه';
+        if (!map[g]) { map[g] = []; groups.push(g); }
+        map[g].push(it);
+    }
+    let html = '';
+    if (!data.length) {
+        html = '<div class="rd-cards-empty"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
+            '<div>موردی' + (rdSearchTerm ? ' با «' + rdEsc(rdSearchTerm) + '»' : '') + ' پیدا نشد</div></div>';
+    }
+    for (let g = 0; g < groups.length; g++) {
+        let name = groups[g];
+        html += '<section class="rd-card-group"><div class="rd-card-group-head"><span class="rd-card-group-ic"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>' +
+            '<h6>' + rdEsc(name) + '</h6>' +
+            '<span class="rd-card-group-count">' + map[name].length + ' سرور</span></div>' +
+            '<div class="rd-card-grid">';
+        for (let i = 0; i < map[name].length; i++) html += rdCardItem(map[name][i]);
+        html += '</div></section>';
+    }
+    wrap.innerHTML = html;
+}
+
+function applyServerView() {
+    let isCards = rdViewMode === 'cards';
+    document.body.classList.toggle('rd-view-cards', isCards);
+    let btns = document.querySelectorAll('.rd-view-btn');
+    for (let i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-rd-view') === rdViewMode);
+    if (isCards) {
+        renderServerCards();
+    } else if (rdSearchTerm) {
+        // بازگشت به نمای لیست با جستجوی فعال: جدول هم فیلتر می‌شود
+        let filtered = rdServersData.filter(rdSearchMatch);
+        serversTable.clear().draw();
+        renderservers(filtered);
+    }
+}
+
+$(document).on('click', '.rd-view-btn', function () {
+    rdViewMode = $(this).attr('data-rd-view');
+    try { localStorage.setItem('rdServersView', rdViewMode); } catch (e) { }
+    applyServerView();
+});
+
+$(document).on('input', '#rdSearchInput', function () {
+    let v = this.value;
+    clearTimeout(rdSearchTimer);
+    rdSearchTimer = setTimeout(function () {
+        rdSearchTerm = v.trim();
+        if (rdViewMode === 'cards') {
+            renderServerCards();
+        } else {
+            let filtered = rdServersData.filter(rdSearchMatch);
+            serversTable.clear().draw();
+            renderservers(filtered);
+        }
+    }, 250);
+});
