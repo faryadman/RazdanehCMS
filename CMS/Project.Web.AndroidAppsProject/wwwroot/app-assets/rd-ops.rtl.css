@@ -1363,3 +1363,14 @@ body.rd-view-cards #groupsTable_wrapper { display: none !important; }
 #groupsTable td:last-child { white-space: nowrap; }
 .rd-card:has(.rd-item-menu.show) { z-index: 60; }
 .rd-item-dropdown .rd-item-menu.show { z-index: 1050; }
+
+/* ============================================================
+   v18 — صفحهٔ لیست اپ ها (لیست/کارت + عملیات مدرن)
+   ============================================================ */
+body.rd-view-cards #appsTable_wrapper { display: none !important; }
+.rd-app-ic { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: var(--rd-primary-soft); color: var(--rd-primary); flex: none; }
+.rd-app-ic svg { width: 16px; height: 16px; }
+.rd-app-route { font-size: .72rem; color: var(--rd-muted); direction: ltr; text-align: right; }
+.rd-card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+#appsTable td { vertical-align: middle; }
+#appsTable td:last-child { white-space: nowrap; }
