@@ -65,7 +65,7 @@
                         <div class="card">
                             <div class="card-header">
                                                             <div class="rd-toolbar">
-                                                                <div class="rd-tb-title"><span class="rd-tb-bar" aria-hidden="true"></span><h4 class="card-title mb-0">مدیریت جاب ها</h4></div>
+                                                                <div class="rd-tb-title"><span class="rd-tb-bar" aria-hidden="true"></span><h4 class="card-title mb-0">مدیریت جاب ها <span class="rd-tb-count">@(data != null && data.Any() ? new string(data.Count.ToString().Select(ch => "۰۱۲۳۴۵۶۷۸۹"[ch - '0']).ToArray()) : "۰")</span></h4></div>
                                                                 <div class="rd-tb-group" role="group" aria-label="جاب‌ها">
                                                                 <button class="btn btn-success rd-tb-btn" id="button" onclick="jobDomain()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></i>Change Domain Job</button>
                                                                 <button class="btn btn-success rd-tb-btn" id="button" onclick="jobSubDomain()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></i>Change SubDomain Job</button>
@@ -76,39 +76,30 @@
                                                             </div>
                                                         </div>
                             <div class="card-body">
-                                    <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Cron</th>
-                                        <th>Next execution</th>
-                                        <th>Last execution</th>
-                                        <th>Created</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
                                     @if (data != null && data.Any())
                                     {
-                                        foreach (var item in data)
-                                        {
-                                            <tr>
-                                                <td>@item?.Id</td>
-                                                <td>@item?.Cron</td>
-                                                <td>@item?.NextExecTime</td>
-                                                <td>@item?.LastExecTime</td>
-                                                <td>@item?.CreatedAt</td>
-                                            </tr>
-                                        }
+                                        <div class="rd-job-grid">
+                                            @foreach (var item in data)
+                                            {
+                                                <article class="rd-job-card">
+                                                    <div class="rd-job-head">
+                                                        <span class="rd-job-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                                                        <h6 class="rd-job-name mono" title="@item?.Id">@item?.Id</h6>
+                                                    </div>
+                                                    <div class="rd-job-body">
+                                                        <div class="rd-job-row"><span class="rd-job-k">کرون</span><span class="rd-job-v mono">@item?.Cron</span></div>
+                                                        <div class="rd-job-row"><span class="rd-job-k">اجرای بعدی</span><span class="rd-job-v">@item?.NextExecTime</span></div>
+                                                        <div class="rd-job-row"><span class="rd-job-k">آخرین اجرا</span><span class="rd-job-v">@item?.LastExecTime</span></div>
+                                                        <div class="rd-job-row"><span class="rd-job-k">ساخته شده</span><span class="rd-job-v">@item?.CreatedAt</span></div>
+                                                    </div>
+                                                </article>
+                                            }
+                                        </div>
                                     }
                                     else
                                     {
-                                        <tr>
-                                            <td colspan="5">هیچ داده‌ای موجود نیست.</td>
-                                        </tr>
-
+                                        <div class="rd-job-empty"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div>هیچ جابی ثبت نشده است</div></div>
                                     }
-                                    </tbody>
-                                </table>
                             </div>
 
 

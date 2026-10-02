@@ -1281,3 +1281,21 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
     .rd-tb-bulk.open .rd-tb-group { flex: 1 1 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .rd-tb-bulk.open .rd-tb-btn { width: 100%; }
 }
+
+/* ============================================================
+   v14 — کارت‌بندی جاب‌ها
+   ============================================================ */
+.rd-tb-count { font-size: .72rem; font-weight: 700; color: var(--rd-muted); background: rgba(122,128,156,.12); padding: 3px 10px; border-radius: 99px; margin-inline-start: 6px; vertical-align: middle; }
+.rd-job-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 12px; }
+.rd-job-card { background: var(--rd-surface); border: 1px solid var(--rd-border); border-radius: var(--rd-radius); padding: 13px 14px 10px; box-shadow: 0 1px 3px rgba(16,24,64,.05); transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+.rd-job-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(16,24,64,.10); border-color: #d9ddf0; }
+.rd-job-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.rd-job-ic { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: var(--rd-primary-soft); color: var(--rd-primary); flex: none; }
+.rd-job-ic svg { width: 16px; height: 16px; }
+.rd-job-name { margin: 0; font-size: 13px; font-weight: 700; color: var(--rd-text); word-break: break-all; }
+.rd-job-body .rd-job-row { display: flex; align-items: center; gap: 8px; padding: 4.5px 0; border-top: 1px dashed rgba(122,128,156,.18); font-size: 12.5px; }
+.rd-job-k { width: 74px; flex: none; font-size: 11.5px; color: var(--rd-muted); }
+.rd-job-v { flex: 1; min-width: 0; color: var(--rd-text2); word-break: break-word; }
+.rd-job-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 16px; color: var(--rd-muted); font-size: .9rem; }
+.rd-job-empty svg { width: 34px; height: 34px; opacity: .6; }
+@media (max-width: 767.98px) { .rd-job-grid { grid-template-columns: 1fr; } }
