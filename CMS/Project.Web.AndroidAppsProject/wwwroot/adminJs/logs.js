@@ -207,8 +207,8 @@ function renderStatistics(item, type) {
 
     let statistics = item != null ? '<div class="col-lg-3 col-sm-6 col-12"><div class="card mb-4"><div class="card-header ' + className + '"><h5 class="mb-0" style="font-size:14px">' + name + '</h5></div><div class="card-content rd-stat-card">' +
         '<span class="mono rd-stat-count" title="تعداد کل">' + fa(item.count) + '</span>' +
-        '<div class="rd-split"><span class="ok" style="width:' + calculatePercentage(item.successCount, item.count) + '%"></span><span class="ko" style="width:' + calculatePercentage(item.failCount, item.count) + '%"></span></div>' +
-        '<div class="rd-split-legend"><span><i style="background:var(--rd-success)"></i>' + fa(item.successCount) + ' موفق</span><span><i style="background:var(--rd-danger)"></i>' + fa(item.failCount) + ' ناموفق</span></div>' +
+        '<div class="rd-split-num big"><span class="ok' + (item.successCount ? '' : ' zero') + '" title="موفق">✓ ' + fa(item.successCount) + ' موفق</span>' +
+        '<span class="ko' + (item.failCount ? '' : ' zero') + '" title="ناموفق">✗ ' + fa(item.failCount) + ' ناموفق</span></div>' +
         '</div></div></div>' : '<div class="' + className + '"></div>';
 
     return statistics;

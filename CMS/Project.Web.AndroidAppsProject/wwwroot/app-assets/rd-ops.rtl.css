@@ -1216,3 +1216,14 @@ body.rd-view-cards #serversTable_wrapper { display: none !important; }
     .rd-search-box { flex: 1 1 auto; min-width: 0; }
     .rd-card-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   v12 — آمار لاگ‌ها به‌صورت عدد (جایگزین نوار rd-split)
+   ============================================================ */
+.rd-split-num { display: flex; gap: 12px; align-items: baseline; margin-top: 2px; font-size: 11.5px; font-weight: 700; direction: rtl; }
+.rd-split-num .ok { color: var(--rd-success); }
+.rd-split-num .ko { color: var(--rd-danger); }
+.rd-split-num .zero { color: var(--rd-muted); opacity: .75; }
+.rd-split-num .ok, .rd-split-num .ko { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rd-split-num.big { margin-top: 6px; font-size: 12.5px; gap: 14px; }
+.rd-log-row .rd-split-num { margin-top: 1px; }

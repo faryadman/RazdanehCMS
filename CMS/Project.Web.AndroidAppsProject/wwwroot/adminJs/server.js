@@ -105,11 +105,9 @@ function renderservers(data) {
             rdBuildDnsDropdown(item) +
             '</div>';
 
-        let config = item.config;
-        let configObject = JSON.parse(config);
-        console.log(configObject);
-        var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
-        var hostName = configObject.outbounds[0]?.streamSettings?.wsSettings?.headers?.Host;
+        let cfg = rdServerConfigFields(item);
+        var serverName = cfg.serverName;
+        var hostName = cfg.hostName;
 
 
         let addedRow = serversTable.row.add([
@@ -528,8 +526,8 @@ function renderStatistics(item, type) {
     var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
     return '<div class="' + className + ' rd-stat">' +
         '<span class="mono rd-stat-count" title="تعداد کل">' + fa(total) + '</span>' +
-        '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
-        '<div class="rd-split-legend"><span><i style="background:var(--rd-success)"></i>' + fa(ok) + '</span><span><i style="background:var(--rd-danger)"></i>' + fa(ko) + '</span></div>' +
+        '<div class="rd-split-num big"><span class="ok' + (ok ? '' : ' zero') + '" title="موفق">✓ ' + fa(ok) + ' موفق</span>' +
+        '<span class="ko' + (ko ? '' : ' zero') + '" title="ناموفق">✗ ' + fa(ko) + ' ناموفق</span></div>' +
         '</div>';
 }
 
@@ -543,7 +541,8 @@ function renderLogsCell(all, irc, hv, unk) {
         return '<div class="' + cls + ' logshow p-1 rd-log-row">' +
             '<div class="rd-log-top"><span class="rd-log-name">' + name + '</span>' +
             '<span class="mono rd-log-count" title="کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '">' + fa(total) + '</span></div>' +
-            '<div class="rd-split" title="موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '"><span class="ok" style="width:' + okPct + '%"></span><span class="ko" style="width:' + (100 - okPct) + '%"></span></div>' +
+            '<div class="rd-split-num"><span class="ok' + (ok ? '' : ' zero') + '" title="موفق: ' + fa(ok) + '">✓ ' + fa(ok) + '</span>' +
+            '<span class="ko' + (ko ? '' : ' zero') + '" title="ناموفق: ' + fa(ko) + '">✗ ' + fa(ko) + '</span></div>' +
             '</div>';
     }
     return '<div class="rd-logs">' +
