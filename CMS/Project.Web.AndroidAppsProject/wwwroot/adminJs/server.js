@@ -534,15 +534,16 @@ function renderStatistics(item, type) {
 /* ستون فشردهٔ «آمار لاگ‌ها» — جایگزین ۴ ستون مجزا (کلاس‌های AllLogs/Irancell/HamraheAvval/unknown حفظ شده) */
 function renderLogsCell(all, irc, hv, unk) {
     var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return n; } };
+    /* v20: نمایش درصدی — سهم هر خط از کل لاگ‌ها (اعداد کامل در تول‌تیپ) */
+    var base = (all && all.count) ? all.count : 0;
     function row(cls, name, item) {
         if (item == null) return '<div class="' + cls + ' logshow p-1 rd-log-row"><div class="rd-log-top"><span class="rd-log-name">' + name + '</span><span class="mono rd-log-count">—</span></div></div>';
         var total = item.count || 0, ok = item.successCount || 0, ko = item.failCount || 0;
-        var okPct = total ? Math.round(ok / total * 100) : 0;
+        var p = base ? Math.round(total / base * 100) : (total > 0 ? 100 : 0);
+        var tip = 'کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + (base ? ' (سهم از کل: ' + fa(p) + '٪)' : '');
         return '<div class="' + cls + ' logshow p-1 rd-log-row">' +
             '<div class="rd-log-top"><span class="rd-log-name">' + name + '</span>' +
-            '<span class="mono rd-log-count" title="کل: ' + fa(total) + ' — موفق: ' + fa(ok) + ' — ناموفق: ' + fa(ko) + '">' + fa(total) + '</span></div>' +
-            '<div class="rd-split-num"><span class="ok' + (ok ? '' : ' zero') + '" title="موفق: ' + fa(ok) + '">✓ ' + fa(ok) + '</span>' +
-            '<span class="ko' + (ko ? '' : ' zero') + '" title="ناموفق: ' + fa(ko) + '">✗ ' + fa(ko) + '</span></div>' +
+            '<span class="mono rd-log-count" title="' + tip + '">' + fa(p) + '٪</span></div>' +
             '</div>';
     }
     return '<div class="rd-logs">' +
