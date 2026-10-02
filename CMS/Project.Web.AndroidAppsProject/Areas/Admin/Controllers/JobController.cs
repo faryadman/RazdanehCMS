@@ -1,4 +1,5 @@
-﻿using DNTPersianUtils.Core;
+using System.Linq;
+using DNTPersianUtils.Core;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,76 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             ViewBag.IsActiveJob = job.IsActive;
             return View();
         }
+        public IActionResult TriggerJobNow(string id)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    return Json(new { status = "0", message = "داده‌ها ناقص است" });
+                }
+                using (var connection = JobStorage.Current.GetConnection())
+                {
+                    var dto = connection.GetRecurringJobs(new[] { id }).FirstOrDefault();
+                    if (dto == null || dto.Removed)
+                    {
+                        return Json(new { status = "0", message = "جاب موردنظر پیدا نشد" });
+                    }
+                    if (dto.LoadException != null)
+                    {
+                        return Json(new { status = "0", message = "تعریف جاب قابل بازیابی نیست" });
+                    }
+                }
+                new RecurringJobManager(JobStorage.Current).TriggerJob(id);
+                return Json(new { status = "1", message = "جاب در صف اجرا قرار گرفت" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "0", message = ex.Message });
+            }
+        }
+
+        public IActionResult UpdateJobCron(string id, string cron)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(cron))
+                {
+                    return Json(new { status = "0", message = "داده‌ها ناقص است" });
+                }
+                cron = cron.Trim();
+                if (cron.Length > 100)
+                {
+                    return Json(new { status = "0", message = "بازهٔ کرون معتبر نیست" });
+                }
+                using (var connection = JobStorage.Current.GetConnection())
+                {
+                    var dto = connection.GetRecurringJobs(new[] { id }).FirstOrDefault();
+                    if (dto == null || dto.Removed)
+                    {
+                        return Json(new { status = "0", message = "جاب موردنظر پیدا نشد" });
+                    }
+                    if (dto.LoadException != null)
+                    {
+                        return Json(new { status = "0", message = "تعریف جاب قابل بازیابی نیست" });
+                    }
+                    try
+                    {
+                        new RecurringJobManager(JobStorage.Current).AddOrUpdate(id, dto.Job, cron, new RecurringJobOptions());
+                    }
+                    catch (Exception)
+                    {
+                        return Json(new { status = "0", message = "بازهٔ کرون معتبر نیست" });
+                    }
+                }
+                return Json(new { status = "1", message = "کرون جاب با موفقیت تغییر کرد" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "0", message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> GetDeleteDnsJobData()
         {
             var job = await _jobService.Detail("DeleteDnsJob");

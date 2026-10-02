@@ -1299,3 +1299,39 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
 .rd-job-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 16px; color: var(--rd-muted); font-size: .9rem; }
 .rd-job-empty svg { width: 34px; height: 34px; opacity: .6; }
 @media (max-width: 767.98px) { .rd-job-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   v15 — اکشن‌های کارت جاب + مودال تغییر کرون
+   ============================================================ */
+.rd-job-foot { display: flex; gap: 8px; margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--rd-border); }
+.rd-job-act { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid; font-size: .78rem; font-weight: 700; cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease, transform .1s ease; }
+.rd-job-act svg { width: 14px; height: 14px; flex: none; }
+.rd-job-act:active { transform: scale(.98); }
+.rd-job-act:disabled { opacity: .55; cursor: wait; }
+.rd-job-act-run { color: #0e8a5c; border-color: rgba(20,184,116,.4); background: var(--rd-success-soft, #e5f7f0); }
+.rd-job-act-run:hover { background: var(--rd-success); border-color: var(--rd-success); color: #fff; }
+.rd-job-act-cron { color: var(--rd-primary); border-color: rgba(88,80,236,.35); background: var(--rd-primary-soft); }
+.rd-job-act-cron:hover { background: var(--rd-primary); border-color: var(--rd-primary); color: #fff; }
+
+/* مودال تغییر کرون */
+.rd-modal-backdrop { position: fixed; inset: 0; z-index: 1400; background: rgba(7,10,24,.55); opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+.rd-modal-backdrop.show { opacity: 1; pointer-events: auto; }
+.rd-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(.98); z-index: 1410; width: min(440px, calc(100vw - 32px)); background: var(--rd-surface); border-radius: 18px; box-shadow: 0 24px 70px rgba(4,8,22,.5); opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease; }
+.rd-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.rd-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--rd-border); }
+.rd-modal-head h6 { margin: 0; font-size: .95rem; font-weight: 800; color: var(--rd-text); }
+.rd-modal-x { border: 0; background: transparent; color: var(--rd-muted); cursor: pointer; padding: 5px; border-radius: 8px; }
+.rd-modal-x:hover { background: rgba(122,128,156,.12); color: var(--rd-text); }
+.rd-modal-x svg { width: 16px; height: 16px; display: block; }
+.rd-modal-body { padding: 14px 16px; }
+.rd-modal-job { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--rd-primary); background: var(--rd-primary-soft); padding: 3px 10px; border-radius: 8px; margin-bottom: 12px; word-break: break-all; }
+.rd-modal-label { display: block; font-size: .8rem; font-weight: 700; color: var(--rd-text2); margin-bottom: 6px; }
+.rd-cron-input { width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--rd-border); border-radius: 10px; font-size: .95rem; background: #f8f9fd; outline: none; color: var(--rd-text); }
+.rd-cron-input:focus { border-color: var(--rd-primary); box-shadow: 0 0 0 3px rgba(88,80,236,.13); background: #fff; }
+.rd-cron-hint { margin-top: 8px; font-size: .75rem; color: var(--rd-muted); }
+.rd-modal-foot { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--rd-border); }
+.rd-modal-btn { height: 38px; padding: 0 18px; border-radius: 10px; font-size: .85rem; font-weight: 700; cursor: pointer; border: 1px solid transparent; }
+.rd-modal-btn.primary { background: var(--rd-primary); color: #fff; }
+.rd-modal-btn.primary:hover { background: var(--rd-primary-600); }
+.rd-modal-btn.ghost { background: transparent; border-color: var(--rd-border); color: var(--rd-text2); }
+.rd-modal-btn.ghost:hover { background: rgba(122,128,156,.1); }

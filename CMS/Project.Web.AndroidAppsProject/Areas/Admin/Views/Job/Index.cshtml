@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Project.Application.DTOs.Job
 @using DNTPersianUtils.Core
 @using Hangfire
@@ -28,7 +28,7 @@
     <script src="~/app-assets/js/scripts/components.js"></script>
     <!-- END: Theme JS-->
     <!-- BEGIN: Page JS-->
-    <script src="~/adminJs/job.js"></script>
+    <script src="~/adminJs/job.js?v=20260930l"></script>
 }
 
     @section vendorstyles{
@@ -92,14 +92,33 @@
                                                         <div class="rd-job-row"><span class="rd-job-k">آخرین اجرا</span><span class="rd-job-v">@item?.LastExecTime</span></div>
                                                         <div class="rd-job-row"><span class="rd-job-k">ساخته شده</span><span class="rd-job-v">@item?.CreatedAt</span></div>
                                                     </div>
+                                                    <div class="rd-job-foot">
+                                                        <button type="button" class="rd-job-act rd-job-act-run" data-job="@item?.Id" onclick="rdTriggerJob(this)" title="اجرای فوری همین جاب"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>اجرای فوری</button>
+                                                        <button type="button" class="rd-job-act rd-job-act-cron" data-job="@item?.Id" data-cron="@item?.Cron" onclick="rdOpenCronModal(this)" title="تغییر کرون جاب"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>تغییر کرون</button>
+                                                    </div>
                                                 </article>
                                             }
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="rd-job-empty"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div>هیچ جابی ثبت نشده است</div></div>
+                                        <div class="rd-job-empty"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                            <div>هیچ جابی ثبت نشده است</div></div>
                                     }
+                                    <div class="rd-modal-backdrop" id="rdCronBackdrop" aria-hidden="true"></div>
+                                    <div class="rd-modal" id="rdCronModal" role="dialog" aria-modal="true">
+                                        <div class="rd-modal-head"><h6>تغییر کرون جاب</h6><button type="button" class="rd-modal-x" onclick="rdCloseCronModal()" aria-label="بستن"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                                        <div class="rd-modal-body">
+                                            <span class="rd-modal-job mono" id="rdCronJobName"></span>
+                                            <label class="rd-modal-label" for="rdCronInput">بازهٔ کرون (Cron)</label>
+                                            <input type="text" id="rdCronInput" class="rd-cron-input mono" dir="ltr" spellcheck="false" autocomplete="off">
+                                            <div class="rd-cron-hint">مثلاً: <span dir="ltr">*/10 * * * *</span> (هر ۱۰ دقیقه)</div>
+                                        </div>
+                                        <div class="rd-modal-foot">
+                                            <button type="button" class="rd-modal-btn primary" onclick="rdSaveCron()">ذخیره</button>
+                                            <button type="button" class="rd-modal-btn ghost" onclick="rdCloseCronModal()">انصراف</button>
+                                        </div>
+                                    </div>
                             </div>
 
 
