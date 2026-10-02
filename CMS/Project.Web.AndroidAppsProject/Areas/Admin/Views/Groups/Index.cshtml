@@ -22,7 +22,7 @@
     <script src="~/app-assets/js/scripts/components.js"></script>
     <!-- END: Theme JS-->
     <!-- BEGIN: Page JS-->
-    <script src="~/adminJs/group.js"></script>
+    <script src="~/adminJs/group.js?v=20260930n"></script>
 }
 
     @section scripts{
@@ -58,31 +58,39 @@
                     <div class="card row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">لیست گروه ها</h4>
-                                    <hr />
-                                    <button class="btn btn-success" onclick="newgroup()">جدید</button>
-                                    <br />
-                                    <button class="btn btn-danger ml-3" onclick="DeleteSelectedItems(groupsBaseUrl,getgroups,false)">حذف آیتم های انتخاب شده</button>
-                                </div>
+                                <div class="rd-toolbar">
+                                                            <div class="rd-tb-title"><span class="rd-tb-bar" aria-hidden="true"></span><h4 class="card-title mb-0">لیست گروه ها <span class="rd-tb-count" id="rdGroupsCount">۰</span></h4></div>
+                                                            <div class="rd-tb-group" role="group" aria-label="عملیات اصلی">
+                                                            <button class="btn btn-success rd-tb-btn" type="button" onclick="newgroup()"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></i>گروه جدید</button>
+                                                            <button class="btn btn-outline-danger rd-tb-btn" type="button" onclick="DeleteSelectedItems(groupsBaseUrl,getgroups,false)"><i class="rd-tb-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i>حذف انتخاب‌شده‌ها</button>
+                                                            </div>
+                                                            <span class="rd-tb-sep" aria-hidden="true"></span>
+                                                            <div class="rd-tb-group" role="group" aria-label="ابزارها">
+                                                            <div class="rd-search-box"><i class="rd-search-ic" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></i><input type="text" id="rdSearchInput" placeholder="جستجو در گروه‌ها…" autocomplete="off"></div>
+                                                            <div class="rd-view-toggle" role="group" aria-label="نمایش گروه‌ها">
+                                                            <button type="button" class="rd-view-btn" data-rd-view="list" title="نمایش لیستی"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+                                                            <button type="button" class="rd-view-btn" data-rd-view="cards" title="نمایش کارت‌بندی"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
+                                                            </div>
+                                                            </div>
+                                                            </div>
+</div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
                                         <div class="table-responsive">
                                             <table class="table nowrap scroll-horizontal-vertical" style="width:100%!important" id="groupsTable">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="col"></th>
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">Title</th>
-                                                        <th scope="col">UpdatedAt</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
+                                                        <th style="width:38px"></th>
+                                                        <th scope="col" style="width:64px">#</th>
+                                                        <th scope="col">گروه</th>
+                                                        <th scope="col">به‌روزرسانی</th>
+                                                        <th style="width:190px">عملیات</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>
                                         </div>
+                                        <div id="rdCardsWrap"></div>
                                     </div>
                                 </div>
                             </div>

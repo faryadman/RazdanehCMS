@@ -1347,3 +1347,19 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
     .rd-job-tb .rd-tb-group { flex-direction: column; align-items: stretch; width: 100%; }
     .rd-job-tb .rd-tb-group .rd-tb-btn { width: 100%; justify-content: center; min-height: 42px; }
 }
+
+/* ============================================================
+   v17 — صفحهٔ لیست گروه‌ها (لیست/کارت + عملیات مدرن)
+   ============================================================ */
+body.rd-view-cards #groupsTable_wrapper { display: none !important; }
+.rd-group-ic { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: var(--rd-primary-soft); color: var(--rd-primary); flex: none; }
+.rd-group-ic svg { width: 16px; height: 16px; }
+.rd-card-servers { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; font-weight: 700; }
+.rd-card-servers svg { width: 14px; height: 14px; flex: none; }
+.rd-row-main { display: flex; flex-direction: column; gap: 2px; }
+.rd-row-title { font-weight: 700; color: var(--rd-text); }
+#groupsTable .rd-row-actions { display: inline-flex; }
+#groupsTable td { vertical-align: middle; }
+#groupsTable td:last-child { white-space: nowrap; }
+.rd-card:has(.rd-item-menu.show) { z-index: 60; }
+.rd-item-dropdown .rd-item-menu.show { z-index: 1050; }
