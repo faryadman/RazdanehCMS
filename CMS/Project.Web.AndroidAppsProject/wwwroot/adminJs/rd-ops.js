@@ -109,4 +109,33 @@
         version: '2.0.0',
         refresh: rdInit
     };
+
+    /* ===== v13: منوی شناور (موبایل) + عملیات گروهی فشرده ===== */
+    $(function () {
+        var fab = document.getElementById('rdMenuFab');
+        var bd = document.getElementById('rdMenuBackdrop');
+        function isMenuOpen() { return document.body.classList.contains('rd-menu-open'); }
+        function setMenuOpen(v) {
+            document.body.classList.toggle('rd-menu-open', v);
+            if (bd) bd.classList.toggle('show', v);
+            if (fab) fab.setAttribute('aria-expanded', v ? 'true' : 'false');
+        }
+        if (fab) fab.addEventListener('click', function () { setMenuOpen(!isMenuOpen()); });
+        if (bd) bd.addEventListener('click', function () { setMenuOpen(false); });
+        var nav = document.getElementById('main-menu-navigation');
+        if (nav) nav.addEventListener('click', function (e) {
+            var a = (e.target && e.target.closest) ? e.target.closest('a') : null;
+            if (a && isMenuOpen()) setMenuOpen(false);
+        });
+        $(window).on('resize.rdmenu', function () {
+            if (window.innerWidth > 767.98 && isMenuOpen()) setMenuOpen(false);
+        });
+        $(document).on('click', '.rd-tb-bulk-toggle', function () {
+            var t = $(this);
+            var w = t.next('.rd-tb-bulk');
+            if (!w.length) return;
+            var open = w.toggleClass('open').hasClass('open');
+            t.attr('aria-expanded', open ? 'true' : 'false');
+        });
+    });
 })(jQuery);

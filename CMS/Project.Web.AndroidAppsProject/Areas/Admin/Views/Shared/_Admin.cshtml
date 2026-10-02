@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="/app-assets/css-rtl/custom-rtl.css">
     <!-- END: Custom CSS-->
     <link href="~/app-assets/fonts/font.css" rel="stylesheet" />
-    <link href="~/app-assets/rd-ops.rtl.css?v=20260930i" rel="stylesheet" />
+    <link href="~/app-assets/rd-ops.rtl.css?v=20260930j" rel="stylesheet" />
     <link href="~/app-assets/jqueryUI/jquery-ui.min.css" rel="stylesheet" />
 
     <style>
@@ -294,8 +294,8 @@
     <script src="/app-assets/js/core/app.js"></script>
     <script src="~/app-assets/jqueryUI/jquery-ui.min.js"></script>
     <script src="~/jquery.cookie.js"></script>
-    <script src="~/adminJs/admin.js?v=20260930i"></script>
-        <script src="~/adminJs/rd-ops.js?v=20260930i"></script>
+    <script src="~/adminJs/admin.js?v=20260930j"></script>
+        <script src="~/adminJs/rd-ops.js?v=20260930j"></script>
     <script>
         $('#menuButton').on('click', function () {
             setTimeout(function () {
@@ -304,6 +304,12 @@
             }, 500);
         })
     </script>
+    <!-- v13: منوی شناور موبایل -->
+    <button type="button" class="rd-menu-fab" id="rdMenuFab" aria-label="باز و بسته کردن منو" aria-expanded="false">
+        <svg class="ic-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg class="ic-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="rd-menu-backdrop" id="rdMenuBackdrop" aria-hidden="true"></div>
     @RenderSection("vendors", false)
     <!-- END: Theme JS-->
     <!-- BEGIN: Page JS-->
