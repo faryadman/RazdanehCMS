@@ -1374,3 +1374,10 @@ body.rd-view-cards #appsTable_wrapper { display: none !important; }
 .rd-card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 #appsTable td { vertical-align: middle; }
 #appsTable td:last-child { white-space: nowrap; }
+
+/* ============================================================
+   v19 — کارت‌های سرور: منوی عملیات سمت راست دکمه + محدودیت نام
+   ============================================================ */
+#rdCardsWrap .rd-item-dropdown .rd-item-menu { left: 0 !important; right: auto !important; top: 100% !important; margin-top: 4px; }
+#rdCardsWrap .rd-item-menu.rd-edge-flip { left: auto !important; right: 0 !important; }
+.rd-card { min-width: 0; }

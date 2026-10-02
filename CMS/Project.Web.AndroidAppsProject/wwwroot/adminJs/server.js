@@ -765,6 +765,12 @@ function rdSearchMatch(item) {
     return hay.indexOf(t) !== -1;
 }
 
+/* نام سرور روی کارت: خلاصه با حد کاراکتر (نام کامل در title می‌ماند) */
+function rdTruncName(s, max) {
+    s = String(s || '—');
+    return s.length > max ? s.slice(0, max - 1).replace(/\s+$/, '') + '…' : s;
+}
+
 function rdCardItem(item) {
     let f = rdServerConfigFields(item);
     let dot = item.isAvailable ? '<span class="rd-card-dot ok" title="فعال"></span>' : '<span class="rd-card-dot ko" title="غیرفعال"></span>';
@@ -774,7 +780,7 @@ function rdCardItem(item) {
     let row = function (k, v) { return '<div class="rd-card-row"><span class="rd-card-k">' + k + '</span><span class="rd-card-v">' + v + '</span></div>'; };
     return '<article class="rd-card" data-id="' + item.id + '">' +
         '<div class="rd-card-head">' + dot +
-        '<span class="rd-card-title mono" title="' + rdEsc(f.serverName) + '">' + rdEsc(f.serverName || '—') + '</span>' +
+        '<span class="rd-card-title mono" title="' + rdEsc(f.serverName) + '">' + rdEsc(rdTruncName(f.serverName, 18)) + '</span>' +
         ad +
         '<div class="rd-card-actions">' + rdBuildDnsDropdown(item) + rdBuildActionsMenu(item) + '</div>' +
         '</div>' +

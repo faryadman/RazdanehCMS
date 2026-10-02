@@ -67,7 +67,7 @@
        بدون قلیپ؛ تبلت/موبایل = داخل جریان سلول. هیچ محاسبه‌ای با JS نمی‌شود،
        پس منو هیچ‌وقت بالای جدول یا بیرون صفحه باز نمی‌شود. */
     function closeAllRdMenus(except) {
-        $('.rd-item-menu.show').not(except || document).removeClass('show');
+        $('.rd-item-menu.show').not(except || document).removeClass('show rd-edge-flip');
         $('[data-rd-toggle="dropdown"]').attr('aria-expanded', 'false');
     }
     $(document).on('click.rdops', '[data-rd-toggle="dropdown"]', function (e) {
@@ -79,7 +79,13 @@
         var wasOpen = $menu.hasClass('show');
         closeAllRdMenus($menu);
         $menu.toggleClass('show', !wasOpen);
+        $menu.removeClass('rd-edge-flip');
         $btn.attr('aria-expanded', wasOpen ? 'false' : 'true');
+        /* v19: منوهای کارت (مثل کارت‌های سرور) سمت راست دکمه باز می‌شوند؛
+           فقط اگر از لبهٔ راست صفحه بیرون بزنند، به‌عنوان فال‌بک سمت چپ باز می‌شوند */
+        if (!wasOpen && $menu.closest('#rdCardsWrap').length && $menu[0].getBoundingClientRect().right > window.innerWidth - 8) {
+            $menu.addClass('rd-edge-flip');
+        }
     });
     $(document).on('click.rdops', '.rd-item-menu .dropdown-item', function () {
         setTimeout(function () { closeAllRdMenus(); }, 0);
