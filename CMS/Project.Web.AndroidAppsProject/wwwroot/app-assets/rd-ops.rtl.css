@@ -1335,3 +1335,15 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
 .rd-modal-btn.primary:hover { background: var(--rd-primary-600); }
 .rd-modal-btn.ghost { background: transparent; border-color: var(--rd-border); color: var(--rd-text2); }
 .rd-modal-btn.ghost:hover { background: rgba(122,128,156,.1); }
+
+/* ============================================================
+   v16 — نوار ابزار صفحهٔ مدیریت جاب (گروه‌بندی + موبایل)
+   ============================================================ */
+.rd-job-tb { gap: 10px 14px; }
+@media (max-width: 767.98px) {
+    .rd-job-tb { padding: 4px 0 6px; }
+    .rd-job-tb .rd-tb-title { width: 100%; margin-inline-end: 0; }
+    .rd-job-tb .rd-tb-sep { display: none; }
+    .rd-job-tb .rd-tb-group { flex-direction: column; align-items: stretch; width: 100%; }
+    .rd-job-tb .rd-tb-group .rd-tb-btn { width: 100%; justify-content: center; min-height: 42px; }
+}
