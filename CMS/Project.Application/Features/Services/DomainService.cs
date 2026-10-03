@@ -40,7 +40,7 @@ namespace Project.Application.Features.Services
             foreach (var domain in from domain in domains where domain != null where domain.IsActive != false where string.IsNullOrEmpty(domain.ZoneId) select domain)
             {
                 domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
-                if(string.IsNullOrEmpty(domain.ZoneId))
+                if (string.IsNullOrEmpty(domain.ZoneId))
                 {
                     Log.Error($"ZoneId not found for domain: {domain.DomainName}");
                     throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
@@ -65,7 +65,7 @@ namespace Project.Application.Features.Services
             foreach (var domain in domains)
             {
                 domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
-                if(string.IsNullOrEmpty(domain.ZoneId))
+                if (string.IsNullOrEmpty(domain.ZoneId))
                 {
                     Log.Error($"ZoneId not found for domain: {domain.DomainName}");
                     throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
@@ -78,14 +78,14 @@ namespace Project.Application.Features.Services
         public async Task<List<DomainDTO>> GetAll()
         {
             var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted==false&&x.IsActive==true));
+            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted == false && x.IsActive == true));
             return model;
         }
 
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
             var query = _domainRepository.GetAllQueryable();
-            query = filter == 1 ? query.Where(x => x.IsActive==true&&x.IsDeleted==false) : query.Where(x => x.IsActive== true && x.IsDeleted==false);
+            query = filter == 1 ? query.Where(x => x.IsActive == true && x.IsDeleted == false) : query.Where(x => x.IsActive == true && x.IsDeleted == false);
             var data = await query.ToListAsync();
             var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
             return list;
@@ -120,7 +120,7 @@ namespace Project.Application.Features.Services
             try
             {
                 var newDomainDto = await GetNewDomain();
-                if (newDomainDto == null||string.IsNullOrEmpty(newDomainDto.DomainName)||!newDomainDto.IsActive||newDomainDto.IsDeleted)
+                if (newDomainDto == null || string.IsNullOrEmpty(newDomainDto.DomainName) || !newDomainDto.IsActive || newDomainDto.IsDeleted)
                     throw new NotFoundException();
                 var server = await _serverService.Detail(serverId);
                 var zoneId = newDomainDto.ZoneId;
@@ -176,7 +176,7 @@ namespace Project.Application.Features.Services
             {
                 // Handle exceptions here
                 throw new NotFoundException("دامنه یافت نشد");
-            } 
+            }
         }
         public async Task<string> ChangeSubDomain(string serverId)
         {
@@ -184,7 +184,7 @@ namespace Project.Application.Features.Services
             {
 
                 var server = await _serverService.Detail(serverId);
-                if(server == null)
+                if (server == null)
                     throw new NotFoundException("سرور یافت نشد");
                 var config = server.Config;
                 var jsonObject = JObject.Parse(config);
@@ -277,12 +277,12 @@ namespace Project.Application.Features.Services
 
             var configJson = JObject.Parse(config);
             UpdateJsonValues(configJson, cnameValue1, cnameValue2);
-            var domain = GetDomain(newServerName).Result;
+
             server.Config = configJson.ToString();
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
             server.ZoneIdLastSynced = DateTime.UtcNow;
-            server.ZoneId = domain.ZoneId;
+            server.ZoneId = server.ZoneId;
         }
         public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress, string newCnameValue)
         {
@@ -357,7 +357,7 @@ namespace Project.Application.Features.Services
 
         public async Task<bool> DeleteDnsRecord(string cfZoneId)
         {
-            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId,CancellationToken.None);
+            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId, CancellationToken.None);
 
             if (records.Count == 0)
                 return true;
@@ -408,11 +408,11 @@ namespace Project.Application.Features.Services
             }
             return domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive);
         }
-    
+
         private async Task<string> ChangeCnameDomain(string currentDomain, string zoneId, bool isActiveSubDomain = false)
         {
             try
-            { 
+            {
                 var newCnameValue = GenerateWordExtention.GenerateWords(5)[0];
                 var cnameValue = $"{newCnameValue}";
 
@@ -452,7 +452,7 @@ namespace Project.Application.Features.Services
                         var timeDifference = currentTime - modifiedDateTime;
                         if (timeDifference >= expireTimeSpan)
                         {
-                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, CancellationToken.None  );
+                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, CancellationToken.None);
                         }
                     }
                 }
@@ -474,7 +474,7 @@ namespace Project.Application.Features.Services
                 var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString()
                     .Split(".");
                 serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
-                return GetDomain(serverName).Result.ZoneId;
+                return server.ZoneId;
             }
             catch (Exception ex)
             {
@@ -482,7 +482,7 @@ namespace Project.Application.Features.Services
                 throw new NotFoundException("سرور یافت نشد");
             }
         }
-        
+
 
         private static void UpdateJsonValues(JObject config, string newServerName, string newHost)
         {
@@ -502,7 +502,7 @@ namespace Project.Application.Features.Services
             config.SelectToken(hostPath)?.Replace($"{newHost}");
         }
 
-       
+
 
         private async Task<string> GetCloudflareZoneId(string cfDomain)
         {

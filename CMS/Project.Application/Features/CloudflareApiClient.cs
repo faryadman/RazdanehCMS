@@ -25,7 +25,7 @@ namespace Project.Application.Features
         {
             return new CloudFlareClient(_email, _apiKey);
         }
-        public async Task<bool> IsExistCnameRecord(string zoneId, CloudFlare.Client.Enumerators.DnsRecordType type , CancellationToken ct)
+        public async Task<bool> IsExistCnameRecord(string zoneId, CloudFlare.Client.Enumerators.DnsRecordType type, CancellationToken ct)
         {
             try
             {
@@ -86,7 +86,13 @@ namespace Project.Application.Features
 
                 var zones = await client.Zones.GetAsync(cancellationToken: ct);
                 var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
-
+                foreach (var dnsRecord in dnsRecords.Result)
+                {
+                    if (dnsRecord.Type == CloudFlare.Client.Enumerators.DnsRecordType.Cname)
+                    {
+                        await DeleteCnameRecords(zoneId, dnsRecord.Id, ct);
+                    }
+                }
                 foreach (var dnsRecord in dnsRecords.Result)
                 {
                     if (dnsRecord.Id == recordId)
@@ -114,18 +120,25 @@ namespace Project.Application.Features
                     }
 
                 }
-                    throw new NotFoundException("Record not found.");
+                throw new NotFoundException("Record not found.");
             }
         }
-        
 
-        public async Task CreateDnsRecordAsync(string zoneId, string newCname, string cnameContent,CancellationToken ct)
+
+        public async Task CreateDnsRecordAsync(string zoneId, string newCname, string cnameContent, CancellationToken ct)
         {
             using var client = CreateClient();
 
             var zones = await client.Zones.GetAsync(cancellationToken: ct);
             var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
-            var newDnsRecord                         = new NewDnsRecord
+            foreach (var dnsRecord in dnsRecords.Result)
+            {
+                if (dnsRecord.Type == CloudFlare.Client.Enumerators.DnsRecordType.Cname)
+                {
+                    await DeleteCnameRecords(zoneId, dnsRecord.Id, ct);
+                }
+            }
+            var newDnsRecord = new NewDnsRecord
             {
                 Type = CloudFlare.Client.Enumerators.DnsRecordType.Cname,
                 Name = newCname,
@@ -134,7 +147,7 @@ namespace Project.Application.Features
                 Proxied = false,
                 Comment = DateTime.Now.ToString()
             };
-            var updateResponse = await client.Zones.DnsRecords.AddAsync(zoneId,   newDnsRecord  , cancellationToken: ct);
+            var updateResponse = await client.Zones.DnsRecords.AddAsync(zoneId, newDnsRecord, cancellationToken: ct);
             if (updateResponse.Success)
             {
                 Console.WriteLine("DNS record updated successfully.");
@@ -146,7 +159,7 @@ namespace Project.Application.Features
             }
             throw new NotFoundException("Failed to create DNS record.");
         }
-        public async Task<IList<CnameRecord>> GetAllZonesAsync(string domainName,CancellationToken ct)
+        public async Task<IList<CnameRecord>> GetAllZonesAsync(string domainName, CancellationToken ct)
         {
             try
             {
@@ -213,7 +226,7 @@ namespace Project.Application.Features
         {
             try
             {
-          
+
                 using var client = CreateClient();
 
                 var zones = await client.Zones.GetAsync(cancellationToken: ct);
@@ -223,11 +236,11 @@ namespace Project.Application.Features
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
-                throw new NotFoundException("Failed to delete DNS record.");    
+                throw new NotFoundException("Failed to delete DNS record.");
             }
         }
 
-  
+
 
         public class CnameRecord
         {
