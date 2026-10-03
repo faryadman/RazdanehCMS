@@ -281,7 +281,7 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
                 if (server?.AllLogsStatistics == null)
                     continue;
                 var start = server.DomainDateTime;
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 var ts = now.Subtract(start);
                 if (ts.TotalMinutes > domainJobDto!.JobExpireMinuteTime)
                 {

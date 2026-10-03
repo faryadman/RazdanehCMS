@@ -186,7 +186,7 @@ namespace Project.Application.Features.Services
             model.IsForIrancell = input.IsForIrancell;
             model.CurrentDomainValue = input.CurrentDomainValue;
             model.IsNewDomain = input.IsNewDomain;
-            model.DomainDateTime = input.DomainDateTime;
+            model.DomainDateTime = DateTime.UtcNow;
             model.UpdatedAt = DateTime.UtcNow;
             model.UpdatedBy = "Admin";
             model.ZoneIdLastSynced = DateTime.UtcNow;
