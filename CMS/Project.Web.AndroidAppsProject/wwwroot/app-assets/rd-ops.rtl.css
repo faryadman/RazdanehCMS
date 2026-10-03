@@ -850,10 +850,11 @@ div.dt-buttons .btn { padding: 7px 13px !important; font-size: 12.5px !important
 /* نوار درصد موفقیت/شکست */
 /* ستون فشردهٔ آمار لاگ‌ها — چیدمان ۲×۲ جمع‌وجور */
 .rd-logs { min-width: 196px; display: grid !important; grid-template-columns: 1fr 1fr; gap: 5px 7px; }
-.rd-log-row { display: flex !important; flex-direction: column; gap: 3px; padding: 4px 7px !important; background: #fff !important; border: 1px solid var(--rd-border) !important; border-radius: 9px; }
-.rd-log-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
-.rd-log-name { font-size: 10.5px; font-weight: 600; color: var(--rd-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rd-log-count { font-size: 12px; font-weight: 700; color: var(--rd-text2); }
+.rd-log-row { display: flex !important; flex-direction: column; gap: 4px; padding: 6px 9px !important; background: #fff !important; border: 1px solid var(--rd-border) !important; border-radius: 10px; }
+.rd-log-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+/* v22: تایپوگرافی آمار لاگ — خوانا و یکدست */
+.rd-logs .rd-log-name { font-size: 11px !important; font-weight: 700 !important; color: var(--rd-text2); letter-spacing: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rd-logs .rd-log-count { font-size: 12.5px !important; font-weight: 800 !important; color: var(--rd-text); letter-spacing: -.2px; }
 .rd-log-row .rd-split { width: 100%; height: 5px !important; min-height: 0; margin: 0 !important; }
 .rd-log-row .rd-split-legend { display: none; }
 .rd-split { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: #eef0f8; margin-top: 8px; }
@@ -1064,12 +1065,19 @@ body:not(.menu-collapsed) .header-navbar { right: calc(var(--rd-side-w) + 18px) 
 }
 .rd-ss-name .badge { font-size: 9.5px; padding: 2px 8px; }
 .rd-ss-bar { flex: 1; }
-.rd-ss-val { width: 54px; text-align: left; font-size: 12.5px; font-weight: 800; color: var(--rd-text2); }
+.rd-ss-val { width: auto; min-width: 92px; display: flex; align-items: baseline; justify-content: flex-end; gap: 10px; font-size: 12px; font-weight: 800; }
+.rd-ss-val .ok { color: #0e8a5c; }
+.rd-ss-val .ko { color: #c92f29; }
+.rd-ss-val .zero { color: var(--rd-muted); opacity: .75; }
+.rd-ss-val .ok, .rd-ss-val .ko { font-weight: 800 !important; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rd-op-row { padding: 6px 0 12px; }
 .rd-op-row + .rd-op-row { border-top: 1px dashed var(--rd-border); }
 .rd-op-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
 .rd-op-count { font-size: 12px; color: var(--rd-muted); }
-.rd-op-sub { font-size: 11.5px; color: var(--rd-muted); margin-top: 6px; font-weight: 500; }
+.rd-op-sub { font-size: 11.5px; color: var(--rd-muted); margin-top: 6px; font-weight: 600; display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.rd-op-sub .ok { color: #0e8a5c; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rd-op-sub .ko { color: #c92f29; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rd-op-sub .zero { color: var(--rd-muted); }
 @media (max-width: 1100px) {
     .rd-dash-row { grid-template-columns: 1fr; }
     .rd-ss-name { width: 180px; }
@@ -1220,13 +1228,13 @@ body.rd-view-cards #serversTable_wrapper { display: none !important; }
 /* ============================================================
    v12 — آمار لاگ‌ها به‌صورت عدد (جایگزین نوار rd-split)
    ============================================================ */
-.rd-split-num { display: flex; gap: 12px; align-items: baseline; margin-top: 2px; font-size: 11.5px; font-weight: 700; direction: rtl; }
-.rd-split-num .ok { color: var(--rd-success); }
-.rd-split-num .ko { color: var(--rd-danger); }
+.rd-split-num { display: flex; gap: 11px; align-items: baseline; margin-top: 1px; font-size: 12px; font-weight: 800; direction: rtl; }
+.rd-split-num .ok { color: #0e8a5c; }
+.rd-split-num .ko { color: #c92f29; }
 .rd-split-num .zero { color: var(--rd-muted); opacity: .75; }
-.rd-split-num .ok, .rd-split-num .ko { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rd-split-num .ok, .rd-split-num .ko { font-weight: 800 !important; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rd-split-num .ok::before, .rd-split-num .ko::before { font-size: 1.05em; margin-inline-end: 2px; }
 .rd-split-num.big { margin-top: 6px; font-size: 12.5px; gap: 14px; }
-.rd-log-row .rd-split-num { margin-top: 1px; }
 
 /* ============================================================
    v13 — منوی شناور موبایل + نوار ابزار فشرده
@@ -1253,7 +1261,9 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
     .header-navbar { display: none !important; }
 
     /* منو: کارت شناور بالای صفحه */
+    /* v22: اسکرول واقعی منوی شناور — display تم (table-cell) مانع اسکرول می‌شد */
     body.rd-menu-open .main-menu {
+        display: block !important;
         position: fixed !important;
         top: 12px !important; right: 12px !important; left: 12px !important; bottom: auto !important;
         width: auto !important; max-width: 440px !important; margin: 0 auto !important;
@@ -1261,12 +1271,16 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
         max-height: calc(100vh - 96px) !important;
         max-height: calc(100dvh - 96px) !important;
         overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
         border-radius: 20px !important;
         box-shadow: 0 24px 64px rgba(4,8,22,.55) !important;
         transform: none !important;
         z-index: 1200 !important;
     }
     body.rd-menu-open .main-menu .navbar-header { width: auto !important; }
+    body.rd-menu-open .main-menu .main-menu-content { padding-bottom: 26px !important; }
 
     /* نوار ابزار فشرده */
     .rd-tb-main { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8px; }

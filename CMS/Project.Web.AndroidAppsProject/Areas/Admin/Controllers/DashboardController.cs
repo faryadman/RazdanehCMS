@@ -25,14 +25,17 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
         // داده‌های داشبورد — همه از همان سرویس‌هایی که صفحات دیگر استفاده می‌کنند
         public async Task<IActionResult> GetStats()
         {
-            var servers = await _serverService.GetWithFilter(null, null, false, 0);
+            /* v22: شمارش درست — سرورهای تبلیغاتی در GetWithFilter با isAd=false فیلتر می‌شدند */
+            var nonAdServers = await _serverService.GetWithFilter(null, null, false, 0);
+            var adServersList = await _serverService.GetWithFilter(null, null, true, 0);
+            var servers = nonAdServers.Concat(adServersList).ToList();
             var stats = await _serverLogService.GetAllLogsStatistics();
 
             var model = new
             {
                 totalServers = servers.Count,
                 availableServers = servers.Count(s => s.IsAvailable),
-                adServers = servers.Count(s => s.IsAd),
+                adServers = adServersList.Count,
                 all = new
                 {
                     count = stats?.AllLogsStatistics?.Count ?? 0,
