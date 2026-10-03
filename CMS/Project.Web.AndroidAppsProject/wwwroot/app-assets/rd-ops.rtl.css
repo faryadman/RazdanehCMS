@@ -1273,6 +1273,9 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        /* v23: تم به‌صورت inline روی .main-menu می‌گذارد touch-action:none (Hammer) که اسکرول تاچ را
+           کامل می‌کُشت — override با !important تا روی دستگاه واقعی اسکرول انگشتی کار کند */
+        touch-action: pan-y !important;
         scrollbar-width: thin;
         border-radius: 20px !important;
         box-shadow: 0 24px 64px rgba(4,8,22,.55) !important;
@@ -1281,6 +1284,9 @@ body.rd-menu-open .rd-menu-fab .ic-close { display: block; }
     }
     body.rd-menu-open .main-menu .navbar-header { width: auto !important; }
     body.rd-menu-open .main-menu .main-menu-content { padding-bottom: 26px !important; }
+    /* v23: اسکرول طبیعی روی .main-menu است؛ ریل اسکرول PerfectScrollbar تم داخل کارت شناور پنهان شود */
+    body.rd-menu-open .main-menu .ps__rail-y,
+    body.rd-menu-open .main-menu .ps__bar-y { display: none !important; }
 
     /* نوار ابزار فشرده */
     .rd-tb-main { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8px; }
