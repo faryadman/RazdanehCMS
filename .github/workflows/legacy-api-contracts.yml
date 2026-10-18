@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-      - feature/preserve-api-contracts-cleanup
 
 permissions:
   contents: read

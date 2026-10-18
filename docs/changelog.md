@@ -7,6 +7,7 @@
 - جداسازی registration MVC/JSON، حذف وابستگی بلااستفادهٔ دو کنترلر و ۱۱ فایل Job/Dapper بدون مصرف؛ بستهٔ Dapper به دلیل مصرف فعال دیگر باقی ماند.
 - build solution موفق؛ تست کامل SQL/DNS/Android تولید ادعا نمی‌شود.
 - ایجاد Draft PR ممیزی [#6](https://github.com/faryadman/RazdanehCMS/pull/6) پس از رفع دسترسی API؛ هیچ merge انجام نشد.
+- انتشار commitهای `90a1b1a` و `94f97d7` و ایجاد [Draft PR پاک‌سازی #7](https://github.com/faryadman/RazdanehCMS/pull/7) با base شاخهٔ audit؛ CI روی PR و push master اجرا می‌شود.
 - تصحیح توضیح default filter لیست سرور در گزارش؛ بدون تغییر behavior.
 
 ## ۲۰۲۶-۱۰-۱۸ — ممیزی اولیه
