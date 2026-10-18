@@ -1,23 +1,23 @@
 # وضعیت پروژه
 
-تاریخ: ۲۰۲۶-۱۰-۱۸. مبنای کد: `68b2acb92bc579f7b2da16ee84b33d857adb8077`. شاخهٔ موجود audit از همان HEAD master استفاده شد. وضعیت اولیهٔ checkout پاک بود.
+مرحلهٔ فعلی: اولین پاک‌سازی محدود معماری با درخواست کاربر، روی `feature/preserve-api-contracts-cleanup` از baseline `8791b1a`. شاخهٔ audit و master در این گام تغییر نکرده‌اند. این مجوز به معنی تصویب یا اجرای تمام بازطراحی نیست.
 
-انجام‌شده: بررسی معماری ۷ پروژه، source و registration، entity/migration، controller/DTO/serialization، jobs/DNS/JSON، query و UI؛ گزارش امنیت و طراحی هدف/rollback/نقشهٔ راه؛ استخراج ۱۲۱ اکشن MVC و schemaهای DTO. فقط AGENTS.md و docs تغییر کرده‌اند.
+ممیزی اولیه در commitهای `3f462a1` و `8791b1a` روی شاخهٔ `audit/architecture-security-android-compat-20261017` منتشر شد. با رفع دسترسی GitHub API، [Draft PR ممیزی #6](https://github.com/faryadman/RazdanehCMS/pull/6) ساخته شد؛ merge انجام نشده است.
 
-شواهد اجرا: build شش پروژه موفق؛ audit dependency دارای advisory؛ شش assertion serializer موفق و یک expected failure تاریخ پیش‌فرض بازتولیدشده. جزئیات و probe در docs/testing است. هیچ API تولید، SQL یا DNS تغییردهنده اجرا نشده؛ تست کامل Android، persistence و worker اجرا نشده‌اند.
+## گام انجام‌شده
 
-خطرهای اصلی باز: کنترل دسترسی عملیات سرور/دامنه/job، حذف گستردهٔ DNS، seed با رمز ثابت، credential در source/webroot، عدم validation Config، MemoryStorage و scope نامناسب، نبود هماهنگی و history. هیچ‌یک با این PR اصلاح نشده‌اند.
+- commit `90a1b1a`: ثبت تست قبل از تغییر محصول؛ ۲۵ پاسخ HTTP ساختگی، ۱۲۱ اکشن، ۴۴ schema DTO و گزینه‌های MVC در ۲۸ snapshot؛ ۳۲ تست قبل از refactor موفق.
+- انتقال registration MVC/JSON به `LegacyAndroidMvcConfiguration`، حذف IMemoryCache بدون مصرف از دو کنترلر و حذف ۱۱ فایل خالی/بدون مصرف Job و Dapper.
+- بعد از refactor: همان ۳۲ تست موفق، صفر skipped و تمام snapshotها بدون تغییر بایتی. build هفت پروژهٔ solution شامل تست‌ها موفق، ۱۱ warning و صفر error در اجرای نهایی incremental.
+- workflow رگرسیون اضافه شده؛ موفقیت CI فقط با نتیجهٔ واقعی GitHub اعلام شود. جزئیات در [رگرسیون API](testing/legacy-api-regression.md).
+- تصحیح گزارش ممیزی: default پارامتر filter در interface صفر است و همان به GetWithFilter فرستاده می‌شود؛ رفتار محصول تغییر نکرده است.
 
-گام بعد: بازبینی ممیزی و تأیید baseline؛ فراهم‌کردن نمونه‌های پاک‌سازی‌شدهٔ Android/Config و SQL ایزوله؛ سپس Iteration 1 در feature branch مستقل. پیش از refactor خطرناک، contract/behavior suite لازم است. UI و حذف Hangfire فعلاً طرح هستند.
+دامنهٔ اصلاح: کد محصول فقط registration و وابستگی/کلاس بدون مصرف است. DTO، route، action، serializer settings، منطق انتخاب سرور، JobController/CronJobService، DNS و schema دیتابیس تغییر نکرده‌اند. هیچ SQL یا DNS تولید اجرا نشده است.
 
-مستندات اصلی با commit `3f462a1` روی شاخهٔ audit ثبت و push شدند. ایجاد Draft PR با `gh pr create --draft` تلاش شد اما POST به `https://api.github.com/graphql` با Forbidden رد شد؛ هیچ شماره یا لینک PR تأییدشده‌ای وجود ندارد. متن آماده در [توضیح PR](audit/pr-description.md) ذخیره است.
+## موارد باز
 
-دامنهٔ `api.github.com` با حفظ allowance قبلی به draft تنظیمات شبکه افزوده شد؛ save ابزار موفق بود و نیاز به review/save و انتشار محیط در تنظیمات دارد. این فقط draft است و اتصال runtime را اثبات نمی‌کند. پس از اعمال تغییر، درخواست GitHub API و ایجاد Draft PR دوباره بررسی شوند. credential شخصی درخواست نشده؛ دسترسی Git با قابلیت API/PR یکی نیست. master تغییر نکرده است.
+سازگاری کامل Android بدون نمونهٔ واقعی قابل‌ادعا نیست. تست‌های SQL، منطق انتخاب سرور، DNS، job recovery و کل startup/proxy اجرا نشده‌اند. کنترل دسترسی عملیات خطرناک، deletion گستردهٔ DNS، seed ثابت، credentialهای باقی‌مانده، عدم validation JSON و advisoryهای Pkcs همچنان بازند؛ حذف Dapper بدون مصرف آن‌ها را حل نمی‌کند.
 
-فرمان ادامه پس از رفع دسترسی، از ریشهٔ checkout:
+گام بعد باید در PR مستقل با تست رفتاری باشد: اعتبارسنجی format-aware JSON با نمونهٔ معتبر یا استخراج policy انتخاب سرور بدون تغییر قرارداد. مسائل امنیتی بحرانی باید با تصمیم صریح دربارهٔ مصرف legacy اولویت داشته باشند. rollback این پاک‌سازی بازگرداندن commit refactor و حفظ commit تست است؛ مهاجرت داده ندارد.
 
-```bash
-gh pr create --repo faryadman/RazdanehCMS --draft --base master --head audit/architecture-security-android-compat-20261017 --title 'ممیزی معماری، امنیت و سازگاری اندروید؛ فقط مستندات' --body-file docs/audit/pr-description.md
-```
-
-پیش از retry پس از تغییر اتصال، PRهای موجود را بررسی کنید تا PR تکراری ساخته نشود. عدم دسترسی به API به معنی نیاز قطعی به token جدید نیست؛ از احراز هویت موجود و تنظیمات محیط استفاده شود.
+وضعیت انتشار feature و شمارهٔ Draft PR پس از push ثبت می‌شود. PR ممیزی #6 به master و PR پیاده‌سازی به شاخهٔ audit هدف می‌گیرد تا تغییرات کد جدا بررسی شوند.

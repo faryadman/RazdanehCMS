@@ -1,16 +1,14 @@
-using AutoMapper;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Project.Application;
-using Project.Application.Filters;
 using Project.Application.Middlewares;
 using Project.Domain.Entities;
 using Project.Persistence;
+using Project.Web.AndroidAppsProject.Configuration;
 using Project.Web.AndroidAppsProject.CronJob;
-using Project.Web.AndroidAppsProject.Dapper;
 using Serilog;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
@@ -24,7 +22,6 @@ builder.Services.ConfigureApplicationServices(new LoggerFactory(), builder.Confi
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
-builder.Services.AddSingleton<IDapperQueryService, DapperQueryService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddMemoryCache(options =>
 {
@@ -95,23 +92,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
-builder.Services.AddControllersWithViews().AddNewtonsoftJson(o =>
-{
-    o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-    //o.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-});
-
-builder.Services
-    .AddMvc(option =>
-    {
-        option.EnableEndpointRouting = false;
-        option.Filters.Add(typeof(ModelStateCheckFilter));
-    }).AddRazorOptions(options =>
-    {
-        options.ViewLocationFormats.Add("/{0}.cshtml");
-    });
+builder.Services.AddLegacyAndroidMvc();
 string path = builder.Configuration["Serilog:path"];
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File(path, rollingInterval: RollingInterval.Hour)

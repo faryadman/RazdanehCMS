@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Project.Application.DTOs.Server;
 using Project.Application.Features.Interfaces;
 using Project.Application.Responses;
@@ -11,11 +10,9 @@ namespace Project.Web.AndroidAppsProject.Controllers
     public class ServersController : ControllerBase
     {
         private readonly IServerService _serverService;
-        private readonly IMemoryCache _memoryCache;
-        public ServersController(IServerService serverService, IMemoryCache memoryCache)
+        public ServersController(IServerService serverService)
         {
             _serverService = serverService;
-            _memoryCache = memoryCache;
         }
 
         public async Task<IActionResult> List(int? groupId, int? appId, bool isAd)

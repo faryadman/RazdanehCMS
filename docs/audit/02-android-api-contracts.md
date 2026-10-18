@@ -28,7 +28,7 @@ DateTimeها JSON ISO-8601 هستند؛ UTC با Z و زمان unspecified مم�
 | GET `/Api/ServerLogs?serverId=` | int query، default CLR=0 در نبود مقدار؛ nonnumeric خطای binding | R<List<ServerLogDTO>>؛ IP/UserId و اپراتور | active، Id نزولی، بدون pagination؛ بالا |
 | GET `/Api/AddIp?tcp=` | int query؛ User-Agent header و RemoteIpAddress | R<string>؛ شاخهٔ Invalid TCP با شیء status=3/message عملاً بعد از bind int نامحتمل است | write با GET؛ IP موجود حذف و در همان call بازدرج نمی‌شود؛ بالا |
 | GET `/Api/ListIp` | ندارد | R<List<IpDTO>> | active و Id نزولی، cache پنج دقیقه، بدون pagination؛ بالا |
-| هر verb `/api/Servers/List` | groupId:int?، appId:int?، isAd:bool query | R<List<ServerDTO>> | filter پیش‌فرض سرویس ۱ -> available؛ Id صعودی؛ projection برخی فیلدها را مقداردهی نمی‌کند |
+| هر verb `/api/Servers/List` | groupId:int?، appId:int?، isAd:bool query | R<List<ServerDTO>> | default در interface برابر ۰ است و همین مقدار در فراخوانی کنترلر اعمال می‌شود؛ محدودیت available از این default اعمال نمی‌شود؛ Id صعودی؛ projection برخی فیلدها را مقداردهی نمی‌کند |
 | هر verb `/api/Servers/Detail?id=` | int query | R<ServerDTO>، inactive/missing ->404 | mapping کامل‌تر از List؛ بالا |
 | هر verb `/api/Servers/Create` | JSON CreateServerDTO | R<string>، ایجاد مستقیم | Required ولی بدون JSON schema؛ IsAvailable=true، IsNewDomain=false، DomainDateTime=UtcNow |
 | هر verb `/api/Servers/Edit` | JSON EditServerDTO | R<string>، ویرایش مستقیم | ItemId، تاریخ ورودی با UtcNow جایگزین می‌شود؛ missing ممکن است400 exception شود |

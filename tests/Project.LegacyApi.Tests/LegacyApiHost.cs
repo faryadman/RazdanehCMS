@@ -5,26 +5,27 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
-using Project.Application.Filters;
 using Project.Application.Middlewares;
+using Project.Web.AndroidAppsProject.Configuration;
 using Project.Web.AndroidAppsProject.Controllers;
 
 namespace Project.LegacyApi.Tests;
 
 public sealed class LegacyApiHost : IDisposable
 {
-    private readonly TestServer server;
+    private readonly IHost host;
     public IAppSettingService AppSettings { get; } = Substitute.For<IAppSettingService>();
     public IServerService Servers { get; } = Substitute.For<IServerService>();
     public IServerLogService ServerLogs { get; } = Substitute.For<IServerLogService>();
     public IIpService Ips { get; } = Substitute.For<IIpService>();
     public IBlackListService BlackLists { get; } = Substitute.For<IBlackListService>();
     public HttpClient Client { get; }
-    public IServiceProvider Services => server.Services;
+    public IServiceProvider Services => host.Services;
 
     public LegacyApiHost()
     {
@@ -45,7 +46,7 @@ public sealed class LegacyApiHost : IDisposable
         BlackLists.List(Arg.Any<int?>()).Returns(Task.FromResult(SyntheticData.BlackList()));
 
         // Entry point, Identity seeding, Hangfire, SQL and DNS are deliberately not registered.
-        server = new TestServer(new WebHostBuilder().UseEnvironment("Development")
+        host = new HostBuilder().ConfigureWebHost(builder => builder.UseEnvironment("Development").UseTestServer()
             .ConfigureServices(services =>
             {
                 services.AddSingleton(AppSettings);
@@ -54,15 +55,7 @@ public sealed class LegacyApiHost : IDisposable
                 services.AddSingleton(Ips);
                 services.AddSingleton(BlackLists);
                 services.AddMemoryCache();
-                services.AddRouting(options => options.LowercaseUrls = true);
-                services.AddControllersWithViews()
-                    .AddApplicationPart(typeof(ApiController).Assembly)
-                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-                services.AddMvc(options =>
-                {
-                    options.EnableEndpointRouting = false;
-                    options.Filters.Add(typeof(ModelStateCheckFilter));
-                }).AddRazorOptions(options => options.ViewLocationFormats.Add("/{0}.cshtml"));
+                services.AddLegacyAndroidMvc().AddApplicationPart(typeof(ApiController).Assembly);
             })
             .Configure(app =>
             {
@@ -81,14 +74,14 @@ public sealed class LegacyApiHost : IDisposable
                     routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
                     routes.MapRoute("areas", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 });
-            }));
-        Client = server.CreateClient();
+            })).Start();
+        Client = host.GetTestClient();
         Client.DefaultRequestHeaders.UserAgent.ParseAdd("LegacyContractTests/1.0");
     }
 
     public void Dispose()
     {
         Client.Dispose();
-        server.Dispose();
+        host.Dispose();
     }
 }
