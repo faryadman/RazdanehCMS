@@ -1,0 +1,1707 @@
+[
+  {
+    "Type": "Project.Application.DTOs.ApiLog.ApiLogDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "appSettingId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "connectionStatus",
+        "Type": "Project.Domain.Enums.ConnectionStatus",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.AppSetting.AppSettingDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "apiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appTitle",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interAC",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interAD",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interSP",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interPreOne",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interPreTwo",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "splashTimeOut",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAdmobActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isSplashActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "storeVersion",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isUpdateForce",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "responseTimeout",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "retryNumber",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "shareUi",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "checkIp",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "url",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "bannerId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "groupsThatAppIsJoinedIn",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "serverApiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "sendRandomServer",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isLogAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAdServerAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "timerCounter",
+        "Type": "System.Int64",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isGdprAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAcAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isSpAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isTimeToStopAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "timeToStop",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.AppSetting.CreateAppSettingDTO",
+    "Properties": [
+      {
+        "PropertyName": "apiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "storeVersion",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appTitle",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.AppSetting.EditAppSettingDTO",
+    "Properties": [
+      {
+        "PropertyName": "apiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appTitle",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interAC",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interAD",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interSP",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interPreOne",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "interPreTwo",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "splashTimeOut",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAdmobActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isSplashActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "storeVersion",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isUpdateForce",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "responseTimeout",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "retryNumber",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "shareUi",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "checkIp",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "url",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "bannerId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "sendRandomServer",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isLogAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAdServerAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "timerCounter",
+        "Type": "System.Int64",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isGdprAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAcAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isSpAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isTimeToStopAllowed",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "timeToStop",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.AppSetting.MinimalAppSettingDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "apiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "storeVersion",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appTitle",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Base.BaseDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Base.PaginateDTO",
+    "Properties": [
+      {
+        "PropertyName": "start",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "length",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Base.SeoBaseDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "keywords",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Base.SeoUpsertDTO",
+    "Properties": [
+      {
+        "PropertyName": "keywords",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Base.UpsertDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.BlackList.BlackListDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "server",
+        "Type": "Project.Application.DTOs.Server.ServerDTO",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.BlackList.CreateBlackListDTO",
+    "Properties": [
+      {
+        "PropertyName": "serverId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.CronJobInfo.CronJobInfoDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "timer",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "executedCount",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "lastExecutionDate",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "lastExecutionDateToString",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.CronJobInfo.UpdateCronJobInfoDTO",
+    "Properties": [
+      {
+        "PropertyName": "timer",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Datatable.Base.DatatableInput",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Datatable.Base.FiltersFromRequestDataTable",
+    "Properties": [
+      {
+        "PropertyName": "length",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "start",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "sortColumn",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "sortColumnDirection",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "sortColumnIndex",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "draw",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "searchValue",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Datatable.TicketDatatableInput",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Datatable.UserDatatableInput",
+    "Properties": [
+      {
+        "PropertyName": "name",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Domain.CreateDomainDTO",
+    "Properties": [
+      {
+        "PropertyName": "domainName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "fileName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Domain.DomainDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "domainName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "fileName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isDeleted",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Domain.ZoneIdDTO",
+    "Properties": [
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.GeneralServerDTO",
+    "Properties": [
+      {
+        "PropertyName": "serverDTO",
+        "Type": "Project.Application.DTOs.Server.ServerDTO",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "serverAdDTO",
+        "Type": "Project.Application.DTOs.Server.ServerDTO",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "appSettingDTO",
+        "Type": "Project.Application.DTOs.AppSetting.AppSettingDTO",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Group.CreateGroupDTO",
+    "Properties": [
+      {
+        "PropertyName": "title",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isAd",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Group.EditGroupDTO",
+    "Properties": [
+      {
+        "PropertyName": "title",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "itemId",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Group.GroupDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "title",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isAd",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Group.GroupsByAppDTO",
+    "Properties": [
+      {
+        "PropertyName": "title",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "doTheyHaveRelation",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAd",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "createdBy",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedBy",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "createdAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.IP.CreateIpDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "tcp",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "userAgent",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.IP.IpDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "tcp",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.IpConfig.IPConfigDTO",
+    "Properties": [
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "fileName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isDeleted",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Job.CreateJobDTO",
+    "Properties": [
+      {
+        "PropertyName": "email",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "apiKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobConfig",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Nullable`1[System.Boolean]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobPeriodTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobExpireMinuteTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO",
+    "Properties": [
+      {
+        "PropertyName": "failConnectionCount",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "failConnectionPercent",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobPeriodTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobExpireMinuteTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActiveJob",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "email",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "apiKey",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Job.HangfireDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "cron",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "lastExecTime",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "nextExecTime",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "createdAt",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Job.JobDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "email",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "apiKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobConfig",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isActive",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "jobPeriodTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "jobExpireMinuteTime",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.OperatorIdentification.CreateOperatorIdentificationDTO",
+    "Properties": [
+      {
+        "PropertyName": "text",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "operator",
+        "Type": "Project.Domain.Enums.Operator",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isIsp",
+        "Type": "System.Boolean",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.OperatorIdentification.OperatorIdentificationDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "text",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "operator",
+        "Type": "Project.Domain.Enums.Operator",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "operatorName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isIsp",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.PaginateDTO",
+    "Properties": [
+      {
+        "PropertyName": "pageNumber",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "pageDataCount",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "dataCount",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Server.CreateServerDTO",
+    "Properties": [
+      {
+        "PropertyName": "serverName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "location",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "config",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "currentDomainValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "groupId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAvailable",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isForIrancell",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isForHamraheAvval",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAd",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isNewDomain",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "domainDateTime",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneIdLastSynced",
+        "Type": "System.Nullable`1[System.DateTime]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Server.EditServerDTO",
+    "Properties": [
+      {
+        "PropertyName": "itemId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "location",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "config",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "currentDomainValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isForIrancell",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isForHamraheAvval",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isNewDomain",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "domainDateTime",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneIdLastSynced",
+        "Type": "System.Nullable`1[System.DateTime]",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Server.ServerDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "location",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "config",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "currentDomainValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "zoneIdLastSynced",
+        "Type": "System.Nullable`1[System.DateTime]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isAd",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isNewDomain",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isAvailable",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "group",
+        "Type": "Project.Application.DTOs.Group.GroupDTO",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "groupId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isForIrancell",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "isForHamraheAvval",
+        "Type": "System.Boolean",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "domainDateTime",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "allLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "irancellLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "hamraheAvvalLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "unknownLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.Server.ServerWithLogsDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "location",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "config",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configKey",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "configValue",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "group",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "logs",
+        "Type": "System.Collections.Generic.List`1[Project.Application.DTOs.ServerLog.ServerLogDTO]",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.ServerLog.AddServerLogDTO",
+    "Properties": [
+      {
+        "PropertyName": "serverId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "userId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isp",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "city",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "org",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "country",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "operator",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "apiRoute",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "connectionStatus",
+        "Type": "Project.Domain.Enums.ConnectionStatus",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.ServerLog.ServerLogDTO",
+    "Properties": [
+      {
+        "PropertyName": "id",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "serverId",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "userId",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "ip",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "isp",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "city",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "org",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "country",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "operator",
+        "Type": "Project.Domain.Enums.Operator",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "operatorName",
+        "Type": "System.String",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "connectionStatus",
+        "Type": "Project.Domain.Enums.ConnectionStatus",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAt",
+        "Type": "System.DateTime",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "updatedAtFormatted",
+        "Type": "System.String",
+        "Nullable": true
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+    "Properties": [
+      {
+        "PropertyName": "count",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "successCount",
+        "Type": "System.Int32",
+        "Nullable": false
+      },
+      {
+        "PropertyName": "failCount",
+        "Type": "System.Int32",
+        "Nullable": false
+      }
+    ]
+  },
+  {
+    "Type": "Project.Application.DTOs.ServerLog.ServerLogStatisticsDTO",
+    "Properties": [
+      {
+        "PropertyName": "allLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "irancellLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "hamraheAvvalLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      },
+      {
+        "PropertyName": "unknownLogsStatistics",
+        "Type": "Project.Application.DTOs.ServerLog.ServerLogStatistics",
+        "Nullable": true
+      }
+    ]
+  }
+]

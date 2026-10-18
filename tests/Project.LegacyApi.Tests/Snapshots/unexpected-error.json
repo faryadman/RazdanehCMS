@@ -1,0 +1,13 @@
+{
+  "statusCode": 400,
+  "contentType": "application/json",
+  "body": {
+    "status": 3,
+    "message": "خطا در اطلاعات ارسالی",
+    "errors": [
+      "خطای ساختگی",
+      "جزئیات ساختگی"
+    ],
+    "data": null
+  }
+}

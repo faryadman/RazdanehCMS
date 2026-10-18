@@ -1,0 +1,15 @@
+{
+  "statusCode": 400,
+  "contentType": "application/problem+json; charset=utf-8",
+  "body": {
+    "errors": {
+      "UserId": [
+        "The UserId field is required."
+      ]
+    },
+    "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+    "title": "One or more validation errors occurred.",
+    "status": 400,
+    "traceId": "legacy-contract-request"
+  }
+}

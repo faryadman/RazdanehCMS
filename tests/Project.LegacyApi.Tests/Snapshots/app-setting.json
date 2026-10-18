@@ -1,0 +1,42 @@
+{
+  "statusCode": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "status": 1,
+    "message": "با موفقیت انجام شد",
+    "errors": [],
+    "data": {
+      "id": 7,
+      "apiRoute": "sample",
+      "appTitle": "برنامهٔ نمونه",
+      "interAC": "ac",
+      "interAD": "ad",
+      "interSP": "sp",
+      "interPreOne": "one",
+      "interPreTwo": null,
+      "splashTimeOut": 1500,
+      "isAdmobActive": true,
+      "isSplashActive": false,
+      "storeVersion": "2.3.4",
+      "isUpdateForce": true,
+      "responseTimeout": 9000,
+      "retryNumber": 3,
+      "shareUi": "نمونه",
+      "checkIp": true,
+      "url": "https://example.invalid/app",
+      "appId": "sample-app",
+      "bannerId": "sample-banner",
+      "groupsThatAppIsJoinedIn": "3_9",
+      "serverApiRoute": "/api/GetServer/sample",
+      "sendRandomServer": true,
+      "isLogAllowed": false,
+      "isAdServerAllowed": true,
+      "timerCounter": 5000000000,
+      "isGdprAllowed": true,
+      "isAcAllowed": false,
+      "isSpAllowed": true,
+      "isTimeToStopAllowed": true,
+      "timeToStop": 60
+    }
+  }
+}
