@@ -124,11 +124,8 @@ namespace Project.Persistence.Repositories
 
         public Task SaveChangesTask()
         {
-            _dbContext.SaveChanges();
-            return Task.CompletedTask;
+            return _dbContext.SaveChangesAsync();
         }
-
-
     }
 
 }
