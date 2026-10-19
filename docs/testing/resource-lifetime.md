@@ -2,6 +2,8 @@
 
 تاریخ: ۲۰۲۶-۱۰-۱۹ UTC. مبنا `8816489` روی `fix/server-retrieval`. کاربر صریحاً بررسی روی همین شاخه را خواست؛ شاخهٔ تازه ساخته نشد. دامنهٔ اصلاح، مسیرهای فعال `Project.Web.AndroidAppsProject`، سرویس‌های مربوط و ابزار تست واکشی است.
 
+هنگام انتشار مشخص شد مالک مخزن PR #8 را بسته و شاخهٔ پایهٔ آن را پس از merge پاک‌سازی در PR #9 حذف کرده است؛ ممیزی #6 نیز merge شده بود. برای بازبینی قابل‌اجرای همین شاخه، master در `2d8d1ba` با merge `8501f1b` وارد همین fix شد؛ هر سه تغییر آن شامل timestampهای سرور، SaveChangesAsync و پورت launch حفظ شدند. هیچ push یا merge به master توسط این گام انجام نشد. PR تازه باید Draft و با base فعلی master باشد؛ PR بستهٔ #8 باز نمی‌شود.
+
 ## یافته‌ها و اصلاحات
 
 | مسیر / متد | شاهد و اثر قبلی | نتیجه |
@@ -12,6 +14,8 @@
 | `Program` و `ApplicationServicesRegistration` | LoggerFactory ساخته‌شده با new خارج از مالکیت container بود | mapper از ILoggerFactory متعلق به host استفاده می‌کند؛ پایان request آن را آزاد نمی‌کند، پایان provider آن را آزاد می‌کند |
 | `Program.UseSerilog` | logger سراسری با dispose پیش‌فرض و بدون CloseAndFlush ثبت شده بود | dispose:true مالکیت shutdown را به provider می‌دهد؛ مطابق XML بستهٔ Serilog.Extensions.Hosting 10.0.0، CloseAndFlush هنگام dispose provider اجرا می‌شود |
 | ابزار `RetrievalDatabase` | شکست Seed قبل از انتقال مالکیت به caller می‌توانست context/cache را بدون آزادسازی بگذارد؛ خطای DisposeAsync context نیز از Dispose cache جلوگیری می‌کرد | cleanup در شکست initialization و finally برای cache |
+
+در master جدید، `GenericRepository.SaveChangesTask` به SaveChangesAsync واقعی تبدیل شده است؛ بنابراین await زنجیرهٔ DomainService و کنترلر برای زنده‌ماندن request scope تا پایان ذخیره ضرورت عملی دارد. این تغییر upstream حفظ شده، نه اینکه برای رفع مشکل به اجرای همگام بازگردانده شود.
 
 exceptionهای دو job مربوط به ChangeDomain/ChangeSubDomain مانند قبل ثبت و بلعیده می‌شوند؛ سه متد دیگر خطا را منتشر می‌کنند. امضاهای ICronJobService، زمان‌بندی، سیاست retry و رفتار DNS تغییر نکرده‌اند. نگهداری وضعیت recovery، جلوگیری از هم‌پوشانی jobها و کنترل DNS همچنان موضوع‌های مستقل‌اند.
 
@@ -33,7 +37,7 @@ exceptionهای دو job مربوط به ChangeDomain/ChangeSubDomain مانند
 - ۱ تست mapper: ILoggerFactory میزبان استفاده می‌شود و فقط با پایان provider آزاد می‌شود.
 - ۱ تست repository با SQL Server یک‌بارمصرف: مالکیت context و بسته‌شدن اتصال با DisposeAsync scope.
 
-اجرای محلی نهایی: ۴۹ تست در Project.LegacyApi.Tests و ۱۵ تست در Project.ServerRetrieval.Tests، مجموع ۶۴ تست .NET موفق، بدون skipped. ۷ تست JavaScript قبلی نیز موفق بودند. هر ۲۸ snapshot نسبت به `8816489` بایت‌به‌بایت ثابت‌اند؛ تست metadata همان ۱۲۱ اکشن و ۴۴ DTO را تأیید می‌کند. build هر هشت پروژه پس از تغییر نهایی Program موفق بود: ۲۵ warning و صفر error؛ هشدارهای قبلی از جمله advisory وابستگی‌ها همچنان باقی‌اند.
+اجرای محلی نهایی پس از merge master: ۴۹ تست در Project.LegacyApi.Tests و ۱۵ تست در Project.ServerRetrieval.Tests، مجموع ۶۴ تست .NET موفق، بدون skipped. ۷ تست JavaScript قبلی نیز دوباره موفق بودند. هر ۲۸ snapshot نسبت به `8816489` بایت‌به‌بایت ثابت‌اند؛ تست metadata همان ۱۲۱ اکشن و ۴۴ DTO را تأیید می‌کند. build هر هشت پروژه پس از تغییر Program پیش از merge با ۲۵ warning و پس از merge به‌صورت incremental با ۱۳ warning موفق بود؛ هر دو صفر error داشتند. هشدارهای قبلی از جمله advisory وابستگی‌ها همچنان باقی‌اند.
 
 ```bash
 dotnet test RazdanehCMS.sln --no-restore -m:2 --logger trx

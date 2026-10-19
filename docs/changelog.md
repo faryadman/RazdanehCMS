@@ -6,6 +6,7 @@
 - انتظار کامل برای حذف‌های IP/Domain، استفادهٔ mapper از LoggerFactory میزبان و واگذاری dispose Serilog به host.
 - آزادسازی context/cache تست در شکست initialization؛ افزودن ۱۸ تست رگرسیون مربوط به lifetime.
 - ۶۴ تست .NET و ۷ تست JavaScript موفق؛ ۲۸ snapshot ثابت. شواهد، اثر مشاهده‌پذیر حذف و محدودیت‌ها در [گزارش Dispose](testing/resource-lifetime.md).
+- مشاهدهٔ mergeهای انجام‌شده توسط مالک و بسته‌شدن PR #8؛ حفظ master جدید `2d8d1ba` روی همین fix با merge `8501f1b` و آماده‌سازی Draft PR تازه به master.
 
 ## ۲۰۲۶-۱۰-۱۹ — اصلاح واکشی پنل
 
