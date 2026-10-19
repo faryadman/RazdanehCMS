@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DNTPersianUtils.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
@@ -171,6 +172,7 @@ namespace Project.Application.Features.Services
         public async Task Create(CreateServerDTO input)
         {
             var model = _mapper.Map<Server>(input);
+            model.DomainDateTime = DateTime.UtcNow;
             await _serverRepository.Add(model);
         }
         public async Task Edit(EditServerDTO input)
@@ -208,7 +210,7 @@ namespace Project.Application.Features.Services
             dto.ServerName += $" (Sample Of Id ={id})";
 
             var model = _mapper.Map<Server>(dto);
-
+            model.DomainDateTime = DateTime.UtcNow;
             await _serverRepository.Add(model);
 
         }
@@ -412,7 +414,7 @@ namespace Project.Application.Features.Services
                 Location = server.Location,
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow,
+                DomainDateTime = server.DomainDateTime,
                 ZoneId = server.ZoneId,
                 ZoneIdLastSynced = server.ZoneIdLastSynced,
             });
@@ -433,7 +435,7 @@ namespace Project.Application.Features.Services
                 Location = server.Location,
                 CurrentDomainValue = server.CurrentDomainValue,
                 IsNewDomain = true,
-                DomainDateTime = DateTime.UtcNow,
+                DomainDateTime = server.DomainDateTime,
                 ZoneId = server.ZoneId,
                 ZoneIdLastSynced = server.ZoneIdLastSynced
 
