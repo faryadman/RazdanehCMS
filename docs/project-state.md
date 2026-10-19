@@ -2,6 +2,14 @@
 
 مرحلهٔ فعلی: جایگزینی Hangfire با worker بومی .NET روی شاخهٔ `jobs`، از master در `657019e`، به درخواست صریح کاربر. PR #11 قبلی توسط مالک merge شده است. مرجع این گام: [موتور job](architecture/native-job-engine.md) و [آزمون و cutover](testing/native-jobs.md).
 
+## ساخت خودکار جدول‌های جاب — ۲۰۲۶-۱۰-۱۹ UTC
+
+- مبنا `801f992`؛ کاربر صریحاً خواست جدول گمشده خودکار ساخته شود. سیاست گام قبلیِ انتظار برای migration دستی با `SqlJobSchema.EnsureCreatedAsync` جایگزین شد: زیر قفل configuration و همان transaction، فقط جدول گمشدهٔ جاب و indexهایش از تعریف migration موجود ساخته می‌شوند. Jobs و جدول‌های موجود حفظ می‌شوند؛ migrationهای تاریخی اجرا نمی‌شوند.
+- worker فعال در اولین claim و پنل در اولین دسترسی این مسیر را اجرا می‌کنند. ردیف migration جدید فقط در EF history موجود ثبت می‌شود؛ history نامعلوم baseline نمی‌شود. در خطای دسترسی، 503 مشخص و تلاش مجدد باقی است؛ روی schema آماده DDL لازم نیست.
+- شواهد استفادهٔ قبلی و از‌دست‌رفتن جدول، marker با `schema_recreated` و NeedsReview می‌سازند؛ دادهٔ حذف‌شده قابل‌بازیابی نیست و dispatch تا review متوقف می‌ماند. [ADR-014](architecture/decisions.md) و [راهنما](testing/native-jobs.md) مرجع رفتار جدیدند.
+- سه حالت ساخت خودکار پیش از اصلاح شکست خوردند؛ ۱۳ حالت هدفمند پس از اصلاح موفق شدند. اجرای کامل: ۱۲۱ تست .NET (۷۴ unit/HTTP/قرارداد + ۴۷ SQL) و ۱۳ JavaScript موفق، صفر skipped. build هشت پروژه با ۱۳ warning قبلی و صفر error؛ EF بدون pending model change و هر ۲۸ snapshot نسبت به `657019e` ثابت.
+- هم‌زمانی دو instance، ساخت اولیه با/بدون EF history، حفظ دادهٔ جدول باقی‌مانده، خطای واقعی مجوز SQL و بازیابی با grant و ادامه پس از revoke DDL، rollback با cancellation وسط ساخت و اجرای IHostedService واقعی با business بدل تست شدند. SQL/DNS تولید، startup اصلی، seed و deployment اجرا نشده‌اند.
+
 ## اصلاح نبود جدول زمان‌بند — ۲۰۲۶-۱۰-۱۹ UTC
 
 - مبنا `9f7e877` روی همان شاخهٔ `jobs` و Draft PR #12؛ گزارش کاربر: `Invalid object name 'JobSchedules'`. نبود هرکدام/هردو جدول در SQL آزمایشی با سه تست ناموفق بازتولید شد؛ دیتابیس کاربر بررسی یا تغییر داده نشده است.

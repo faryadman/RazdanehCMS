@@ -24,7 +24,7 @@ public sealed class NativeJobSqlTests(SqlServerFixture fixture)
     [InlineData(true, false)]
     [InlineData(false, true)]
     [InlineData(true, true)]
-    public async Task Missing_scheduler_tables_prevent_writes_and_dispatch_with_an_actionable_error(bool schedules, bool executions)
+    public async Task Missing_scheduler_tables_are_created_automatically_and_preserve_legacy_settings(bool schedules, bool executions)
     {
         await using var db = await JobTestDatabase.CreateAsync(fixture.ConnectionString, initialize: false);
         db.Context.Jobs.Add(new Job { JobName = JobCatalog.Domain, JobPeriodTime = 10, IsActive = false, JobConfig = "{}" });
@@ -32,13 +32,23 @@ public sealed class NativeJobSqlTests(SqlServerFixture fixture)
         if (schedules) await db.Context.Database.ExecuteSqlRawAsync("DROP TABLE JobSchedules");
         if (executions) await db.Context.Database.ExecuteSqlRawAsync("DROP TABLE JobExecutions");
 
-        var error = await Assert.ThrowsAsync<JobSchemaNotReadyException>(() => db.ReadAsync());
-        Assert.Contains(JobSchemaNotReadyException.MigrationId, error.Message);
-        await Assert.ThrowsAsync<JobSchemaNotReadyException>(() => db.SaveAsync(JobCatalog.Domain, true));
-        await Assert.ThrowsAsync<JobSchemaNotReadyException>(() => db.RequestAsync(JobCatalog.Domain));
-        await Assert.ThrowsAsync<JobSchemaNotReadyException>(() => db.Worker.ExecuteNextAsync(CancellationToken.None));
-        Assert.Empty(db.Tracker.Claims);
-        Assert.Equal(1, await db.Context.Jobs.CountAsync());
+        var dashboard = await db.ReadAsync();
+        Assert.Equal(JobCatalog.All.Count, dashboard.Jobs.Count);
+        Assert.False(dashboard.NeedsReview);
+        Assert.False(dashboard.Jobs.Single(job => job.Definition.Name == JobCatalog.Domain).Settings.Enabled);
+        Assert.Equal("{}", await db.Context.Jobs.AsNoTracking().Where(job => job.JobName == JobCatalog.Domain).Select(job => job.JobConfig).SingleAsync());
+        Assert.Equal(5, await db.Context.Database.SqlQueryRaw<int>("""
+            SELECT COUNT(*) AS Value FROM sys.indexes
+            WHERE object_id IN (OBJECT_ID(N'JobSchedules'), OBJECT_ID(N'JobExecutions')) AND is_primary_key = 0 AND name IS NOT NULL
+            """).SingleAsync());
+        Assert.Equal(0, await db.Context.Database.SqlQueryRaw<int>("SELECT CASE WHEN OBJECT_ID(N'__EFMigrationsHistory') IS NULL THEN 0 ELSE 1 END AS Value").SingleAsync());
+        await db.SaveAsync(JobCatalog.DeleteLogs, false);
+        await db.SaveAsync(JobCatalog.CheckZones, false);
+        await db.SaveAsync(JobCatalog.IpConfig, true);
+        await db.RequestAsync(JobCatalog.IpConfig);
+        Assert.True(await db.Worker.ExecuteNextAsync(CancellationToken.None));
+        Assert.Equal(JobCatalog.IpConfig, Assert.Single(db.Tracker.Claims).JobName);
+        Assert.Equal(JobExecutionStatus.Succeeded, Assert.Single((await db.ReadAsync()).History).Status);
     }
 
     [Fact]
@@ -377,7 +387,6 @@ public sealed class NativeJobSqlTests(SqlServerFixture fixture)
             await db.Context.Database.ExecuteSqlRawAsync(history.GetInsertScript(new HistoryRow(migration, "10.0.12")));
         await using var scope = db.Services.CreateAsyncScope();
         var store = scope.ServiceProvider.GetRequiredService<IJobStore>();
-        await Assert.ThrowsAsync<JobSchemaNotReadyException>(() => store.GetDashboardAsync(CancellationToken.None));
         if (useSqlScript)
         {
             var script = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "MigrationScripts", "native-job-scheduling.sql"));
@@ -394,7 +403,7 @@ public sealed class NativeJobSqlTests(SqlServerFixture fixture)
         Assert.Equal(legacy.Id, preserved.Id);
         Assert.Equal(legacy.JobConfig, preserved.JobConfig);
         Assert.False(preserved.IsActive);
-        // The same store recovers without a cached failure or restarting the process.
+        // The store can use the schema produced by either manual migration path.
         var dashboard = await store.GetDashboardAsync(CancellationToken.None);
         Assert.Equal(JobCatalog.All.Count, dashboard.Jobs.Count);
         Assert.False(dashboard.Jobs.Single(job => job.Definition.Name == JobCatalog.Domain).Settings.Enabled);

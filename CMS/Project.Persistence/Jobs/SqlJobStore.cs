@@ -196,20 +196,13 @@ public sealed class SqlJobStore(ApplicationDbContext database) : IJobStore
             entry.State = EntityState.Detached;
         // This short transaction also serializes configuration saves with a claim, across all instances.
         await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
-        // Check before touching legacy settings. Do not cache failures: the next poll/request can recover
-        // after deployment applies the migration. Runtime credentials only need access, never DDL rights.
-        var schemaReady = await database.Database.SqlQueryRaw<int>("""
-            SELECT CASE WHEN OBJECT_ID(N'JobSchedules', N'U') IS NOT NULL
-                         AND OBJECT_ID(N'JobExecutions', N'U') IS NOT NULL
-                        THEN 1 ELSE 0 END AS Value
-            """).SingleAsync(cancellationToken);
-        if (schemaReady == 0) throw new JobSchemaNotReadyException();
         await database.Database.ExecuteSqlRawAsync("""
             DECLARE @result int;
             EXEC @result = sys.sp_getapplock @Resource = N'RazdanehCMS:jobs:configuration:v1',
                 @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 10000;
             IF @result < 0 THROW 51000, N'Job configuration lock unavailable', 1;
             """, cancellationToken);
+        await SqlJobSchema.EnsureCreatedAsync(database, cancellationToken);
         var now = await database.Database.SqlQueryRaw<DateTime>("SELECT SYSUTCDATETIME() AS Value").SingleAsync(cancellationToken);
         var result = await action(DateTime.SpecifyKind(now, DateTimeKind.Utc));
         await database.SaveChangesAsync(cancellationToken);
