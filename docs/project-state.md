@@ -9,6 +9,7 @@
 - شواهد استفادهٔ قبلی و از‌دست‌رفتن جدول، marker با `schema_recreated` و NeedsReview می‌سازند؛ دادهٔ حذف‌شده قابل‌بازیابی نیست و dispatch تا review متوقف می‌ماند. [ADR-014](architecture/decisions.md) و [راهنما](testing/native-jobs.md) مرجع رفتار جدیدند.
 - سه حالت ساخت خودکار پیش از اصلاح شکست خوردند؛ ۱۳ حالت هدفمند پس از اصلاح موفق شدند. اجرای کامل: ۱۲۱ تست .NET (۷۴ unit/HTTP/قرارداد + ۴۷ SQL) و ۱۳ JavaScript موفق، صفر skipped. build هشت پروژه با ۱۳ warning قبلی و صفر error؛ EF بدون pending model change و هر ۲۸ snapshot نسبت به `657019e` ثابت.
 - هم‌زمانی دو instance، ساخت اولیه با/بدون EF history، حفظ دادهٔ جدول باقی‌مانده، خطای واقعی مجوز SQL و بازیابی با grant و ادامه پس از revoke DDL، rollback با cancellation وسط ساخت و اجرای IHostedService واقعی با business بدل تست شدند. SQL/DNS تولید، startup اصلی، seed و deployment اجرا نشده‌اند.
+- تغییر تازهٔ مالک در `91e6536` برای pin بستهٔ Pkcs به 10.0.13 در پنج پروژه با merge `e35559b` حفظ شد. پس از restore، هر ۱۲۱ تست .NET روی نتیجهٔ ترکیب‌شده دوباره موفق شدند؛ build نهایی هشت پروژه با ۳ warning و صفر error، EF بدون تغییر مدل و snapshotها ثابت‌اند. نتیجهٔ ۱۳ تست JavaScript همین گام نیز موفق است؛ فایل‌های frontend در merge تغییر نکردند.
 
 ## اصلاح نبود جدول زمان‌بند — ۲۰۲۶-۱۰-۱۹ UTC
 

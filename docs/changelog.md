@@ -5,6 +5,7 @@
 - ساخت جدول گمشدهٔ JobSchedules/JobExecutions و indexها زیر قفل SQL و transaction مشترک، با تعریف همان migration موجود؛ حفظ Jobs و دادهٔ جدول موجود.
 - ثبت فقط migration جدید در history موجود؛ بازیابی جدول ازدست‌رفته با marker و توقف dispatch تا review، پیام مشخص در نبود مجوز ساخت و تلاش مجدد پس از اصلاح دسترسی.
 - ۱۲۱ تست .NET و ۱۳ JavaScript موفق، صفر skipped؛ build هشت پروژه با صفر error، EF بدون تغییر مدل و ۲۸ snapshot ثابت. تست SQL واقعی برای هم‌زمانی، rollback با cancellation، حفظ داده و مجوز DDL؛ هیچ DB تولید تغییر نکرد.
+- تغییر تازهٔ مالک برای Pkcs 10.0.13 در پنج پروژه حفظ شد؛ restore و هر ۱۲۱ تست .NET روی merge نیز موفق و build نهایی با ۳ warning و صفر error است.
 
 ## ۲۰۲۶-۱۰-۱۹ UTC — مدیریت نبود جدول‌های زمان‌بند
 
