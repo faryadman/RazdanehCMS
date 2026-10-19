@@ -7,6 +7,7 @@
 - رندر مقاوم برای JSON/گروه غایب، نمایش امن متن و استفادهٔ فرم از جزئیات تازه.
 - افزودن ۱۴ تست SQL Server و ۷ تست JavaScript؛ همراه ۳۲ تست قدیمی، همگی محلی موفق و build بدون error.
 - جزئیات، تغییر مقادیر ناقص و محدودیت‌ها در [گزارش واکشی](testing/server-retrieval.md) ثبت شد.
+- انتشار commit `3ccb76e` در [Draft PR #8](https://github.com/faryadman/RazdanehCMS/pull/8) با base شاخهٔ PR #7؛ هیچ merge به master انجام نشد.
 
 ## ۲۰۲۶-۱۰-۱۸ — اولین پاک‌سازی محدود
 
