@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.AppSetting;
-using Project.Application.DTOs.Group;
 using Project.Application.DTOs.Server;
 using Project.Application.DTOs.ServerLog;
 using Project.Application.Exceptions;
@@ -57,115 +56,24 @@ namespace Project.Application.Features.Services
             if (appId != null)
             {
                 var app = await _appSettingService.Detail(appId.Value);
+                if (app == null)
+                    throw new BadRequestException("برنامه یافت نشد");
 
                 var groups = string.IsNullOrWhiteSpace(app.GroupsThatAppIsJoinedIn) ? new string[] { } : app.GroupsThatAppIsJoinedIn.Split("_");
                 query = query.Where(x => groups.Contains(x.GroupId.ToString()));
             }
 
-            query = query.Include(x => x.Logs);
-
-            var data = await query.Include(x => x.Group).OrderBy(x => x.Id).Select(x => new ServerDTO
-            {
-                Config = x.Config,
-                Group = _mapper.Map<GroupDTO>(x.Group),
-                GroupId = x.GroupId,
-                Id = x.Id,
-                Ip = x.Ip,
-                IsAd = x.IsAd,
-                IsNewDomain = x.IsNewDomain,
-                Location = x.Location,
-                ServerName = x.ServerName,
-                UpdatedAt = x.UpdatedAt,
-                IsForIrancell = x.IsForIrancell,
-                IsForHamraheAvval = x.IsForHamraheAvval,
-                IsAvailable = x.IsAvailable,
-                CurrentDomainValue = x.CurrentDomainValue,
-                AllLogsStatistics = x.Logs.Any(y => y.IsActive) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful),
-                } : null,
-
-                HamraheAvvalLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.HamraheAvval) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
-                } : null,
-
-                IrancellLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Irancell) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
-                } : null,
-
-                UnknownLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Unknown) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
-                } : null,
-
-            }).ToListAsync();
-
-            return _mapper.Map<List<ServerDTO>>(data);
+            return await query.OrderBy(server => server.Id)
+                .Select(ServerReadProjection.WithStatistics)
+                .ToListAsync();
         }
 
         public Task<ServerDTO> GetServerStatistics(int serverId)
         {
-            var query = _serverRepository.GetAllQueryable();
-            query = query.Where(x => x.IsActive && x.Id == serverId && x.IsActive == true);
-            query = query.Include(x => x.Logs);
-            var data = query.Select(x => new ServerDTO
-            {
-                Config = x.Config,
-                Group = _mapper.Map<GroupDTO>(x.Group),
-                GroupId = x.GroupId,
-                Id = x.Id,
-                Ip = x.Ip,
-                IsAd = x.IsAd,
-                IsNewDomain = x.IsNewDomain,
-                Location = x.Location,
-                ServerName = x.ServerName,
-                UpdatedAt = x.UpdatedAt,
-                IsForIrancell = x.IsForIrancell,
-                IsForHamraheAvval = x.IsForHamraheAvval,
-                IsAvailable = x.IsAvailable,
-                CurrentDomainValue = x.CurrentDomainValue,
-                DomainDateTime = x.DomainDateTime,
-                AllLogsStatistics = x.Logs.Any(y => y.IsActive) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful),
-                } : null,
-
-                HamraheAvvalLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.HamraheAvval) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.HamraheAvval),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.HamraheAvval),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.HamraheAvval),
-                } : null,
-
-                IrancellLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Irancell) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Irancell),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Irancell),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Irancell),
-                } : null,
-
-                UnknownLogsStatistics = x.Logs.Any(y => y.IsActive && y.Operator == Operator.Unknown) ? new DTOs.ServerLog.ServerLogStatistics
-                {
-                    Count = x.Logs.Count(y => y.IsActive && y.Operator == Operator.Unknown),
-                    FailCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Failed && y.Operator == Operator.Unknown),
-                    SuccessCount = x.Logs.Count(y => y.IsActive && y.ConnectionStatus == ConnectionStatus.Successful && y.Operator == Operator.Unknown),
-                } : null,
-
-            }).SingleOrDefault();
-
-            return Task.FromResult(_mapper.Map<ServerDTO>(data));
+            return _serverRepository.GetAllQueryable()
+                .Where(server => server.IsActive && server.Id == serverId)
+                .Select(ServerReadProjection.WithStatistics)
+                .SingleOrDefaultAsync();
         }
 
 
@@ -316,8 +224,8 @@ namespace Project.Application.Features.Services
 
         public async Task<ServerDTO> Detail(int id)
         {
-            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == id);
-            if (model is not { IsActive: true })
+            var model = await _serverRepository.GetActiveWithGroupAsync(id);
+            if (model == null)
                 throw new NotFoundException("سرور یافت نشد");
 
             return _mapper.Map<ServerDTO>(model);
@@ -329,11 +237,7 @@ namespace Project.Application.Features.Services
             if (!int.TryParse(digits, out var parsedId) || parsedId == 0)
                 throw new NotFoundException("سرور یافت نشد");
 
-            var model = await _serverRepository.SingleOrDefaultAsync(x => x.Id == parsedId);
-            if (model is not { IsActive: true })
-                throw new NotFoundException("سرور یافت نشد");
-
-            return _mapper.Map<ServerDTO>(model);
+            return await Detail(parsedId);
         }
 
         public async Task DeleteByGroupId(int groupId)

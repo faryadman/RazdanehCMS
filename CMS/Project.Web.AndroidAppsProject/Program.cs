@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.ConfigureApplicationServices(new LoggerFactory(), builder.Configuration);
+builder.Services.ConfigureApplicationServices(builder.Configuration);
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
 builder.Services.AddSingleton<ICronJobService, CronJobService>();
@@ -97,7 +97,8 @@ string path = builder.Configuration["Serilog:path"];
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File(path, rollingInterval: RollingInterval.Hour)
     .MinimumLevel.Warning()
-    .CreateLogger(); builder.Host.UseSerilog();
+    .CreateLogger();
+builder.Host.UseSerilog(dispose: true);
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

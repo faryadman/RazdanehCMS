@@ -44,16 +44,14 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _ipConfigService.Delete(id);
             return Json(new { status = "1", message = "done successfully" });
         }
-        public Task<IActionResult> DeleteInactive()
+        public async Task<IActionResult> DeleteInactive()
         {
-            ////TODO: Refactor into service
-            //var list = _domainService.Remove();
             var data = _ipConfigService.ListInactive();
             foreach (var entity in data)
             {
-                _ipConfigService.Delete(entity.Id);
+                await _ipConfigService.Delete(entity.Id);
             }
-            return Task.FromResult<IActionResult>(Json(new { status = "1", message = "done successfully" }));
+            return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> MassDelete(string ids)
         {

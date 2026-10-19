@@ -16,5 +16,6 @@
 | ADR-010 | باز: semantics cron، retention و timezone تاریخی | تبدیل */45 به interval و حذف log تغییر رفتارند؛ نیاز به تصمیم کسب‌وکار |
 
 | ADR-011 | اجراشده در feature: registration واحد MVC قدیمی با snapshotهای قبل از refactor | تغییر داخلی بدون تغییر گزینه‌های serializer؛ حذف ۱۱ فایل بدون مصرف پس از جست‌وجوی ارجاع؛ ۳۲ تست قبل/بعد موفق. سایر بازطراحی‌ها از این تصمیم مجوز نمی‌گیرند. |
+| ADR-012 | اجراشده به درخواست بررسی Dispose روی همان fix/server-retrieval: مالکیت context با scope و logger با host | job singleton برای هر اجرا async scope مستقل می‌سازد؛ repository context تزریق‌شده را دستی آزاد نمی‌کند؛ تمام Taskهای حذف انتظار کشیده می‌شوند. قالب موفق API ثابت است، موفقیت کاذب حذف حفظ نمی‌شود. ۱۸ تست جدید و rollback با revert؛ بدون migration. |
 
 تغییر هر تصمیم باید دلیل، اثر بر data/Android، تست، مسیر بازگشت و وضعیت تأیید داشته باشد.

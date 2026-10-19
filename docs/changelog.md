@@ -1,5 +1,22 @@
 # تغییرات
 
+## ۲۰۲۶-۱۰-۱۹ UTC — اصلاح عمر منابع روی همان شاخه
+
+- scope مستقل و آزادسازی async برای هر اجرای CronJobService singleton؛ رفع نگهداری سرویس‌های scoped در root.
+- انتظار کامل برای حذف‌های IP/Domain، استفادهٔ mapper از LoggerFactory میزبان و واگذاری dispose Serilog به host.
+- آزادسازی context/cache تست در شکست initialization؛ افزودن ۱۸ تست رگرسیون مربوط به lifetime.
+- ۶۴ تست .NET و ۷ تست JavaScript موفق؛ ۲۸ snapshot ثابت. شواهد، اثر مشاهده‌پذیر حذف و محدودیت‌ها در [گزارش Dispose](testing/resource-lifetime.md).
+- مشاهدهٔ mergeهای انجام‌شده توسط مالک و بسته‌شدن PR #8؛ حفظ master جدید `2d8d1ba` روی همین fix با merge `8501f1b` و آماده‌سازی Draft PR تازه به master.
+
+## ۲۰۲۶-۱۰-۱۹ — اصلاح واکشی پنل
+
+- رفع فیلدهای ناقص در فهرست/آمار و بارگیری گروه در repository جزئیات؛ بدون تغییر DTO و route.
+- حفظ HTTP400 برای فیلتر برنامهٔ ناموجود، همراه خطای فارسی کنترل‌شده به‌جای NullReference.
+- رندر مقاوم برای JSON/گروه غایب، نمایش امن متن و استفادهٔ فرم از جزئیات تازه.
+- افزودن ۱۴ تست SQL Server و ۷ تست JavaScript؛ همراه ۳۲ تست قدیمی، همگی محلی موفق و build بدون error.
+- جزئیات، تغییر مقادیر ناقص و محدودیت‌ها در [گزارش واکشی](testing/server-retrieval.md) ثبت شد.
+- انتشار commit `3ccb76e` در [Draft PR #8](https://github.com/faryadman/RazdanehCMS/pull/8) با base شاخهٔ PR #7؛ هیچ merge به master انجام نشد.
+
 ## ۲۰۲۶-۱۰-۱۸ — اولین پاک‌سازی محدود
 
 - ایجاد feature branch از ممیزی؛ ثبت baseline تست قبل از refactor در `90a1b1a`.

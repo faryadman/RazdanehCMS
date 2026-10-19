@@ -17,5 +17,9 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.402'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
       - run: dotnet restore RazdanehCMS.sln
       - run: dotnet test RazdanehCMS.sln --no-restore -m:2
+      - run: node --test tests/frontend/server-retrieval.test.cjs

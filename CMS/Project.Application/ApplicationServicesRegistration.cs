@@ -6,15 +6,12 @@ using Project.Application.Features;
 using Project.Application.Features.Interfaces;
 using Project.Application.Features.Services;
 using Project.Application.Profiles;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Project.Application
 {
     public static class ApplicationServicesRegistration
     {
-        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, ILoggerFactory loggerFactory,
-        IConfiguration configuration)
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             {
                 services.AddSingleton(provider =>
@@ -22,7 +19,7 @@ namespace Project.Application
                     var config = new MapperConfiguration(cfg =>
                     {
                         cfg.AddProfile(new MappingProfile());
-                    }, loggerFactory);
+                    }, provider.GetRequiredService<ILoggerFactory>());
 
                     return config.CreateMapper();
                 });
