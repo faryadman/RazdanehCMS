@@ -1,16 +1,22 @@
+using System.Data;
+using System.Data.Common;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
+using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
 using Project.Application.Features.Interfaces;
 using Project.Application.Middlewares;
 using Project.Domain.Entities;
+using Project.Persistence;
 using Project.Web.AndroidAppsProject.Configuration;
 using Xunit;
 
@@ -22,8 +28,45 @@ public sealed class ServerRetrievalTests(SqlServerFixture fixture)
     private async Task<RetrievalDatabase> CreateDatabaseAsync()
     {
         var database = new RetrievalDatabase(fixture.ConnectionString);
-        await database.SeedAsync();
-        return database;
+        try
+        {
+            await database.SeedAsync();
+            return database;
+        }
+        catch
+        {
+            await database.DisposeAsync();
+            throw;
+        }
+    }
+
+    [Fact]
+    public async Task Repository_uses_the_request_context_and_scope_disposal_closes_its_sql_connection()
+    {
+        await using var database = await CreateDatabaseAsync();
+        var services = new ServiceCollection();
+        services.ConfigurePersistenceServices(new ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+                ["ConnectionStrings:DefaultConnection"] = database.Context.Database.GetConnectionString()
+            }).Build());
+        await using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
+        ApplicationDbContext context;
+        DbConnection connection;
+        await using (var scope = provider.CreateAsyncScope())
+        {
+            context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            connection = context.Database.GetDbConnection();
+            Assert.Same(context, scope.ServiceProvider.GetRequiredService<ApplicationDbContext>());
+            await context.Database.OpenConnectionAsync();
+            var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
+            var server = await repository.GetActiveWithGroupAsync(database.Available.Id);
+            Assert.Equal(database.NormalGroup.Title, server!.Group.Title);
+            Assert.Equal(ConnectionState.Open, connection.State);
+            Assert.Empty(context.ChangeTracker.Entries());
+        }
+        Assert.Equal(ConnectionState.Closed, connection.State);
+        Assert.Throws<ObjectDisposedException>(() => context.Model);
     }
 
     [Fact]

@@ -1,5 +1,12 @@
 # تغییرات
 
+## ۲۰۲۶-۱۰-۱۹ UTC — اصلاح عمر منابع روی همان شاخه
+
+- scope مستقل و آزادسازی async برای هر اجرای CronJobService singleton؛ رفع نگهداری سرویس‌های scoped در root.
+- انتظار کامل برای حذف‌های IP/Domain، استفادهٔ mapper از LoggerFactory میزبان و واگذاری dispose Serilog به host.
+- آزادسازی context/cache تست در شکست initialization؛ افزودن ۱۸ تست رگرسیون مربوط به lifetime.
+- ۶۴ تست .NET و ۷ تست JavaScript موفق؛ ۲۸ snapshot ثابت. شواهد، اثر مشاهده‌پذیر حذف و محدودیت‌ها در [گزارش Dispose](testing/resource-lifetime.md).
+
 ## ۲۰۲۶-۱۰-۱۹ — اصلاح واکشی پنل
 
 - رفع فیلدهای ناقص در فهرست/آمار و بارگیری گروه در repository جزئیات؛ بدون تغییر DTO و route.

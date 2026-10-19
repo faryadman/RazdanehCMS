@@ -376,18 +376,17 @@ namespace Project.Application.Features.Services
         {
             await _domainRepository.Delete(id);
         }
-        public Task Remove()
+        public async Task Remove()
         {
             var query = _domainRepository.GetAllQueryable();
             query = query.Where(x => !x.IsActive);
             var list = query.ToList();
             foreach (var domain in list)
             {
-                _domainRepository.RemoveWithoutSaveChange(domain);
+                await _domainRepository.RemoveWithoutSaveChange(domain);
             }
 
-            _domainRepository.SaveChangesTask();
-            return Task.CompletedTask;
+            await _domainRepository.SaveChangesTask();
         }
         private async Task<DomainDTO> GetDomain(string name)
         {

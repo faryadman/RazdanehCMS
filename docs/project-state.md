@@ -1,6 +1,15 @@
 # وضعیت پروژه
 
-مرحلهٔ فعلی: اصلاح واکشی فهرست/جزئیات پنل روی `fix/server-retrieval` از `f25783f`. کاربر مشکل را به پنل محدود کرد. مستندات تفصیلی در [گزارش واکشی](testing/server-retrieval.md) است.
+مرحلهٔ فعلی: اصلاح واکشی و بازبینی عمر منابع روی `fix/server-retrieval`. کاربر پس از رفع واکشی، بررسی Dispose را صریحاً روی همین شاخه خواست. گزارش‌ها: [واکشی](testing/server-retrieval.md) و [عمر منابع](testing/resource-lifetime.md).
+
+## ادامهٔ گام — بررسی Dispose، ۲۰۲۶-۱۰-۱۹ UTC
+
+- مبنا `8816489`؛ مشکل دریافت scoped از root در CronJobService singleton و پایان زودهنگام درخواست‌های حذف با ۱۵ تست ناموفق بازتولید شد؛ همان تست‌ها پس از اصلاح موفق شدند.
+- هر job یک async scope مستقل دارد؛ زنجیرهٔ حذف‌های پنل await می‌شود؛ mapper از ILoggerFactory میزبان استفاده می‌کند؛ Serilog با dispose:true ثبت شده و cleanup ابزار SQL در شکست initialization محافظ دارد.
+- ۱۸ تست جدید: ۱۷ تست scope/async/mapper و یک تست SQL واقعی برای بسته‌شدن اتصال و آزادسازی context. نتیجه: ۶۴ تست .NET و ۷ تست JavaScript موفق، صفر skipped؛ ۲۸ snapshot قرارداد قبلی بدون تغییر بایتی.
+- build نهایی هشت پروژه با ۲۵ warning و صفر error موفق شد؛ advisoryها و هشدارهای قبلی به‌عنوان بخشی از این اصلاح تغییر نکردند.
+- قالب پاسخ موفق ثابت است؛ عملیات حذف تا پایان واقعی کار انتظار می‌کشد و خطای async را به مسیر خطای موجود می‌رساند. زمان‌بندی و سیاست exception jobها ثابت‌اند؛ shutdown کامل فرآیند و DNS زنده تست نشده‌اند.
+- این گام همان Draft PR #8 را ادامه می‌دهد؛ merge انجام نمی‌شود. محدودیت‌ها، بخش غیرفعال SMS و rollback در گزارش عمر منابع ثبت شده‌اند.
 
 ## گام جاری — ۲۰۲۶-۱۰-۱۹
 
@@ -24,11 +33,11 @@
 - workflow رگرسیون اضافه شده؛ موفقیت CI فقط با نتیجهٔ واقعی GitHub اعلام شود. جزئیات در [رگرسیون API](testing/legacy-api-regression.md).
 - تصحیح گزارش ممیزی: default پارامتر filter در interface صفر است و همان به GetWithFilter فرستاده می‌شود؛ رفتار محصول تغییر نکرده است.
 
-دامنهٔ اصلاح: کد محصول فقط registration و وابستگی/کلاس بدون مصرف است. DTO، route، action، serializer settings، منطق انتخاب سرور، JobController/CronJobService، DNS و schema دیتابیس تغییر نکرده‌اند. هیچ SQL یا DNS تولید اجرا نشده است.
+دامنهٔ پاک‌سازی قبلی: کد محصول فقط registration و وابستگی/کلاس بدون مصرف بود. DTO، route، action، serializer settings، منطق انتخاب سرور، JobController/CronJobService، DNS و schema دیتابیس در آن گام تغییر نکردند. هیچ SQL یا DNS تولید اجرا نشد. تغییر بعدی lifetime در بخش جاری بالای همین سند ثبت شده است.
 
 ## موارد باز
 
-سازگاری کامل Android بدون نمونهٔ واقعی قابل‌ادعا نیست. تست‌های SQL، منطق انتخاب سرور، DNS، job recovery و کل startup/proxy اجرا نشده‌اند. کنترل دسترسی عملیات خطرناک، deletion گستردهٔ DNS، seed ثابت، credentialهای باقی‌مانده، عدم validation JSON و advisoryهای Pkcs همچنان بازند؛ حذف Dapper بدون مصرف آن‌ها را حل نمی‌کند.
+سازگاری کامل Android بدون نمونهٔ واقعی قابل‌ادعا نیست. تست SQL یک‌بارمصرف برای واکشی و lifetime اجرا شده است؛ SQL تولید، منطق انتخاب سرور Android، DNS زنده، job recovery و کل startup/proxy آزمایش نشده‌اند. کنترل دسترسی عملیات خطرناک، deletion گستردهٔ DNS، seed ثابت، credentialهای باقی‌مانده، عدم validation JSON و advisoryهای Pkcs همچنان بازند؛ حذف Dapper بدون مصرف آن‌ها را حل نمی‌کند.
 
 گام بعد باید در PR مستقل با تست رفتاری باشد: اعتبارسنجی format-aware JSON با نمونهٔ معتبر یا استخراج policy انتخاب سرور بدون تغییر قرارداد. مسائل امنیتی بحرانی باید با تصمیم صریح دربارهٔ مصرف legacy اولویت داشته باشند. rollback این پاک‌سازی بازگرداندن commit refactor و حفظ commit تست است؛ مهاجرت داده ندارد.
 

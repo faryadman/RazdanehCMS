@@ -43,11 +43,10 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers
             await _domainService.Delete(id);
             return Json(new { status = "1", message = "done successfully" });
         }
-        public Task<IActionResult> DeleteInactiveDomain()
+        public async Task<IActionResult> DeleteInactiveDomain()
         {
-            //TODO: Refactor into service
-            var list = _domainService.Remove();
-            return Task.FromResult<IActionResult>(Json(new { status = "1", message = "done successfully" }));
+            await _domainService.Remove();
+            return Json(new { status = "1", message = "done successfully" });
         }
         public async Task<IActionResult> MassDelete(string ids)
         {

@@ -5,16 +5,17 @@ namespace Project.Web.AndroidAppsProject.CronJob
 {
     public class CronJobService : ICronJobService
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceScopeFactory scopeFactory;
 
-        public CronJobService(IServiceProvider serviceProvider)
+        public CronJobService(IServiceScopeFactory scopeFactory)
         {
-            this.serviceProvider = serviceProvider;
+            this.scopeFactory = scopeFactory;
         }
 
         public async Task ResetServerLog()
         {
-            var serverLogService = (IServerLogService)serviceProvider.GetService(typeof(IServerLogService))!;
+            await using var scope = scopeFactory.CreateAsyncScope();
+            var serverLogService = scope.ServiceProvider.GetRequiredService<IServerLogService>();
             await serverLogService.DeleteServerLogs();
         }
 
@@ -22,7 +23,8 @@ namespace Project.Web.AndroidAppsProject.CronJob
         {
             try
             {
-                var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var serverChangeSubDomainService = scope.ServiceProvider.GetRequiredService<IDomainService>();
                 await serverChangeSubDomainService.ChangeSubDomain();
             }
             catch (Exception ex)
@@ -34,7 +36,8 @@ namespace Project.Web.AndroidAppsProject.CronJob
         {
             try
             {
-                var serverChangeDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+                await using var scope = scopeFactory.CreateAsyncScope();
+                var serverChangeDomainService = scope.ServiceProvider.GetRequiredService<IDomainService>();
                 await serverChangeDomainService.ChangeDomain();
             }
             catch (Exception ex)
@@ -44,13 +47,15 @@ namespace Project.Web.AndroidAppsProject.CronJob
         }
         public async Task ResetServerDns()
         {
-            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+            await using var scope = scopeFactory.CreateAsyncScope();
+            var serverChangeSubDomainService = scope.ServiceProvider.GetRequiredService<IDomainService>();
             await serverChangeSubDomainService.DeleteDnsAsync();
         }
 
         public async Task CheckZoneId()
         {
-            var serverChangeSubDomainService = (IDomainService)serviceProvider.GetService(typeof(IDomainService))!;
+            await using var scope = scopeFactory.CreateAsyncScope();
+            var serverChangeSubDomainService = scope.ServiceProvider.GetRequiredService<IDomainService>();
             await serverChangeSubDomainService.InitZoneId();
         }
     }

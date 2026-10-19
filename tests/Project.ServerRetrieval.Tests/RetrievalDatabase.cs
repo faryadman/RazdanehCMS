@@ -99,8 +99,14 @@ public sealed class RetrievalDatabase : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await Context.DisposeAsync();
-        cache.Dispose();
+        try
+        {
+            await Context.DisposeAsync();
+        }
+        finally
+        {
+            cache.Dispose();
+        }
     }
 }
 
