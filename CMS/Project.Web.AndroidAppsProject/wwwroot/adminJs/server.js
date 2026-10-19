@@ -31,6 +31,10 @@ function getservers(isAd, filter) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (result) {
+            if (!Array.isArray(result)) {
+                alert("پاسخ واکشی اطلاعات سرورها معتبر نیست. دوباره تلاش کنید.");
+                return;
+            }
             serversTable.clear().draw();
             renderservers(result);
             // تنظیم رویداد بعد از تغییر صفحه
@@ -41,14 +45,31 @@ function getservers(isAd, filter) {
             reloadTableAndGoToPage(currentPageNumber);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
-            alert(" بروز اشکال در اتصال به اینترنت ");
+            alert("واکشی اطلاعات سرورها انجام نشد. دوباره تلاش کنید.");
         }
     });
 
 }
 
+function escapeServerText(value) {
+    return String(value ?? '—').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+}
+
+function readServerConfig(config) {
+    try {
+        const settings = JSON.parse(config)?.outbounds?.[0]?.streamSettings;
+        return {
+            serverName: settings?.tlsSettings?.serverName ?? '—',
+            hostName: settings?.wsSettings?.headers?.Host ?? '—'
+        };
+    } catch {
+        return { serverName: 'تنظیمات JSON نامعتبر است', hostName: '—' };
+    }
+}
+
 function renderservers(data) {
-    console.log(data);
     let isOdd = true;
     for (var i = 0; i < data.length; i++) {
         let item = data[i];
@@ -56,9 +77,6 @@ function renderservers(data) {
         let deleteChekbox = '<input class="deleteCheckbox" type="checkbox" data-item-id="' + item.id + '"/>';
         let editButton = '<button class="btn btn-sm btn-warning edit" ' +
             'data-item-id="' + item.id + '"' +
-            'data-item-serverName="' + item.serverName + '"' +
-            'data-item-location="' + item.location + '"' +
-            'data-item-ip="' + item.ip + '"' +
             '>edit</button>';
 
         let deleteButton = '<button class="btn btn-sm btn-danger    " onclick="deleteservers(' + item.id + ')">Delete</button>';
@@ -79,7 +97,7 @@ function renderservers(data) {
         let buttonDeleteTcpDnsRecord = '<div><br><button class="btn btn-danger btn-sm btn-block" onclick="deleteTcpDnsRecord(' + item.id + ')">Delete Tcp Dns Record</button></div>';
         let buttonCreateDnsRecord = '<div><br><button class="btn btn-warning btn-sm btn-block" onclick="createDnsRecord(' + item.id + ')">Create Dns Record</button></div>';
 
-        let buttons = item.currentDomainValue +
+        let buttons = escapeServerText(item.currentDomainValue) +
             buttonRefreshDomain +
             buttonRefreshTcp +
             buttonRefreshSubDomain +
@@ -87,11 +105,7 @@ function renderservers(data) {
             buttonDeleteDnsRecord +
             buttonDeleteTcpDnsRecord;
 
-        let config = item.config;
-        let configObject = JSON.parse(config);
-        console.log(configObject);
-        var serverName = configObject.outbounds[0]?.streamSettings?.tlsSettings?.serverName;
-        var hostName = configObject.outbounds[0]?.streamSettings?.wsSettings?.headers?.Host;
+        const config = readServerConfig(item.config);
 
 
         let addedRow = serversTable.row.add([
@@ -99,10 +113,10 @@ function renderservers(data) {
             item.id,
             isAdServer,
             buttons,
-            '<span class="badge badge-dark">' + serverName + '<hr/>Host:' + hostName + '<hr/>' + item.updatedAtFormatted + '</span>',
-            item.location,
-            '<div>' + item.ip + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
-            '<span class="badge badge-dark">' + item.group.title + '</span>',
+            '<span class="badge badge-dark">' + escapeServerText(config.serverName) + '<hr/>Host:' + escapeServerText(config.hostName) + '<hr/>' + escapeServerText(item.updatedAtFormatted) + '</span>',
+            escapeServerText(item.location),
+            '<div>' + escapeServerText(item.ip) + '<br><button onclick="addToBlackList(' + item.id + ')" class="btn btn-primary btn-sm">add to blacklist</button></div>',
+            '<span class="badge badge-dark">' + escapeServerText(item.group?.title) + '</span>',
             '<div class="custom-control custom-switch mr-2 mb-1"><input ' + isAvailable + ' type="checkbox" class="custom-control-input isAvailableInput" data-item-id="' + item.id + '" id="customSwitch' + item.id + '"><label class="custom-control-label" for="customSwitch' + item.id + '"></label></div>',
             item.isForHamraheAvval,
             item.isForIrancell,
@@ -125,9 +139,8 @@ function renderservers(data) {
         $(addedRow).attr('data-row-id', item.id);
         $(addedRow).attr('id', item.id);
         $(addedRow).addClass('server');
-        serversTable.rows.add(addedRow).draw();
-
     }
+    serversTable.draw(false);
 }
 
 function newserver() {
@@ -435,11 +448,11 @@ $('#serversTable').on('click', '.edit', function () {
             setSelectListData('IsForIrancell', data.isForIrancell);
             $('#ConfigKey').val(data.configKey);
             $('#ConfigValue').val(data.configValue);
-            $('#ServerName').val(item.attr('data-item-serverName'));
+            $('#ServerName').val(data.serverName);
             $('#Config').val(data.config);
-            $('#Location').val(item.attr('data-item-location'));
+            $('#Location').val(data.location);
             $('#CurrentDomainValue').val(data.currentDomainValue);
-            $('#Ip').val(item.attr('data-item-ip'));
+            $('#Ip').val(data.ip);
             formUrl = serversBaseUrl + '/Edit';
             $('#groupSelectListArea').css('display', 'none');
             $('#serversModal').modal();

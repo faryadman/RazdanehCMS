@@ -9,5 +9,6 @@ namespace Project.Application.Contracts.Persistence
 {
     public interface IServerRepository : IGenericRepository<Server>
     {
+        Task<Server> GetActiveWithGroupAsync(int id);
     }
 }
