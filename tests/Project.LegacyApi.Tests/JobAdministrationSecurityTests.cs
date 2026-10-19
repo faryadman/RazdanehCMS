@@ -28,6 +28,25 @@ namespace Project.LegacyApi.Tests;
 public sealed class JobAdministrationSecurityTests
 {
     [Theory]
+    [InlineData("/Admin/Job", "text/html")]
+    [InlineData("/Admin/Job/GetJobDomainData", "application/json")]
+    public async Task Missing_scheduler_schema_returns_a_setup_message_and_service_unavailable(string path, string mediaType)
+    {
+        var store = Substitute.For<IJobStore>();
+        store.GetDashboardAsync(Arg.Any<CancellationToken>()).Returns(Task.FromException<JobDashboard>(new JobSchemaNotReadyException()));
+        using var host = CreateHost(store);
+        using var client = host.GetTestClient();
+        client.DefaultRequestHeaders.Add("X-Test-Role", "admin");
+        using var response = await client.GetAsync(path);
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        Assert.Equal(mediaType, response.Content.Headers.ContentType?.MediaType);
+        var body = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
+        Assert.Contains(JobSchemaNotReadyException.MigrationId, body);
+        Assert.DoesNotContain("Invalid object name", body);
+        Assert.DoesNotContain("/Admin/Job/Save", body);
+    }
+
+    [Theory]
     [InlineData(null, HttpStatusCode.Unauthorized)]
     [InlineData("user", HttpStatusCode.Forbidden)]
     public async Task Job_administration_is_inaccessible_without_the_admin_role(string? role, HttpStatusCode status)

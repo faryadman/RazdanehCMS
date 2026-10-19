@@ -4,6 +4,35 @@
 
 ## راه‌اندازی روی دیتابیس موجود
 
+### رفع خطای `Invalid object name 'JobSchedules'`
+
+این خطا یعنی اتصال فعلی برنامه جدول زمان‌بند را پیدا نمی‌کند؛ معمولاً migration جدید اعمال نشده یا روی دیتابیس دیگری اجرا شده است. در SSMS دیتابیس متناظر با `ConnectionStrings:DefaultConnection` همان محیط را انتخاب کنید و بررسی کنید:
+
+```sql
+SELECT DB_NAME() AS CurrentDatabase,
+       OBJECT_ID(N'JobSchedules', N'U') AS JobSchedules,
+       OBJECT_ID(N'JobExecutions', N'U') AS JobExecutions;
+SELECT MigrationId FROM __EFMigrationsHistory ORDER BY MigrationId;
+```
+
+اگر آخرین migration برابر `20260923234510_updateServerZoneId` است، پس از backup، [اسکریپت آمادهٔ ساخت جدول‌ها](../../scripts/sql/native-job-scheduling.sql) را روی **همین دیتابیس** اجرا کنید. این اسکریپت تنظیمات قبلی Jobs را تغییر نمی‌دهد؛ تکرار اجرای کامل آن بی‌اثر است. سپس برنامه را دوباره راه‌اندازی کنید. اگر migration جدید در history ثبت است ولی جدول وجود ندارد، یا migration قبلی هنوز اعمال نشده، ابتدا ناسازگاری schema/history را بررسی کنید؛ رکورد history را برای دورزدن خطا پاک نکنید.
+
+راه جایگزین با EF از ریشهٔ مخزن، بعد از تنظیم امن متغیر `RAZDANEH_DESIGN_CONNECTION_STRING` به اتصال **همان دیتابیس برنامه**:
+
+```bash
+dotnet ef database update 20261019211502_AddNativeJobScheduling --project CMS/Project.Persistence --startup-project CMS/Project.Web.AndroidAppsProject --context ApplicationDbContext
+```
+
+در Package Manager Console ویژوال استودیو:
+
+```powershell
+Update-Database -Migration 20261019211502_AddNativeJobScheduling -Project Project.Persistence -StartupProject Project.Web.AndroidAppsProject -Context ApplicationDbContext
+```
+
+در هر دو روش EF، factory بدون آن متغیر از دیتابیس محلی `RazdanehDesignOnly` استفاده می‌کند؛ موفقیت فرمان روی آن دیتابیس، schema برنامه را آماده نمی‌کند. اتصال را از تنظیمات امن محیط تأمین کنید و مقدار آن را در chat یا commit نگذارید. از `EnsureCreated` برای ارتقای دیتابیس موجود استفاده نکنید. غیرفعال‌کردن worker هم جای migration لازم برای پنل را نمی‌گیرد.
+
+### ترتیب استقرار
+
 ۱. backup و آخرین migration اعمال‌شده را بررسی کنید. [اسکریپت افزایشی](../../scripts/sql/native-job-scheduling.sql) از `20260923234510_updateServerZoneId` تا `20261019211502_AddNativeJobScheduling` تولید شده است؛ idempotent بودن به معنی جبران migrationهای قبلیِ اعمال‌نشده نیست. اسکریپت را با مسیر اتصال مصوب همان محیط اجرا کنید؛ مقدار اتصال وارد مستندات یا chat نشود.
 
 ۲. هنگام cutover تمام نمونه‌های نسخهٔ دارای Hangfire را متوقف کنید و پایان کارهای درحال‌اجرایشان را بررسی کنید. قفل جدید مانع اجرای engine قدیمی که به آن متعهد نیست نمی‌شود؛ rolling deployment با دو engine فعال انجام نشود.
@@ -35,6 +64,8 @@
 
 ## شواهد آزمون
 
+اصلاح گزارش `Invalid object name 'JobSchedules'` روی مبنای `9f7e877`: سه تست SQL برای نبود یکی/هردو جدول و دو تست HTTP پیش از اصلاح شکست خوردند؛ پس از بررسی schema پیش از هر write و مدیریت خطای مشخص، هر پنج موفق شدند. آزمون migration علاوه بر EF، اسکریپت واقعی مخزن را دو بار اجرا می‌کند، حفظ رکورد قدیمی Jobs و بازیابی همان store را می‌سنجد و یک worker واقعی با business بدل اجرا می‌کند. اجرای کامل پس از اصلاح: ۷۴ تست unit/HTTP/قرارداد + ۳۹ SQL = ۱۱۳ .NET و ۱۳ JavaScript، همگی موفق و صفر skipped؛ build هشت پروژه با ۱۳ warning قبلی و صفر error، EF بدون pending model change و ۲۸ snapshot ثابت. این نتیجه مربوط به SQL یک‌بارمصرف است، نه دیتابیس کاربر.
+
 پیش از جابه‌جایی business از JobController، ۷ تست قواعد سن/تعداد/درصد شکست دامنه و شرط آمار/سن IP روی کد قبلی موفق بودند؛ پس از انتقال، همان حالت‌ها روی JobHandler کنترل می‌شوند. جداگانه، race ناشی از tracking قدیمیِ EF بین خواندن فرم و ثبت درخواست اجرای هم‌زمان با تست SQL شکست خورد؛ پس از تازه‌خواندن entityهای متعلق به scheduler در هر عملیات، تست موفق شد. تغییر مربوط به همان جدول‌هاست و tracking مربوط به Identity و business پاک نمی‌شود.
 
 تست‌های `Project.ServerRetrieval.Tests/NativeJobSqlTests` در SQL Server یک‌بارمصرف پوشش می‌دهند:
@@ -63,6 +94,6 @@ dotnet build RazdanehCMS.sln --no-restore -m:2
 dotnet ef migrations has-pending-model-changes --project CMS/Project.Persistence --startup-project CMS/Project.Web.AndroidAppsProject --context ApplicationDbContext
 ```
 
-نتیجهٔ محلی نهایی: ۷۲ تست unit/HTTP/قرارداد و ۳۵ تست SQL، مجموع ۱۰۷ تست .NET، به‌علاوهٔ ۱۳ تست JavaScript؛ همگی موفق، صفر skipped. اعتبارسنجی رکوردهای فعالِ قدیمیِ بدون دوره/آستانه هم پوشش دارد تا از شروع عملیات با پیش‌فرض ناخواسته جلوگیری شود. هر ۲۸ snapshot نسبت به `657019e` بدون تغییر بایتی است. metadata قدیمی فقط برای تغییرهای مشخص مدیریت job مقایسهٔ تعدیل‌شده دارد؛ بدنه‌های HTTP، schema هر ۴۴ DTO و تنظیمات JSON همان baseline هستند. build هشت پروژه بدون error و بررسی EF بدون pending model change موفق بود؛ اسکریپت idempotent نیز تولید و scope آن دو جدول جدید کنترل شد. هشدارهای قبلی dependency/build همچنان باقی‌اند.
+نتیجهٔ محلی پیش از اصلاح نبود جدول: ۷۲ تست unit/HTTP/قرارداد و ۳۵ تست SQL، مجموع ۱۰۷ تست .NET، به‌علاوهٔ ۱۳ تست JavaScript؛ همگی موفق، صفر skipped. اعتبارسنجی رکوردهای فعالِ قدیمیِ بدون دوره/آستانه هم پوشش دارد تا از شروع عملیات با پیش‌فرض ناخواسته جلوگیری شود. هر ۲۸ snapshot نسبت به `657019e` بدون تغییر بایتی است. metadata قدیمی فقط برای تغییرهای مشخص مدیریت job مقایسهٔ تعدیل‌شده دارد؛ بدنه‌های HTTP، schema هر ۴۴ DTO و تنظیمات JSON همان baseline هستند. build هشت پروژه بدون error و بررسی EF بدون pending model change موفق بود؛ اسکریپت idempotent نیز تولید و scope آن دو جدول جدید کنترل شد. هشدارهای قبلی dependency/build همچنان باقی‌اند.
 
 Program اصلی، seed مدیر، DNS/SQL تولید، Cloudflare زنده، مرورگر کامل، deployment واقعی، network partition دوطرفهٔ provider و kill سیستم‌عامل هنگام call بیرونی تست نشده‌اند. advisoryهای قبلی Pkcs خارج این اصلاح‌اند. این آزمون‌ها جای بازبینی نسخه/compatibility level دیتابیس واقعی و cutover تک‌engine را نمی‌گیرند.

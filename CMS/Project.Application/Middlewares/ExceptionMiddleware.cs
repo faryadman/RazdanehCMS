@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Project.Application.Exceptions;
+using Project.Application.Jobs;
 using Project.Application.Responses;
 using System.Net;
 
@@ -35,6 +36,12 @@ namespace Project.Application.Middlewares
 
             switch (exception)
             {
+                case JobSchemaNotReadyException schemaNotReady:
+                    statusCode = HttpStatusCode.ServiceUnavailable;
+                    res = new Response<string>(ResponseStatus.Failed, message: schemaNotReady.Message);
+                    res.Errors.Add(schemaNotReady.Message);
+                    break;
+
                 case ArvanCloudException arvanCloudException:
                     statusCode = HttpStatusCode.BadRequest;
                     res = new Response<string>(ResponseStatus.BadRequest, message: "خطا در اطلاعات ارسالی");
