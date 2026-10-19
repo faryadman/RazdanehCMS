@@ -1,0 +1,45 @@
+{
+  "statusCode": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "status": 1,
+    "message": "با موفقیت انجام شد",
+    "errors": [],
+    "data": {
+      "id": 43,
+      "serverName": "سرور تبلیغی",
+      "location": "نمونه",
+      "ip": "192.0.2.10",
+      "config": "{\"outbounds\":[{\"settings\":{\"vnext\":[{\"address\":\"sample.example.invalid\",\"port\":443}]}}]}",
+      "configKey": "host",
+      "configValue": "example.invalid",
+      "currentDomainValue": "origin.example.invalid",
+      "zoneId": null,
+      "zoneIdLastSynced": null,
+      "isAd": true,
+      "isNewDomain": true,
+      "isAvailable": true,
+      "group": {
+        "id": 3,
+        "title": "گروه نمونه",
+        "isAd": true,
+        "updatedAt": "2026-10-18T08:00:00Z",
+        "updatedAtFormatted": "1405/07/26 11:30"
+      },
+      "groupId": 3,
+      "isForIrancell": true,
+      "isForHamraheAvval": false,
+      "domainDateTime": "2026-10-18T08:00:00Z",
+      "allLogsStatistics": {
+        "count": 5,
+        "successCount": 3,
+        "failCount": 2
+      },
+      "irancellLogsStatistics": null,
+      "hamraheAvvalLogsStatistics": null,
+      "unknownLogsStatistics": null,
+      "updatedAt": "2026-10-18T08:00:00Z",
+      "updatedAtFormatted": "1405/07/26 11:30"
+    }
+  }
+}

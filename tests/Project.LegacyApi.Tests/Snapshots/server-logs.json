@@ -1,0 +1,26 @@
+{
+  "statusCode": 200,
+  "contentType": "application/json; charset=utf-8",
+  "body": {
+    "status": 1,
+    "message": "با موفقیت انجام شد",
+    "errors": [],
+    "data": [
+      {
+        "id": 12,
+        "serverId": 42,
+        "userId": "synthetic-user",
+        "ip": "192.0.2.10",
+        "isp": "sample-isp",
+        "city": null,
+        "org": "sample-org",
+        "country": "XX",
+        "operator": 2,
+        "operatorName": "Unknown",
+        "connectionStatus": 1,
+        "updatedAt": "2026-10-18T08:00:00Z",
+        "updatedAtFormatted": "1405/07/26 11:30"
+      }
+    ]
+  }
+}

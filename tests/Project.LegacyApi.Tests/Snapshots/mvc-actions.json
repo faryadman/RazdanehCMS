@@ -1,0 +1,2024 @@
+[
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AccountController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AccountController",
+    "Action": "Login",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AccountController",
+    "Action": "Logout",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AccountController",
+    "Action": "SignIn",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Web.AndroidAppsProject.Areas.Admin.ViewModels.LoginViewModel",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute",
+      "Microsoft.AspNetCore.Mvc.IgnoreAntiforgeryTokenAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.AppSetting.CreateAppSettingDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Edit",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Edit",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.AppSetting.EditAppSettingDTO",
+        "Source": null
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Groups",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.AppsController",
+    "Action": "UpdateAppGroups",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      },
+      {
+        "Name": "groupIds",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.CronJobInfoController",
+    "Action": "Get",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.CronJobInfoController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.CronJobInfoController",
+    "Action": "Update",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.CronJobInfo.UpdateCronJobInfoDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "CheckZoneId",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "CreateDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Domain.CreateDomainDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "DeleteDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "DeleteInactiveDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "ListInactive",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.DomainsController",
+    "Action": "UploadFile",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "Source": "FormFile"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "AdIndex",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Group.CreateGroupDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "CreateAd",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Group.CreateGroupDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "Edit",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Group.EditGroupDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "EditAd",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Group.EditGroupDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "isAd",
+        "Type": "System.Boolean",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.GroupsController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Domain.CreateDomainDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "DeleteInactive",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "ListInactive",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IPConfigController",
+    "Action": "UploadFile",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "Source": "FormFile"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IpController",
+    "Action": "DeleteIp",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IpController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IpController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IspController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.OperatorIdentification.CreateOperatorIdentificationDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IspController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IspController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IspController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.IspController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CheckDeleteDnsDomainJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CheckDomainJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CheckIpConfigJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CheckSubDomainJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CreateDeleteDnsJobJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CreateDomainJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CreateIpConfigJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "CreateSubDomainJob",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "GetDeleteDnsJobData",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "GetJobDomainData",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "GetJobIpConfigData",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "GetJobSubdomainData",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.OperatorController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.OperatorIdentification.CreateOperatorIdentificationDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.OperatorController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.OperatorController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.OperatorController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.OperatorController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Authorization.AuthorizeAttribute",
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "AdIndex",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "groupId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      },
+      {
+        "Name": "appId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "AddToBlackList",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "AllLogs",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "BlackList",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "BlackListMassDelete",
+    "Area": "Admin",
+    "Route": "admin/Servers/blackList/MassDelete",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "ChangeDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "ChangeServerAddressInput",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "address",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "ChangeSubDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.CreateServerDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Create",
+    "Area": "Admin",
+    "Route": "admin/Servers/blackList/create",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ip",
+        "Type": "System.String",
+        "Source": null
+      },
+      {
+        "Name": "serverId",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "CreateAd",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.CreateServerDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "CreateDnsRecord",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Delete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "DeleteBlackList",
+    "Area": "Admin",
+    "Route": "admin/Servers/blackList/delete",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "blackListId",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "DeleteDnsRecord",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "DeleteTcpDnsRecord",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Detail",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Duplicate",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Edit",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.EditServerDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "EditAd",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.EditServerDTO",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "GetAllLogsStatistics",
+    "Area": "Admin",
+    "Route": "admin/Servers/Logs/getAllLogsStatistics",
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "GetBlackListData",
+    "Area": "Admin",
+    "Route": "admin/Servers/blackList/getData",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "GetStatisticsServer",
+    "Area": "Admin",
+    "Route": "admin/Servers/getStatisticsServer",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "GetZoneIds",
+    "Area": "Admin",
+    "Route": "admin/Servers/getZoneIds",
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Index",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "groupId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      },
+      {
+        "Name": "appId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "List",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "groupId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      },
+      {
+        "Name": "appId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": null
+      },
+      {
+        "Name": "isAd",
+        "Type": "System.Boolean",
+        "Source": null
+      },
+      {
+        "Name": "filter",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "Logs",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "serverId",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "LogsList",
+    "Area": "Admin",
+    "Route": "admin/Servers/Logs/list",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "serverId",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "MassDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "MassDnsDelete",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "ids",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "RefreshDomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "RefreshSubdomain",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "RefreshTcp",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.ServersController",
+    "Action": "ToggleIsAvailableInput",
+    "Area": "Admin",
+    "Route": null,
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": null
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.AreaAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "AddIp",
+    "Area": null,
+    "Route": "Api/AddIp",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "tcp",
+        "Type": "System.Int32",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "AppSetting",
+    "Area": null,
+    "Route": "Api/AppSetting/{apiRoute}",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "apiRoute",
+        "Type": "System.String",
+        "Source": "Path"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "FailedServer",
+    "Area": null,
+    "Route": "Api/FailedServer",
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.ServerLog.AddServerLogDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "FailedServerLog",
+    "Area": null,
+    "Route": "Api/FailedServerLog",
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.ServerLog.AddServerLogDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "GetAdServer",
+    "Area": null,
+    "Route": "Api/GetAdServer/{apiRoute}/{isp}/{Operator}",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "apiRoute",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "isp",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "Operator",
+        "Type": "System.String",
+        "Source": "Path"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "GetGeneralApp",
+    "Area": null,
+    "Route": "Api/GetGeneralApp/{apiRoute}/{isp}/{Operator}",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "apiRoute",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "isp",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "Operator",
+        "Type": "System.String",
+        "Source": "Path"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "GetServer",
+    "Area": null,
+    "Route": "Api/GetServer/{apiRoute}/{isp}/{Operator}",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "apiRoute",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "isp",
+        "Type": "System.String",
+        "Source": "Path"
+      },
+      {
+        "Name": "Operator",
+        "Type": "System.String",
+        "Source": "Path"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "ListIp",
+    "Area": null,
+    "Route": "Api/ListIp",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "ServerLogs",
+    "Area": null,
+    "Route": "Api/ServerLogs",
+    "Methods": [
+      "GET"
+    ],
+    "Parameters": [
+      {
+        "Name": "serverId",
+        "Type": "System.Int32",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpGetAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ApiController",
+    "Action": "SuccessServerLog",
+    "Area": null,
+    "Route": "Api/SuccessServerLog",
+    "Methods": [
+      "POST"
+    ],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.ServerLog.AddServerLogDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.HttpPostAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.BlackListController",
+    "Action": "Create",
+    "Area": null,
+    "Route": "api/BlackList/Create",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.BlackList.CreateBlackListDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.BlackListController",
+    "Action": "GetData",
+    "Area": null,
+    "Route": "api/BlackList/GetData",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "serverId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.LogDeleterController",
+    "Action": "Index",
+    "Area": null,
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": []
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ServersController",
+    "Action": "Create",
+    "Area": null,
+    "Route": "api/Servers/Create",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.CreateServerDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ServersController",
+    "Action": "Delete",
+    "Area": null,
+    "Route": "api/Servers/Delete",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ServersController",
+    "Action": "Detail",
+    "Area": null,
+    "Route": "api/Servers/Detail",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ServersController",
+    "Action": "Edit",
+    "Area": null,
+    "Route": "api/Servers/Edit",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "Project.Application.DTOs.Server.EditServerDTO",
+        "Source": "Body"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.ServersController",
+    "Action": "List",
+    "Area": null,
+    "Route": "api/Servers/List",
+    "Methods": [],
+    "Parameters": [
+      {
+        "Name": "groupId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": "Query"
+      },
+      {
+        "Name": "appId",
+        "Type": "System.Nullable`1[System.Int32]",
+        "Source": "Query"
+      },
+      {
+        "Name": "isAd",
+        "Type": "System.Boolean",
+        "Source": "Query"
+      }
+    ],
+    "Attributes": [
+      "Microsoft.AspNetCore.Mvc.ApiControllerAttribute",
+      "Microsoft.AspNetCore.Mvc.RouteAttribute"
+    ]
+  },
+  {
+    "Controller": "Project.Web.AndroidAppsProject.Controllers.TestController",
+    "Action": "Index",
+    "Area": null,
+    "Route": null,
+    "Methods": [],
+    "Parameters": [],
+    "Attributes": []
+  }
+]

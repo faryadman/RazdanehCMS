@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Project.Application.DTOs;
 using Project.Application.DTOs.AppSetting;
 using Project.Application.DTOs.IP;
@@ -18,16 +17,14 @@ namespace Project.Web.AndroidAppsProject.Controllers
         private readonly IServerService _serverService;
         private readonly IServerLogService _serverLogService;
         private readonly IIpService _ipService;
-        private readonly IMemoryCache _memoryCache;
 
         public ApiController(IAppSettingService appSettingService, IServerService serverService,
-            IServerLogService serverLogService, IIpService ipService, IMemoryCache memoryCache)
+            IServerLogService serverLogService, IIpService ipService)
         {
             _appSettingService = appSettingService;
             _serverService = serverService;
             _serverLogService = serverLogService;
             _ipService = ipService;
-            _memoryCache = memoryCache;
         }
 
         [HttpGet]

@@ -1,0 +1,24 @@
+{
+  "EnableEndpointRouting": false,
+  "Filters": [
+    "Microsoft.AspNetCore.Mvc.ModelBinding.UnsupportedContentTypeFilter",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures.SaveTempDataAttribute",
+    "Project.Application.Filters.ModelStateCheckFilter"
+  ],
+  "ViewLocationFormats": [
+    "/Views/{1}/{0}.cshtml",
+    "/Views/Shared/{0}.cshtml",
+    "/Pages/Shared/{0}.cshtml",
+    "/{0}.cshtml"
+  ],
+  "ContractResolver": "Newtonsoft.Json.Serialization.DefaultContractResolver",
+  "ReferenceLoopHandling": 1,
+  "NullValueHandling": 0,
+  "DefaultValueHandling": 0,
+  "DateFormatHandling": 0,
+  "DateTimeZoneHandling": 3,
+  "Converters": [
+    "Microsoft.AspNetCore.Mvc.NewtonsoftJson.ValidationProblemDetailsConverter",
+    "Microsoft.AspNetCore.Mvc.NewtonsoftJson.ProblemDetailsConverter"
+  ]
+}
