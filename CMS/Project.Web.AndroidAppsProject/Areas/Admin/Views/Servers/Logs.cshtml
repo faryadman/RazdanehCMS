@@ -107,9 +107,10 @@
                 </div>
                 <div class="modal-body">
                     <form id="CronJobInfoForm">
+                        @Html.AntiForgeryToken()
                         <div class="form-group">
-                            <label>Timer</label>
-                            <input name="Timer" id="Timer" type="text" class="form-control" required>
+                            <label>چرخهٔ دقیقه‌ای پاک‌سازی لاگ (۱ تا ۵۹؛ UTC)</label>
+                            <input name="Timer" id="Timer" type="number" min="1" max="59" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>ExecutedCount</label>

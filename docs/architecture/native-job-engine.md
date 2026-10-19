@@ -1,49 +1,82 @@
-# موتور وظایف بومی پیشنهادی
+# موتور job بومی .NET
 
-BackgroundService فقط میزبان اجراست. ذخیرهٔ برنامه، lease، history و recovery مستقل در SQL Server طراحی می‌شوند؛ هیچ engine جدیدی در این PR پیاده نشده است.
+پیاده‌سازی روی شاخهٔ `jobs` از master در `657019e`، با درخواست صریح جایگزینی Hangfire و نگهداری تنظیمات در دیتابیس انجام شده است. این سند وضعیت پیاده‌سازی را توصیف می‌کند؛ معماری پیشنهادی قبلی الزاماً جزئیات همین راه‌حل نیست.
 
-## موجودی رفتار فعلی
+```mermaid
+flowchart LR
+    Admin[پنل مدیر] -->|ذخیره و درخواست اجرا| Store[SqlJobStore]
+    Store <--> SQL[(SQL Server)]
+    Worker[NativeJobWorker / BackgroundService] --> Lock[قفل session در SQL]
+    Lock --> Claim[ثبت اتمیک اجرای بعدی]
+    Claim --> Scope[DI scope مستقل + CancellationToken]
+    Scope --> Handler[JobHandler]
+    Handler --> Business[سرویس‌های فعلی سرور / دامنه / لاگ]
+    Scope --> History[ثبت نتیجه پس از اتمام واقعی و DisposeAsync]
+    History --> SQL
+```
 
-| job | زمان و trigger | ترتیب و قاعده | شکست، هم‌زمانی و وابستگی |
-|---|---|---|---|
-| logDeleterJob | startup هر ۱۰ دقیقه؛ constructor کنترلر عمومی هم همین ID را ثبت می‌کند | DeleteServerLogs همهٔ logها را بدون استفاده از count حذف می‌کند | SQL؛ scope ریشه در CronJobService؛ retention و lock ندارد |
-| CheckZoneId | startup با `*/45` در دقیقهٔ cron؛ دقیقه‌های ۰ و ۴۵ هر ساعت، نه فاصلهٔ همواره ۴۵ دقیقه | CronJobService.CheckZoneId -> DomainService.InitZoneId؛ دامنهٔ active بدون zone را از Cloudflare می‌گیرد و update می‌کند | خطای یک domain ادامهٔ بقیه را متوقف می‌کند؛ SQL+Cloudflare |
-| DomainJob | CreateDomainJob -> InsertJob -> cron `*/JobPeriodTime` | برای هر سرور active/available، آمار non-null، سن دامنه بزرگ‌تر از expiry و درصد و تعداد شکست حداقل آستانه؛ ChangeDomain | خطا حلقه را متوقف می‌کند؛ `.Result` و queryهای متعدد؛ آمار client قابل‌دستکاری |
-| SubDomainJob | CreateSubDomainJob و cron بالا | job موجود -> ChangeSubDomain همهٔ سرورهای active/available | scope record محدود نشده؛ شکست میانی و رزرو دامنه محافظت ندارد |
-| DeleteDnsJob | CreateDeleteDnsJobJob و cron بالا | انتخاب config، DeleteDnsAsync و GenerateDns برای سرورها | قبل از null check، JobConfig خوانده می‌شود؛ content رکورد DNS به تاریخ parse می‌شود، نه comment |
-| IpConfigJob | CreateIpConfigJob و cron بالا | فقط سرور با آمار non-null و سن بیشتر از expiry؛ GenerateUpdateAsync -> تغییر address از اولین IP | email/key پارامتر مصرف نمی‌شوند؛ انتخاب IP بدون active/order؛ transaction مشترک ندارد |
-| ResetServerDomain/SubDomain/Dns | registrationهای startup کامنت‌اند | wrapper همان سرویس دامنه | runtime registration از مسیر دیگری اثبات نشده |
-| DeleteTcpJob / RefreshTcpJob و کلاس‌های Jobs | فایل خالی | اجرای واقعی در این کلاس‌ها نیست | جایگزینی این پوسته‌ها migration job محسوب نمی‌شود |
+## اجزا و مالکیت
 
-شاهد اصلی `Areas/Admin/Controllers/JobController.cs`، `CronJob/CronJobService.cs` و Program.cs است. JobService.Detail جدیدترین ردیف را می‌گیرد، ولی callbackها `OrderByDescending(...).LastOrDefault` می‌گیرند؛ قدیمی‌ترین حتی soft-deleted می‌تواند انتخاب شود. Disable در InsertJob پیش از persist برمی‌گردد؛ وضعیت DB الزاماً با scheduler برابر نمی‌شود. MemoryStorage پس از restart ثبت‌های پویا را از دست می‌دهد؛ بازسازی از Jobs در startup مشاهده نشد.
+| جزء | مسئولیت |
+|---|---|
+| `Application/Jobs/JobCatalog` | شش شناسهٔ مجاز، عنوان، پیش‌فرض و نیاز به بررسی پس از شکست؛ بدون اجرای نوع دلخواه از دیتابیس |
+| `JobSettings` و `MinuteSchedule` | خواندن تنظیمات قدیمی، اعتبارسنجی و محاسبهٔ خالص موعد دقیقه‌ای UTC |
+| `IJobStore` / `Persistence/Jobs/SqlJobStore` | نسخه‌های تنظیمات، موعد و صف دستی ادغام‌شونده، claim، نتیجه و بررسی انسانی |
+| `SqlJobExecutionLock` | قفل اختصاصی مشترک بین تمام jobها و نمونه‌های برنامه در همین دیتابیس؛ پایش اتصال و غیرفعال‌سازی |
+| `NativeJobWorker` | میزبان .NET، دریافت claim، scope مستقل، timeout/stop و انتظار برای پایان واقعی عملیات و آزادسازی منابع |
+| `JobHandler` | انتخاب عملیات شناخته‌شده و قواعد دامنه/IP؛ business داخل کنترلر اجرا نمی‌شود |
+| `JobController` | مدیریت تنظیمات، ثبت درخواست و نمایش تاریخچه؛ فقط مدیر، mutation فقط POST همراه antiforgery |
 
-timeout کاربردی، CancellationToken سرتاسری، lease پایدار و منع overlap وجود ندارد؛ Cloudflare اغلب CancellationToken.None می‌گیرد. retry سفارشی تعریف نشده؛ رفتار پیش‌فرض Hangfire به‌معنی ایمنی retry DNS نیست. وضعیت اجرای فعلی در حافظه است و engine جدید نباید سابقهٔ ساختگی تولید کند.
+Hangfire، MemoryStorage، dashboard و registrationهای آن حذف شده‌اند. `CronJobService` و service/repositoryهای قدیمیِ تنظیمات که دیگر مصرف نداشتند حذف شده‌اند. DTO قدیمیِ `HangfireDTO` و دیگر schemaهای legacy برای ثابت‌ماندن قرارداد metadata باقی‌اند و هیچ engineای پشت آن‌ها نیست. Dapper نیز پس از حذف آخرین مصرفش در کنترلر CronJobInfo حذف شد؛ اتصال hardcoded آن کنترلر دیگر در کد اجرایی وجود ندارد.
 
-## اجزای هدف
+## دیتابیس مرجع است
 
-- `JobDefinition`: handler شناخته‌شده و نسخهٔ config، بدون credential در payload.
-- `JobConfigurationService`: enable/disable، interval یا cron با TimeZoneId صریح و optimistic concurrency.
-- `JobScheduleCalculator`: تابع خالص با TimeProvider؛ deadline بعدی از slot برنامه محاسبه شود، نه زمان پایان job.
-- `JobDispatcher : BackgroundService`: PeriodicTimer صرفاً بیدارکننده؛ query SQL برای due work authoritative است.
-- `JobExecutionCoordinator`: claim اتمیک، scope جدید برای هر اجرا، timeout و cancellation، lease منابع.
-- `JobExecutionStore`: تاریخچهٔ ماندگار و transitionهای مجاز با compare-and-set.
-- `JobAdministrationController`: فقط command و query؛ اجرای business/DNS داخل controller ممنوع.
+- `Jobs` همان جدول موجود است. جدیدترین Id هر JobName مرجع است، حتی اگر IsActive=false باشد؛ ردیف‌های قبلی حذف یا بازنویسی نمی‌شوند. ذخیرهٔ پنل یک نسخهٔ تازه اضافه می‌کند. غیرفعال‌سازی با فیلدهای ارسال‌نشده نیز تنظیمات قبلی را حفظ می‌کند؛ ویرایش در حالت غیرفعال قابل‌ذخیره است.
+- `JobSchedules` برای هر نوع job یک ردیف دارد: نسخه و fingerprint تنظیمات، فعال‌بودن معتبر، موعد بعدی UTC، درخواست دستی و زمان درخواست، آخرین وضعیت و شمارندهٔ موفقیت. در هر مشاهده/claim، تغییر دیتابیس دوباره خوانده می‌شود؛ ویرایش درجا نیز از طریق fingerprint تشخیص داده می‌شود.
+- `JobExecutions` سابقهٔ پایدار شامل شناسهٔ اجرا، نسخهٔ تنظیمات، snapshot فقط فیلدهای عملیاتی، worker، trigger، زمان‌ها، وضعیت، کد خطای محدود و تأیید بررسی است. credential یا متن خام خطای provider وارد history نمی‌شود.
+- قفل transaction کوتاه `RazdanehCMS:jobs:configuration:v1` ذخیره و claim را میان instanceها مرتب می‌کند. زمان claim و نتیجه از `SYSUTCDATETIME()` می‌آید؛ ساعت میزبان مرجع برنامه نیست.
+- در اولین همگام‌سازی، برای نوعی که هیچ سابقه‌ای ندارد تنظیمات پیش‌فرض ذخیره می‌شود. مانند startup قبلی، فقط logDeleterJob و CheckZoneId به‌طور پیش‌فرض فعال‌اند؛ چهار job تغییردهندهٔ سرور غیرفعال‌اند. تنظیمات موجود با این پیش‌فرض‌ها جایگزین نمی‌شوند.
+- رکورد فعالِ قبلی که دوره یا آستانهٔ ضروری ندارد، به‌جای گرفتن مقدار پیش‌فرض و شروع rotation تازه، نامعتبر و متوقف می‌شود. پیش‌فرض فقط برای رکورد تازه یا نمایش/غیرفعال‌سازی تنظیمات خراب است؛ فعال‌سازی نیاز به مقادیر روشن دارد.
 
-رابط handler پیشنهادی `Task ExecuteAsync(JobExecutionContext context, CancellationToken cancellationToken)`؛ context شامل ExecutionId، OperationId، config نسخه‌دار، actor و fencing token است. scheduler فرمان `RequestRunAsync(jobId, idempotencyKey, expectedVersion, ct)` می‌پذیرد و شناسهٔ اجرای پایدار برمی‌گرداند؛ اجرای immediate داخل درخواست HTTP انجام نمی‌شود.
+مهاجرت `20261019211502_AddNativeJobScheduling` فقط دو جدول و indexهای جدید می‌سازد. Jobs، CronJobInfos، دادهٔ قدیمی و schema سرور/Android حذف یا تبدیل نمی‌شوند. فیلد Timer جدول CronJobInfos قبلاً مرجع scheduler نبود؛ مقدار قدیمی آن به فاصلهٔ جدید تعبیر نمی‌شود. endpointهای سازگاری CronJobInfo اکنون زمان‌بندی و شمارندهٔ واقعی پاک‌سازی لاگ را نمایش می‌دهند.
 
-## claim، recovery و چند instance
+## زمان‌بندی و عدم تداخل
 
-۱. SQL transaction کوتاه با row lock/UPDATE OUTPUT و unique slot، due job را claim کند؛ الگوی UPDLOCK/READPAST باید با isolation و RCSI محیط آزمایش شود. query انتخاب و update جدا بدون lock کافی نیست.
-۲. resource key مشترک مثل zone/server پیش از اثر بیرونی گرفته شود؛ heartbeat و مدت lease بر زمان SQL UTC متکی باشد. lease منقضی به‌تنهایی اجازهٔ replay اثر بیرونی نیست.
-۳. heartbeat با ownership+fencing token تمدید شود. گم‌شدن lease cancellation را فعال و writer داخلی قدیمی را رد کند. Cloudflare fencing token را enforce نمی‌کند؛ برای call در حال پرواز state machine، شناسهٔ عملیات، read-before-retry و reconciliation لازم است؛ exactly-once وعده داده نمی‌شود.
-۴. نتیجه SQL با شناسهٔ عملیات ثبت شود. timeout یا crash پس از call بیرونی وضعیت نامعلوم می‌سازد؛ recovery ابتدا observe/reconcile و سپس تصمیم می‌گیرد. حذف DNS کور retry نشود.
-۵. shutdown: claim جدید قطع، cancellation منتقل، تا deadline منتظر بمانید؛ lease کار نامعلوم بی‌دلیل آزاد نشود. sweeper اجراهای abandoned را شناسایی و با state مجاز بازیابی کند.
-۶. missed run policy هر job مشخص: zone-check می‌تواند coalesce شود؛ rotation backlog بدون محدودیت نباید همه را یک‌جا عوض کند؛ log retention باید بازهٔ پردازش و watermark داشته باشد. DST، timezone و بازه‌های نامعتبر تست شوند.
+معنای فعلی `*/N * * * *` حفظ شده: N بین ۱ و ۵۹، timezone برابر UTC. عدد ۴۵ یعنی دقیقهٔ ۰ و ۴۵ هر ساعت، نه فاصلهٔ ثابت ۴۵ دقیقه. زمان بعدی از ساعت برنامه محاسبه می‌شود؛ طول عملیات آن را به interval جدید تبدیل نمی‌کند. پس از خاموشی فقط یک اجرای عقب‌افتاده برای هر job انجام می‌شود و موعد به آینده می‌رود؛ صف چرخش چندروزه بازپخش نمی‌شود.
 
-وضعیت‌ها: Pending -> Running -> Completed/Failed/Cancelled؛ Disabled وضعیت configuration است و می‌تواند Pendingهای بدون شروع را لغو کند. fail نامعلوم با ErrorCode و مرحلهٔ reconciliation از fail قابل retry متمایز شود. retry فقط خطای گذرا و عملیات idempotent: exponential backoff محدود با jitter، سقف attempt و هشدار نهایی.
+اجرای دستی در JobSchedules ذخیره می‌شود. چند درخواست یک job به یک درخواست ادغام می‌شوند؛ درخواست قدیمی‌تر جلوتر قرار می‌گیرد. ذخیرهٔ تنظیمات معتبرِ فعال درخواست منتظر را حفظ می‌کند؛ غیرفعال‌سازی یا تنظیمات نامعتبر آن را پاک می‌کند. اجرای دستی و خودکار از همان قفل و همان handler می‌گذرند.
 
-## داشبورد مدیریتی پیشنهادی
+قفل `RazdanehCMS:jobs:execution:v1` از نوع SQL application lock، Exclusive و Session است. یک اتصال اختصاصی با Pooling=false و ConnectRetryCount=0 مالک آن است؛ قفل تا پایان واقعی handler، DisposeAsync scope و ثبت نتیجه نگه داشته می‌شود. jobهای مختلف نیز هم‌زمان اجرا نمی‌شوند تا rotation، پاک‌سازی DNS و حذف آمار روی هم اثر نگذارند. این روش عمداً اجرای موازی را قربانی جلوگیری از تداخل می‌کند.
 
-نمای RTL با فهرست job، Enabled، زمان قبلی/بعدی، duration، history و error code پاک‌سازی‌شده؛ enable/disable، interval، run now و retry امن با policy JobAdmin، POST، antiforgery، expectedVersion و confirmation. زمان خام UTC و نمایش Asia/Tehran با label؛ credential هرگز بازنمایش نشود. تغییر config actor و before/after version داشته باشد.
+قفل TTL ندارد تا صرفاً با دیرشدن heartbeat، writer دیگری روی اثر بیرونی بدون fencing شروع نشود. هر دو ثانیه مالکیت session و تنظیمات کنترل می‌شوند؛ خرابی query پایش حداکثر مهلت پنج ثانیه دارد. غیرفعال‌سازی درخواست لغو می‌دهد؛ ویرایش فعال، snapshot اجرای جاری را عوض نمی‌کند و برای اجرای بعدی است. CancellationToken به عملیات Cloudflare و مسیرهای اجرایی دامنه/IP منتقل شده و پیش از نوشتن داخلی دوباره کنترل می‌شود.
 
-پذیرش الزامی: دو worker هم‌زمان، job دستی و scheduled مشترک، crash قبل/بعد از call، lease expiry، network partition، restart، shutdown deadline، DST و cancellation آزمایش شوند. حفظ domain/config دریافتی Android در تمام سناریوها جدا بررسی شود.
+`WaitAsync` برای رهاکردن handler در timeout استفاده نشده است. اگر handler cancellation را نادیده بگیرد، قفل تا پایان واقعی آن نگه داشته می‌شود. kill نهایی فرآیند همچنان می‌تواند اثر بیرونی نامطمئن باقی بگذارد.
+
+## crash، قطع اتصال و شکست
+
+claim و جابه‌جایی موعد در transaction واحد ثبت می‌شوند. worker بعدی فقط پس از گرفتن قفل اجرا می‌تواند Running بدون مالک را Interrupted کند. قطع session ثابت نمی‌کند فرآیند قبلی متوقف شده است؛ پس اجرای رهاشده یا قطع اتصال برای هر شش نوع NeedsReview ایجاد و dispatch جدید را متوقف می‌کند، حتی اگر عملیاتش تکرارپذیر باشد. برای چهار job تغییردهندهٔ سرور، شکست یا لغوِ خاتمه‌یافته نیز نیازمند بررسی است؛ retry خودکار DNS وجود ندارد. پاک‌سازی لاگ و تکمیل zone فقط پس از شکست/لغوی که task آن واقعاً پایان یافته و session آن از دست نرفته، می‌توانند در نوبت بعدی ادامه یابند.
+
+مدیر باید نمونهٔ قبلی را متوقف و اثر SQL/DNS را بررسی کند، سپس از پنل اجرای نامطمئن را تأیید کند. هویت و زمان بررسی ثبت می‌شود. تأیید، همان اجرا را replay نمی‌کند؛ اجرای بعدی موعد مستقل یا درخواست دستی تازه دارد. Cloudflare fencing token این برنامه را نمی‌شناسد؛ exactly-once یا transaction مشترک SQL و DNS تضمین نشده است.
+
+timeout پیش‌فرض ۱۵ دقیقه، poll پنج ثانیه و `NativeJobs:Enabled=true` است. در shutdown دریافت کار قطع و لغو منتقل می‌شود؛ worker منتظر task واقعی و آزادسازی scope می‌ماند. در خطای store، با فاصلهٔ حداقل ۳۰ ثانیه دوباره تلاش می‌شود و خطای تکراری پشت سر هم log نمی‌شود. نبود migration باعث اجرای کور با حالت حافظه‌ای یا ساخت خودکار schema نمی‌شود.
+
+## قواعد عملیاتی حفظ‌شده
+
+| job | عملیات |
+|---|---|
+| DomainJob | سرور active/available، آمار موجود با Count مثبت، سن دامنه بزرگ‌تر از expiry و تعداد/درصد گرد‌شدهٔ شکست حداقل آستانه؛ سپس همان ChangeDomain |
+| SubDomainJob | همان تغییر زیردامنه برای شناسه‌های active/available، به‌ترتیب و با کنترل لغو |
+| DeleteDnsJob | همان سرویس فعلی DeleteDnsAsync با expiry؛ الگوریتم مالکیت/حذف DNS در این گام بازنویسی نشده |
+| IpConfigJob | آمار موجود و سن بزرگ‌تر از expiry؛ همان GenerateUpdateAsync با خواندن async در مسیر اجرا |
+| logDeleterJob | حذف logهای موجود تا watermark آغاز در batchهای ۲۰۰۰تایی؛ logهای تازه‌تر باقی می‌مانند؛ سیاست retention تازه‌ای تحمیل نشده |
+| CheckZoneId | همان InitZoneId برای دامنه‌های فعالِ بدون zone |
+
+تنظیمات credential قبلاً در برخی فرم‌ها ذخیره می‌شدند ولی عملیات job از CloudflareData سراسری استفاده می‌کرد. فرم جدید credential دریافت نمی‌کند و نسخه‌های تازه فقط تنظیمات عملیاتی دارند؛ مقادیر قدیمی در تاریخچهٔ Jobs دست‌کاری نشده‌اند.
+
+## محدودهٔ سازگاری
+
+پاسخ‌ها، DTOها و serializer اندروید ثابت‌اند؛ ۲۸ snapshot قبلی بازتولید نشده‌اند. تغییر مصوب این گام در مدیریت job است: admin-only، POST و CSRF برای mutation، اجرای enqueue به‌جای business در request و سه اکشن جدید Save/Run/Review. آزمون metadata فقط همین تغییرهای مشخص را مستثنا می‌کند و بقیهٔ اکشن‌های قدیمی را کامل مقایسه می‌کند. schema هر ۴۴ DTO بدون تغییر کنترل می‌شود.
+
+قفل مشترک، اجرای jobهای این engine را محافظت می‌کند. endpointهای قدیمی تغییر مستقیم DNS/Config خارج از مسیر job و برنامه‌های خارجی به این قفل متعهد نشده‌اند؛ جلوگیری از تعارض آن‌ها و بازنویسی مالکیت DNS خارج این گام است. منطق حذف گستردهٔ DNS و انتخاب IP قدیمی همچنان باید در گام اختصاصی خود اصلاح شوند. این PR نباید ادعای رفع همهٔ مشکلات DNS یا تضمین اجرای دقیقاً یک‌بار داشته باشد.
+
+روش cutover، اسکریپت SQL و تست‌های اجراشده در [راهنمای استقرار و آزمون](../testing/native-jobs.md) است.

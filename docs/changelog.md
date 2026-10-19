@@ -1,5 +1,14 @@
 # تغییرات
 
+## ۲۰۲۶-۱۰-۱۹ UTC — jobهای بومی در شاخهٔ jobs
+
+- جایگزینی Hangfire با BackgroundService و ذخیرهٔ زمان‌بندی، درخواست دستی و history در SQL؛ تنظیمات Jobs موجود حفظ می‌شوند.
+- قفل مشترک session بین همهٔ jobها و instanceها، scope و cancellation، توقف اجرای نامطمئن برای بررسی و نبود retry کور DNS.
+- پنل شش job با نقش مدیر و POST/CSRF، رفع ذخیره‌نشدن disable و خواندن نسخهٔ قدیمی؛ حذف service/repositoryها و بسته‌های قدیمیِ بدون مصرف.
+- پاک‌سازی batch لاگ تا watermark، انتقال لغو به عملیات job و حذف sync-over-async از مسیر اجرایی IP/دامنه.
+- migration فقط دو جدول جدید می‌سازد؛ cutover و محدودیت‌ها در [راهنما](testing/native-jobs.md). هیچ production/DNS زنده تغییر نکرد.
+- هر ۱۰۷ تست .NET و ۱۳ تست JavaScript در اجرای محلی نهایی موفق شدند؛ ۲۸ snapshot بدون بازتولید حفظ شدند. metadata فقط تغییر مصوب مدیریت job را مستثنا می‌کند. build و تطابق مدل/migration موفق و اسکریپت SQL آماده است.
+
 ## ۲۰۲۶-۱۰-۱۹ UTC — اصلاح عمر منابع روی همان شاخه
 
 - scope مستقل و آزادسازی async برای هر اجرای CronJobService singleton؛ رفع نگهداری سرویس‌های scoped در root.

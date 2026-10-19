@@ -17,5 +17,6 @@
 
 | ADR-011 | اجراشده در feature: registration واحد MVC قدیمی با snapshotهای قبل از refactor | تغییر داخلی بدون تغییر گزینه‌های serializer؛ حذف ۱۱ فایل بدون مصرف پس از جست‌وجوی ارجاع؛ ۳۲ تست قبل/بعد موفق. سایر بازطراحی‌ها از این تصمیم مجوز نمی‌گیرند. |
 | ADR-012 | اجراشده به درخواست بررسی Dispose روی همان fix/server-retrieval: مالکیت context با scope و logger با host | job singleton برای هر اجرا async scope مستقل می‌سازد؛ repository context تزریق‌شده را دستی آزاد نمی‌کند؛ تمام Taskهای حذف انتظار کشیده می‌شوند. قالب موفق API ثابت است، موفقیت کاذب حذف حفظ نمی‌شود. ۱۸ تست جدید و rollback با revert؛ بدون migration. |
+| ADR-013 | اجراشده روی jobs به درخواست کاربر: حذف Hangfire و اجرای بومی با SQL session lock و تاریخچهٔ پایدار | Jobs موجود مرجع تنظیمات می‌ماند؛ دو جدول افزایشی، scope مستقل و claim اتمیک. به‌جای lease منقضی‌شونده و replay DNS، session اختصاصی تا پایان واقعی نگه داشته می‌شود و اثر نامطمئن برای بررسی متوقف می‌ماند. معنای cron دقیقه‌ای UTC حفظ شده؛ admin API عمداً POST/CSRF می‌شود، Android snapshot ثابت است. rollback کد با توقف engine جدید و حفظ جدول‌های افزایشی؛ cutover تک‌engine الزامی است. |
 
 تغییر هر تصمیم باید دلیل، اثر بر data/Android، تست، مسیر بازگشت و وضعیت تأیید داشته باشد.

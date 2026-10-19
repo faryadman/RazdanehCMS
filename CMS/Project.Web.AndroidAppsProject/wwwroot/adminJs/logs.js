@@ -132,13 +132,12 @@ function massDelete() {
         if (result.value) {
             loading();
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: cronJobInfoBaseUrl + '/MassDelete',
-                contentType: "application/json; charset=utf-8",
+                data: { __RequestVerificationToken: document.querySelector('#CronJobInfoForm input[name="__RequestVerificationToken"]').value },
                 dataType: "json",
                 success: function (data) {
-                    getlogs();
-                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', data.message, 'success');
+                    data.status == "0" ? Swal.fire('', data.message, 'error') : Swal.fire('', 'درخواست پاک‌سازی ثبت شد؛ وضعیت اجرا در صفحهٔ جاب‌ها قابل‌پیگیری است.', 'success');
                 },
                 error: function (xmlhttprequest, textstatus, errorthrown) {
                     alert(" بروز اشکال در اتصال به اینترنت ");

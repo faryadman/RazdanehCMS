@@ -34,10 +34,41 @@ public sealed class LegacyApiContractTests
     }
 
     [Fact]
-    public void All_MVC_routes_methods_and_bindings_are_preserved()
+    public void Legacy_MVC_contract_is_preserved_except_the_explicit_job_administration_upgrade()
     {
         using var host = new LegacyApiHost();
-        AssertSnapshot("mvc-actions", ContractMetadata.Actions(host.Services));
+        var actual = (JArray)ContractMetadata.Actions(host.Services);
+        var expected = JArray.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Snapshots", "mvc-actions.json")));
+        const string jobController = "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.JobController";
+        const string cronController = "Project.Web.AndroidAppsProject.Areas.Admin.Controllers.CronJobInfoController";
+        const string logController = "Project.Web.AndroidAppsProject.Controllers.LogDeleterController";
+        var mutations = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "CreateDomainJob", "CreateDeleteDnsJobJob", "CreateSubDomainJob", "CreateIpConfigJob",
+            "CheckDomainJob", "CheckSubDomainJob", "CheckDeleteDnsDomainJob", "CheckIpConfigJob"
+        };
+        // Only this requested job-management replacement changes legacy authorization/verbs; snapshots stay immutable.
+        foreach (var action in expected.OfType<JObject>())
+        {
+            var controller = action.Value<string>("Controller");
+            var name = action.Value<string>("Action")!;
+            if (controller is not (jobController or cronController or logController)) continue;
+            var attributes = action["Attributes"]!.Values<string>().Select(value => value!).ToHashSet(StringComparer.Ordinal);
+            attributes.Add("Microsoft.AspNetCore.Authorization.AuthorizeAttribute");
+            if ((controller == jobController && mutations.Contains(name)) || controller == logController
+                || (controller == cronController && name is "Update" or "MassDelete"))
+            {
+                attributes.Add("Microsoft.AspNetCore.Mvc.HttpPostAttribute");
+                attributes.Add("Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute");
+                action["Methods"] = new JArray("POST");
+            }
+            action["Attributes"] = new JArray(attributes.Order(StringComparer.Ordinal));
+        }
+        var additions = actual.OfType<JObject>().Where(action => action.Value<string>("Controller") == jobController
+            && action.Value<string>("Action") is "Save" or "Run" or "Review").ToArray();
+        Assert.Equal(3, additions.Length);
+        foreach (var addition in additions) addition.Remove();
+        Assert.Equal(expected.ToString(Formatting.None), actual.ToString(Formatting.None));
     }
 
     [Fact]

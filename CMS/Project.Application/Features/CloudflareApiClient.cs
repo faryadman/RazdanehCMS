@@ -1,4 +1,4 @@
-﻿using CloudFlare.Client;
+using CloudFlare.Client;
 using CloudFlare.Client.Api.Zones.DnsRecord;
 using Microsoft.Extensions.Options;
 using Project.Application.Exceptions;
@@ -41,6 +41,7 @@ namespace Project.Application.Features
                 }
                 return false;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
 
@@ -68,6 +69,7 @@ namespace Project.Application.Features
                 }
                 return null;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
 
@@ -174,6 +176,7 @@ namespace Project.Application.Features
                 }).ToList();
 
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -195,6 +198,7 @@ namespace Project.Application.Features
                 }).ToList();
 
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -216,6 +220,7 @@ namespace Project.Application.Features
                     content = record.Content
                 }).ToList();
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -233,6 +238,7 @@ namespace Project.Application.Features
                 var dnsRecords = await client.Zones.DnsRecords.DeleteAsync(zoneId, recordToDeleteId, cancellationToken: ct);
                 return;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");

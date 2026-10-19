@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Project.Application.Jobs;
 using CloudFlare.Client.Client.Zones;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,8 @@ namespace Project.Application.Features.Services
     public class DomainService : IDomainService
     {
         private readonly IDomainRepository _domainRepository;
+        private readonly JobExecutionScope executionScope;
+        private CancellationToken ExecutionToken => executionScope?.CancellationToken ?? CancellationToken.None;
         private readonly IMapper _mapper;
         private readonly IServerService _serverService;
         private readonly IConfiguration _configuration;
@@ -25,17 +28,19 @@ namespace Project.Application.Features.Services
         // دیکشنری لوکال برای ذخیره زون‌ها با استفاده از نام دامنه به عنوان کلید
         private static readonly Dictionary<string, string> zoneDictionary = new Dictionary<string, string>();
 
-        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, IConfiguration configuration, CloudflareApiClient cloudflareApiClient)
+        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, IConfiguration configuration, CloudflareApiClient cloudflareApiClient, JobExecutionScope executionScope = null)
         {
             _mapper = mapper;
             _domainRepository = domainRepository;
             _serverService = serverService;
             _configuration = configuration;
             _cloudflareApiClient = cloudflareApiClient;
+            this.executionScope = executionScope;
         }
 
         public async Task InitZoneId()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var domains = await GetAll();
             foreach (var domain in from domain in domains where domain != null where domain.IsActive != false where string.IsNullOrEmpty(domain.ZoneId) select domain)
             {
@@ -50,6 +55,7 @@ namespace Project.Application.Features.Services
         }
         public async Task CheckZoneId()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var queryable = _domainRepository.FindQueryable(a => string.IsNullOrEmpty(a.ZoneId) && a.IsActive == true).Select(
                 d => new DomainDTO()
                 {
@@ -61,7 +67,7 @@ namespace Project.Application.Features.Services
                     IsDeleted = false,
                     UpdatedAt = DateTime.Now
                 });
-            var domains = await queryable.ToListAsync();
+            var domains = await queryable.ToListAsync(ExecutionToken);
             foreach (var domain in domains)
             {
                 domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
@@ -77,6 +83,7 @@ namespace Project.Application.Features.Services
 
         public async Task<List<DomainDTO>> GetAll()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var list = await _domainRepository.GetAll();
             var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted == false && x.IsActive == true));
             return model;
@@ -84,6 +91,7 @@ namespace Project.Application.Features.Services
 
         public async Task<List<DomainDTO>> GetByFilter(int filter)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var query = _domainRepository.GetAllQueryable();
             query = filter == 1 ? query.Where(x => x.IsActive == true && x.IsDeleted == false) : query.Where(x => x.IsActive == true && x.IsDeleted == false);
             var data = await query.ToListAsync();
@@ -93,12 +101,15 @@ namespace Project.Application.Features.Services
 
         public async Task Create(CreateDomainDTO input)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var model = _mapper.Map<Domain.Entities.Domain>(input);
+            ExecutionToken.ThrowIfCancellationRequested();
             await _domainRepository.Add(model);
         }
 
         public async Task<List<DomainDTO>> ListInactiveDomain()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             return await GetByFilter(0);
         }
 
@@ -117,6 +128,7 @@ namespace Project.Application.Features.Services
 
         public async Task<string> ChangeDomain(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 var newDomainDto = await GetNewDomain();
@@ -130,6 +142,7 @@ namespace Project.Application.Features.Services
 
                 UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
 
+                ExecutionToken.ThrowIfCancellationRequested();
                 await _serverService.UpdateServer(server);
                 await Delete(newDomainDto.Id);
                 return "انجام شد.";
@@ -139,6 +152,7 @@ namespace Project.Application.Features.Services
                 throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
                 throw;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -147,6 +161,7 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> ChangeTcp(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
 
@@ -161,8 +176,9 @@ namespace Project.Application.Features.Services
                 var newDomain = domain.DomainName;
                 var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
 
-                UpdateTcpServerConfig(server, config, newDomain, cnameValue);
+                await UpdateTcpServerConfigAsync(server, config, newDomain, cnameValue);
 
+                ExecutionToken.ThrowIfCancellationRequested();
                 await _serverService.UpdateServer(server);
                 await Delete(domain.Id);
                 return "انجام شد.";
@@ -172,6 +188,7 @@ namespace Project.Application.Features.Services
                 throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
                 throw;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -180,6 +197,7 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> ChangeSubDomain(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
 
@@ -201,6 +219,7 @@ namespace Project.Application.Features.Services
                     UpdateServerConfig(server, config, cnameValue, serverName, hostName);
                 }
 
+                ExecutionToken.ThrowIfCancellationRequested();
                 await _serverService.UpdateServer(server);
                 await Delete(domainDto.Id);
                 return "Done successfully";
@@ -210,6 +229,7 @@ namespace Project.Application.Features.Services
                 throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
                 throw;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
@@ -219,11 +239,12 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> DeleteDnsAsync(string serverId, string expireTime)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 if (serverId != null)
                 {
-                    var cfZoneId = ServerDto(serverId, out var server, out var serverName);
+                    var (cfZoneId, server, serverName) = await ReadServerAsync(serverId);
                     await DeleteDnsRecord(cfZoneId);
                     await ChangeSubDomain(server.Id.ToString());
                 }
@@ -238,6 +259,7 @@ namespace Project.Application.Features.Services
 
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
@@ -247,6 +269,7 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> DeleteTcpDnsAsync(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 if (serverId != null)
@@ -263,6 +286,7 @@ namespace Project.Application.Features.Services
             {
                 throw new NotFoundException("سروری یافت نشد");
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
@@ -284,7 +308,7 @@ namespace Project.Application.Features.Services
             server.ZoneIdLastSynced = DateTime.UtcNow;
             server.ZoneId = server.ZoneId;
         }
-        public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress, string newCnameValue)
+        private async Task UpdateTcpServerConfigAsync(ServerDTO server, string config, string newAddress, string newCnameValue)
         {
             var cnameValue1 = $"{newCnameValue}.{newAddress}";
             var cnameValue2 = $"{newCnameValue}.{newAddress}";
@@ -296,18 +320,21 @@ namespace Project.Application.Features.Services
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
             server.ZoneIdLastSynced = DateTime.UtcNow;
-            server.ZoneId = GetDomain(newAddress).Result.ZoneId;
+            server.ZoneId = (await GetDomain(newAddress)).ZoneId;
         }
         public async Task<string> CreateDnsAsync(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
-                var zoneId = ServerDto(serverId, out var server, out var serverName);
+                var (zoneId, server, serverName) = await ReadServerAsync(serverId);
                 var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId, true);
                 UpdateServerConfig(server, server.Config, cnameValue, serverName, serverName);
+                ExecutionToken.ThrowIfCancellationRequested();
                 await _serverService.UpdateServer(server);
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -317,6 +344,7 @@ namespace Project.Application.Features.Services
         }
         public async Task ChangeSubDomain()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -325,6 +353,7 @@ namespace Project.Application.Features.Services
         }
         public async Task ChangeDomain()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -333,6 +362,7 @@ namespace Project.Application.Features.Services
         }
         public async Task ChangeTcp()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -341,12 +371,14 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 await DeleteAndCheckDnsAsync(serverId, expireMinuteOn);
                 await CreateDnsAsync(serverId);
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -357,7 +389,8 @@ namespace Project.Application.Features.Services
 
         public async Task<bool> DeleteDnsRecord(string cfZoneId)
         {
-            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId, CancellationToken.None);
+            ExecutionToken.ThrowIfCancellationRequested();
+            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId, ExecutionToken);
 
             if (records.Count == 0)
                 return true;
@@ -367,17 +400,19 @@ namespace Project.Application.Features.Services
                 await _cloudflareApiClient.DeleteCnameRecords(
                     cfZoneId,
                     record.id,
-                    CancellationToken.None);
+                    ExecutionToken);
             }
 
             return true;
         }
         public async Task Delete(int id)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             await _domainRepository.Delete(id);
         }
         public async Task Remove()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var query = _domainRepository.GetAllQueryable();
             query = query.Where(x => !x.IsActive);
             var list = query.ToList();
@@ -426,6 +461,7 @@ namespace Project.Application.Features.Services
 
                 return cnameValue;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -436,9 +472,9 @@ namespace Project.Application.Features.Services
         {
             try
             {
-                var cfZoneId = ServerDto(serverId, out var server, out var serverName);
+                var (cfZoneId, server, serverName) = await ReadServerAsync(serverId);
                 var cloudflare = _cloudflareApiClient;
-                var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, CancellationToken.None);
+                var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, ExecutionToken);
                 foreach (var record in recordsToDelete)
                 {
                     if (!string.IsNullOrEmpty(record.content))
@@ -451,30 +487,33 @@ namespace Project.Application.Features.Services
                         var timeDifference = currentTime - modifiedDateTime;
                         if (timeDifference >= expireTimeSpan)
                         {
-                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, CancellationToken.None);
+                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, ExecutionToken);
                         }
                     }
                 }
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 throw new NotFoundException("اشکال در اتصال به کلودفلر");
             }
         }
 
-        private string ServerDto(string serverId, out ServerDTO server, out string serverName)
+        private async Task<(string ZoneId, ServerDTO Server, string ServerName)> ReadServerAsync(string serverId)
         {
             try
             {
-                server = _serverService.Detail(serverId).GetAwaiter().GetResult();
+                var server = await _serverService.Detail(serverId);
+                ExecutionToken.ThrowIfCancellationRequested();
                 var config = server.Config;
                 var jsonObject = JObject.Parse(config);
                 var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString()
                     .Split(".");
-                serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
-                return server.ZoneId;
+                var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
+                return (server.ZoneId, server, serverName);
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 // Handle exceptions here
@@ -506,7 +545,7 @@ namespace Project.Application.Features.Services
         private async Task<string> GetCloudflareZoneId(string cfDomain)
         {
             var cfClient1 = _cloudflareApiClient;
-            var zones = await cfClient1.GetAllZonesAsync(cfDomain, CancellationToken.None);
+            var zones = await cfClient1.GetAllZonesAsync(cfDomain, ExecutionToken);
             foreach (var zone1 in zones)
             {
                 return zone1.id;
@@ -517,21 +556,21 @@ namespace Project.Application.Features.Services
         private async Task UpdateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
         {
             var cfClient = _cloudflareApiClient;
-            var cnameRecord = await cfClient.GetCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, CancellationToken.None);
-            if (cnameRecord != null && await cfClient.IsExistCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, CancellationToken.None))
+            var cnameRecord = await cfClient.GetCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, ExecutionToken);
+            if (cnameRecord != null && await cfClient.IsExistCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, ExecutionToken))
             {
-                await cfClient.UpdateDnsRecordAsync(cfZoneId, cnameRecord.id, newCnameValue.Trim(), cnameContent.Trim(), CancellationToken.None);
+                await cfClient.UpdateDnsRecordAsync(cfZoneId, cnameRecord.id, newCnameValue.Trim(), cnameContent.Trim(), ExecutionToken);
             }
             else
             {
-                await cfClient.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, CancellationToken.None);
+                await cfClient.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, ExecutionToken);
             }
         }
 
         private async Task CreateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
         {
             var cloudflare = _cloudflareApiClient;
-            await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue.Trim(), cnameContent.Trim(), CancellationToken.None);
+            await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue.Trim(), cnameContent.Trim(), ExecutionToken);
         }
 
         private async Task Update(DomainDTO domain)
@@ -539,6 +578,7 @@ namespace Project.Application.Features.Services
             var model = await _domainRepository.SingleOrDefaultAsync(x => x.Id == domain.Id);
             model.DomainName = domain.DomainName;
             model.ZoneId = domain.ZoneId;
+            ExecutionToken.ThrowIfCancellationRequested();
             await _domainRepository.Update(model);
         }
     }

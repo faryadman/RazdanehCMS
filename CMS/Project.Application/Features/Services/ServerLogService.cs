@@ -107,6 +107,7 @@ namespace Project.Application.Features.Services
             }
             await _serverLogRepository.SaveChangesTask();
         }
+        public Task DeleteServerLogsAsync(CancellationToken cancellationToken) => _serverLogRepository.DeleteAllAsync(cancellationToken);
         public void RestServerLogs()
         {
             DeleteServerLogs().GetAwaiter().GetResult();
