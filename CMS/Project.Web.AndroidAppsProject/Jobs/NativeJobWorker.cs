@@ -30,6 +30,12 @@ public sealed class NativeJobWorker(IServiceScopeFactory scopes, IJobExecutionLo
                 if (executed) continue;
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { break; }
+            catch (JobSchemaNotReadyException exception)
+            {
+                if (!databaseUnavailable) logger.LogError("{SetupMessage}", exception.Message);
+                databaseUnavailable = true;
+                delaySeconds = Math.Max(30, delaySeconds);
+            }
             catch (Exception exception)
             {
                 // Never put configuration, credentials, provider URLs or raw exception messages in job logs/history.

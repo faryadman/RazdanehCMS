@@ -18,5 +18,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <ProjectReference Include="../../CMS/Project.Web.AndroidAppsProject/Project.Web.AndroidAppsProject.csproj" />
+    <None Include="../../scripts/sql/native-job-scheduling.sql" Link="MigrationScripts/native-job-scheduling.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

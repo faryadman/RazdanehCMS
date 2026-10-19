@@ -2,6 +2,13 @@
 
 مرحلهٔ فعلی: جایگزینی Hangfire با worker بومی .NET روی شاخهٔ `jobs`، از master در `657019e`، به درخواست صریح کاربر. PR #11 قبلی توسط مالک merge شده است. مرجع این گام: [موتور job](architecture/native-job-engine.md) و [آزمون و cutover](testing/native-jobs.md).
 
+## اصلاح نبود جدول زمان‌بند — ۲۰۲۶-۱۰-۱۹ UTC
+
+- مبنا `9f7e877` روی همان شاخهٔ `jobs` و Draft PR #12؛ گزارش کاربر: `Invalid object name 'JobSchedules'`. نبود هرکدام/هردو جدول در SQL آزمایشی با سه تست ناموفق بازتولید شد؛ دیتابیس کاربر بررسی یا تغییر داده نشده است.
+- `SqlJobStore.WithConfigurationLockAsync` پیش از تغییر Jobs وجود هر دو جدول را بررسی می‌کند؛ خطای مشخص با نام migration می‌دهد. پنل و endpointهای مدیریت job پاسخ 503 قابل‌فهم دارند و worker با پیام راه‌اندازی منتظر می‌ماند. schema خودکار ساخته نمی‌شود؛ پاسخ‌های موفق Android ثابت‌اند.
+- پس از اصلاح، هر ۱۱۳ تست .NET (۷۴ unit/HTTP/قرارداد + ۳۹ SQL) و ۱۳ JavaScript موفق، صفر skipped؛ build هشت پروژه با ۱۳ warning قبلی و صفر error، EF بدون pending model change و ۲۸ snapshot نسبت به `657019e` بدون تغییر.
+- migration EF، اجرای دوبارهٔ اسکریپت واقعی SQL، حفظ تنظیمات قبلی و بازیابی همان store سپس اجرای worker با business بدل آزمایش شدند. [راهنمای رفع خطا](testing/native-jobs.md) فرمان EF/PMC و الزام هدف‌گیری همان دیتابیس برنامه را توضیح می‌دهد. اعمال روی دیتابیس واقعی و cutover هنوز انجام نشده است.
+
 ## گام jobها — ۲۰۲۶-۱۰-۱۹ UTC
 
 - تنظیمات فعلی Jobs حفظ و جدول‌های افزایشی JobSchedules/JobExecutions اضافه شدند؛ آخرین نسخه، حتی غیرفعال، مرجع است. migration و اسکریپت idempotent برای بررسی آماده‌اند؛ هیچ DB تولید تغییر نکرده است.

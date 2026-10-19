@@ -9,7 +9,15 @@ namespace Project.Web.AndroidAppsProject.Areas.Admin.Controllers;
 [Area("Admin"), Authorize(Roles = "admin")]
 public class JobController(IJobStore jobs) : Controller
 {
-    public async Task<IActionResult> Index() => View(await jobs.GetDashboardAsync(HttpContext.RequestAborted));
+    public async Task<IActionResult> Index()
+    {
+        try { return View(await jobs.GetDashboardAsync(HttpContext.RequestAborted)); }
+        catch (JobSchemaNotReadyException)
+        {
+            Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            return View("SetupRequired");
+        }
+    }
     public Task<IActionResult> GetDeleteDnsJobData() => ReadSettings(JobCatalog.DeleteDns);
     public Task<IActionResult> GetJobSubdomainData() => ReadSettings(JobCatalog.SubDomain);
     public Task<IActionResult> GetJobDomainData() => ReadSettings(JobCatalog.Domain);
