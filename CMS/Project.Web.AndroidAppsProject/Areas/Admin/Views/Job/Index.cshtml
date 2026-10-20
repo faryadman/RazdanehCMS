@@ -1,292 +1,88 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Project.Application.DTOs.Job
-@using DNTPersianUtils.Core
-@using Hangfire
-@using Hangfire.Common
-@model Project.Application.DTOs.Job.DomainJob.CreateDomainJobDTO
+@using Project.Application.Jobs
+@using Project.Domain.Jobs
+@model JobDashboard
+@inject Microsoft.Extensions.Options.IOptions<Project.Web.AndroidAppsProject.Jobs.NativeJobOptions> WorkerOptions
 @{
     Layout = "_Admin";
-    var data = ViewData["DetailModels"] as List<HangfireDTO>;
+    string Display(DateTime? value) => value?.ToString("yyyy-MM-dd HH:mm:ss") ?? "—";
+    string Status(string? value) => value switch {
+        JobExecutionStatus.Running => "در حال اجرا", JobExecutionStatus.Succeeded => "موفق",
+        JobExecutionStatus.Failed => "ناموفق", JobExecutionStatus.Cancelled => "متوقف‌شده",
+        JobExecutionStatus.Interrupted => "قطع‌شده", _ => "هنوز اجرا نشده"
+    };
 }
-
-@section vendors{
-    <script src="~/app-assets/vendors/js/vendors.min.js"></script>
-    <!-- BEGIN Vendor JS-->
-    <!-- BEGIN: Page Vendor JS-->
-    <script src="~/app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
-    <script src="~/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
-    <!-- END: Page Vendor JS-->
-    <!-- BEGIN: Theme JS-->
-    <script src="~/app-assets/js/core/app-menu.js"></script>
-    <script src="~/app-assets/js/core/app.js"></script>
-    <script src="~/app-assets/js/scripts/components.js"></script>
-    <!-- END: Theme JS-->
-    <!-- BEGIN: Page JS-->
-    <script src="~/adminJs/job.js"></script>
+@section scripts {
+    <script src="~/adminJs/job.js" asp-append-version="true"></script>
 }
-
-    @section vendorstyles{
-    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/vendors-rtl.min.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/vendors/css/tables/datatable/datatables.min.css">
-    <!-- END: Vendor CSS-->
-    <!-- BEGIN: Theme CSS-->
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/bootstrap-extended.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/colors.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/components.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/dark-layout.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/themes/semi-dark-layout.css">
-
-    <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/menu/menu-types/vertical-menu.css">
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/core/colors/palette-gradient.css">
-    <!-- END: Page CSS-->
-    <!-- BEGIN: Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="~/app-assets/css-rtl/custom-rtl.css">
-    <link rel="stylesheet" type="text/css" href="~/assets/css/style-rtl.css">
+<div class="content-body" dir="rtl">
+    <h2>مدیریت جاب‌ها</h2>
+    <a href="/Admin/Job" class="btn btn-outline-primary">تازه‌سازی وضعیت</a>
+    @if (!WorkerOptions.Value.Enabled)
+    {
+        <div class="alert alert-info">اجرای زمان‌بند در این نمونهٔ برنامه غیرفعال است. تنظیمات و درخواست‌ها در دیتابیس ذخیره می‌شوند.</div>
     }
-@section scripts{
-    <script>
-        disableFields();
-    </script>
-}
-<div class="content-body">
-    <section id="horizontal-vertical">
-        <div class="row">
-            <div class="col-12">
-                <div class="card row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">مدیریت جاب ها</h4>
-                            </div>
-                            <div class="card-body">
-                                <hr />
-                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobDomain()">Change Domain Job</button>
-                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobSubDomain()">Change SubDomain Job</button>
-                                <button class="btn btn-danger ml-lg-3" id="button" onclick="jobDeleteDnsJob()">Delete Dns Records (CNAME)</button>
-                                <button class="btn btn-success ml-lg-3" id="button" onclick="jobIpConfigJob()">Job IpConfigJob</button>
-                                @*<button class="btn btn-success ml-3" onclick="jobLog()" disabled="disabled">جاب حذف لاگ</button>*@
-                                <hr />
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Cron</th>
-                                        <th>Next execution</th>
-                                        <th>Last execution</th>
-                                        <th>Created</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @if (data != null && data.Any())
-                                    {
-                                        foreach (var item in data)
-                                        {
-                                            <tr>
-                                                <td>@item?.Id</td>
-                                                <td>@item?.Cron</td>
-                                                <td>@item?.NextExecTime</td>
-                                                <td>@item?.LastExecTime</td>
-                                                <td>@item?.CreatedAt</td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="5">هیچ داده‌ای موجود نیست.</td>
-                                        </tr>
-
-                                    }
-                                    </tbody>
-                                </table>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-</div>
-
-<div class="modal fade" id="jobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="jobForm">
-                    <div class="form-group">
-               <label asp-for="IsActiveJob">وضعیت جاب : </label>
-               <input id="IsActiveJob" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
-           </div>
-
-           <div class="form-group">
-               <label asp-for="Email"></label>
-               <input id="Email" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
-           </div>
-           <div class="form-group">
-               <label asp-for="ApiKey"></label>
-               <input id="ApiKey" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
-           </div>
-                    <div class="form-group">
-                        <label asp-for="JobPeriodTime"></label>
-                        <input id="JobPeriodTime" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="JobExpireMinuteTime"></label>
-                        <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="FailConnectionCount"></label>
-                        <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control" value="@ViewBag.FailConnectionCount">
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="FailConnectionPercent"></label>
-                        <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control" value="@ViewBag.FailConnectionPercent">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                <button onclick="submitForm()" type="button" class="btn btn-success">تایید</button>
-            </div>
-        </div>
+    <p>تنظیمات، درخواست اجرا و سابقه در دیتابیس نگهداری می‌شوند. زمان‌ها UTC هستند. برای تازه‌سازی وضعیت، صفحه را بارگذاری کنید.</p>
+    <p>چرخهٔ دقیقه‌ای مثل زمان‌بندی قبلی است: عدد ۴۵ یعنی دقیقه‌های ۰ و ۴۵ هر ساعت. هنگام خاموشی، اجراهای عقب‌افتاده به یک اجرا محدود می‌شوند.</p>
+    @if (Model.NeedsReview)
+    {
+        <div class="alert alert-warning" role="alert">اجرای نامطمئن نیازمند بررسی است. تا تأیید آن، جاب جدیدی اجرا نمی‌شود. ابتدا مطمئن شوید نمونهٔ قبلی برنامه متوقف است و اثر عملیات روی سرور و DNS بررسی شده است.</div>
+    }
+    <div id="job-message" class="alert" role="status" hidden></div>
+    @foreach (var job in Model.Jobs)
+    {
+        <section class="card p-2 mb-2">
+            <h3>@job.Definition.Title</h3>
+            <p><code>@job.Definition.Name</code> — @Status(job.Schedule.LastStatus)</p>
+            <p>آخرین شروع: <bdi>@Display(job.Schedule.LastStartedUtc)</bdi> | پایان: <bdi>@Display(job.Schedule.LastCompletedUtc)</bdi> | موعد بعدی: <bdi>@Display(job.Schedule.NextRunUtc)</bdi> | اجراهای موفق: @job.Schedule.SuccessfulExecutions</p>
+            @if (job.Schedule.RunRequested) { <p>درخواست اجرای دستی از <bdi>@Display(job.Schedule.RequestedUtc)</bdi> در انتظار است.</p> }
+            @if (job.Schedule.ValidationError != null) { <p class="text-danger">@job.Schedule.ValidationError</p> }
+            <form action="/Admin/Job/Save" method="post" class="job-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="jobName" value="@job.Definition.Name" />
+                <label><input name="IsActiveJob" type="checkbox" value="true" checked="@job.Settings.Enabled" /> فعال</label>
+                <label>چرخهٔ دقیقه‌ای (۱ تا ۵۹) <input name="JobPeriodTime" type="number" min="1" max="59" required value="@job.Settings.MinuteStep" /></label>
+                @if (job.Definition.Name is JobCatalog.Domain or JobCatalog.IpConfig or JobCatalog.DeleteDns)
+                {
+                    <label>حداقل سن دامنه / انقضای رکورد (دقیقه) <input name="JobExpireMinuteTime" type="number" min="@(job.Definition.Name == JobCatalog.DeleteDns ? 1 : 0)" required value="@job.Settings.ExpireMinutes" /></label>
+                }
+                @if (job.Definition.Name == JobCatalog.Domain)
+                {
+                    <label>حداقل تعداد شکست <input name="FailConnectionCount" type="number" min="0" required value="@job.Settings.FailureCount" /></label>
+                    <label>حداقل درصد شکست <input name="FailConnectionPercent" type="number" min="0" max="100" required value="@job.Settings.FailurePercent" /></label>
+                }
+                <button type="submit" class="btn btn-primary">ذخیرهٔ تنظیمات</button>
+            </form>
+            <form action="/Admin/Job/Run" method="post" class="job-form mt-1">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="jobName" value="@job.Definition.Name" />
+                <button type="submit" class="btn btn-outline-primary" disabled="@(!job.Schedule.Enabled || Model.NeedsReview)">ثبت اجرای دستی</button>
+            </form>
+        </section>
+    }
+    <h3>۵۰ اجرای اخیر</h3>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>جاب</th><th>شروع UTC</th><th>پایان UTC</th><th>وضعیت</th><th>کد خطا</th><th>بررسی</th></tr></thead>
+            <tbody>
+            @foreach (var run in Model.History)
+            {
+                <tr>
+                    <td>@run.JobName<br /><small>@run.Id</small></td><td><bdi>@Display(run.StartedUtc)</bdi></td><td><bdi>@Display(run.CompletedUtc)</bdi></td>
+                    <td>@Status(run.Status)</td><td>@(run.ErrorCode ?? "—")</td>
+                    <td>
+                        @if (run.NeedsReview)
+                        {
+                            <form action="/Admin/Job/Review" method="post" class="job-form job-review">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="executionId" value="@run.Id" />
+                                <button class="btn btn-warning" type="submit">اثر عملیات را بررسی کردم؛ ادامه</button>
+                            </form>
+                        }
+                        else if (run.ReviewedUtc != null) { <span>تأییدشده در <bdi>@Display(run.ReviewedUtc)</bdi></span> }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
     </div>
 </div>
-
-
-<div class="modal fade" id="jobSubdomainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="jobSubdomainForm">
-                    <div class="form-group">
-                        <label asp-for="IsActiveJob">وضعیت جاب</label>
-                        <input id="IsActiveJob_subdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ApiKey"></label>
-                        <input id="ApiKey_subdomain" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Email"></label>
-                        <input id="Email_subdomain" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="JobPeriodTime"></label>
-                        <input id="JobPeriodTime_subdomain" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                <button onclick="submitFormSubdomain()" type="button" class="btn btn-success">تایید</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="jobDeleteDnsJobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="jobDeleteDnsJobForm">
-                    <div class="form-group">
-                        <label asp-for="IsActiveJob">وضعیت جاب</label>
-                        <input id="IsActiveJob_hostdomain" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="ApiKey"></label>
-                        <input id="ApiKey_hostdomain" asp-for="ApiKey" type="text" class="form-control" value="@ViewBag.ApiKey" required>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Email"></label>
-                        <input id="Email_hostdomain" asp-for="Email" type="text" class="form-control" value="@ViewBag.Email" required>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="JobExpireMinuteTime"></label>
-                        <input id="JobExpireMinuteTime_hostdomain" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="JobPeriodTime"></label>
-                        <input id="JobPeriodTime_hostdomain" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                <button onclick="submitFormDeleteDnsJob()" type="button" class="btn btn-success">تایید</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="modal fade" id="jobIpConfigModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Job Setting</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="jobForm">
-                        <div class="form-group">
-                            <label asp-for="IsActiveJob">وضعیت جاب : </label>
-                            <input id="IsActiveJob" asp-for="IsActiveJob" type="checkbox" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="JobPeriodTime"></label>
-                            <input id="JobPeriodTime" asp-for="JobPeriodTime" type="text" class="form-control" value="@ViewBag.JobPeriodTime">
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="JobExpireMinuteTime"></label>
-                            <input id="JobExpireMinuteTime" asp-for="JobExpireMinuteTime" type="text" class="form-control" value="@ViewBag.JobExpireMinuteTime">
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="FailConnectionCount"></label>
-                            <input id="FailConnectionCount" asp-for="FailConnectionCount" type="text" class="form-control" value="@ViewBag.FailConnectionCount">
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="FailConnectionPercent"></label>
-                            <input id="FailConnectionPercent" asp-for="FailConnectionPercent" type="text" class="form-control" value="@ViewBag.FailConnectionPercent">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">لغو</button>
-                    <button onclick="submitForm()" type="button" class="btn btn-success">تایید</button>
-                </div>
-            </div>
-        </div>
-    </div>
-

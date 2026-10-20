@@ -22,4 +22,4 @@ jobs:
           node-version: '24'
       - run: dotnet restore RazdanehCMS.sln
       - run: dotnet test RazdanehCMS.sln --no-restore -m:2
-      - run: node --test tests/frontend/server-retrieval.test.cjs
+      - run: node --test tests/frontend/*.test.cjs

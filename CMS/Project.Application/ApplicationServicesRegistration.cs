@@ -6,6 +6,8 @@ using Project.Application.Features;
 using Project.Application.Features.Interfaces;
 using Project.Application.Features.Services;
 using Project.Application.Profiles;
+using Project.Application.Jobs;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Project.Application
 {
@@ -31,13 +33,14 @@ namespace Project.Application
                 services.AddScoped<IBlackListService, BlackListService>();
                 services.AddScoped<IApiLogService, ApiLogService>();
                 services.AddScoped<IOperatorIdentificationService, OperatorIdentificationService>();
-                services.AddScoped<ICronJobInfoService, CronJobInfoService>();
                 services.AddScoped<IDomainService, DomainService>();
-                services.AddScoped<IJobService, JobService>();
                 services.AddScoped<IIpService, IpService>();
                 services.AddScoped<IIPConfigService, IpConfigService>();
+                services.AddScoped<JobExecutionScope>();
+                services.AddScoped<IJobHandler, JobHandler>();
+                services.TryAddSingleton(TimeProvider.System);
                 services.Configure<CloudflareSettings>(configuration.GetSection("CloudflareData"));
-                services.AddSingleton<CloudflareApiClient>();
+                services.AddSingleton<ICloudflareApiClient, CloudflareApiClient>();
                 return services;
             }
         }

@@ -1,24 +1,16 @@
-﻿using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Project.Application.Features.Interfaces;
+using Project.Application.Jobs;
 
-namespace Project.Web.AndroidAppsProject.Controllers
+namespace Project.Web.AndroidAppsProject.Controllers;
+
+[Authorize(Roles = "admin")]
+public class LogDeleterController(IJobStore jobs) : Controller
 {
-    public class LogDeleterController : Controller
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index()
     {
-        private readonly IServerLogService _serverLogService;
-        public LogDeleterController(IServerLogService serverLogService)
-        {
-            _serverLogService = serverLogService;
-            RecurringJob.AddOrUpdate(
-                "logDeleterJob",
-                () => Index(),
-            Cron.MinuteInterval(10));
-        }
-        public async Task<IActionResult> Index()
-        {
-            await _serverLogService.DeleteServerLogs();
-            return Ok(true);
-        }
+        await jobs.RequestRunAsync(JobCatalog.DeleteLogs, HttpContext.RequestAborted);
+        return Ok(true);
     }
 }

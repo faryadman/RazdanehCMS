@@ -9,5 +9,6 @@ namespace Project.Application.Contracts.Persistence
 {
     public interface IServerLogRepository : IGenericRepository<ServerLog>
     {
+        Task DeleteAllAsync(CancellationToken cancellationToken);
     }
 }

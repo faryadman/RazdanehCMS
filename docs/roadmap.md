@@ -1,13 +1,17 @@
 # نقشهٔ راه
 
-مرحلهٔ فعلی: ممیزی #6 و پاک‌سازی #9 توسط مالک merge شده‌اند؛ PRهای #7 و #8 بسته‌اند. اصلاح واکشی پنل و lifetime روی همان `fix/server-retrieval` ادامه دارد و master جدید نیز در این شاخه حفظ شده است؛ انتشار در Draft PR تازه به master خواهد بود. نگاشت ناقص، بارگیری گروه و رندر پنل با تست SQL واقعی اصلاح شده‌اند. بررسی Dispose نیز scope مستقل job، انتظار کامل حذف و مالکیت logger را اصلاح کرده است؛ [شواهد](testing/resource-lifetime.md). امنیت، validator JSON و بازطراحی‌های پرخطر همچنان بازند؛ این گام تکمیل کل Iteration 1 یا Iteration 5 نیست.
+اصلاح جاری روی همان `jobs`: واکشی دامنه با query اختصاصی، فهرست غیرفعال درست، حفظ خطای واقعی سرور/provider، lookup پایهٔ مصرف‌شده و حذف تولید میلیون‌ها رشته برای یک نام DNS؛ [شواهد و محدودیت‌ها](testing/domain-retrieval.md). این اصلاح، بازطراحی مالکیت/حذف DNS یا رزرو دامنه میان درخواست‌های دستی نیست.
+
+مرحلهٔ فعلی: پس از merge ممیزی #6، پاک‌سازی #9 و واکشی/lifetime در #11 توسط مالک، کاربر پیاده‌سازی jobهای بهتر و کنارگذاشتن Hangfire را خواست. شاخهٔ `jobs` شامل worker بومی، ذخیرهٔ پایدار SQL، قفل بین instanceها، history، پنل مدیریت و migration افزایشی است؛ [طرح اجراشده](architecture/native-job-engine.md). این گام به معنی تکمیل بازطراحی مالکیت DNS، validator JSON یا هماهنگ‌سازی تمام writeهای خارج از job نیست.
+
+در ادامه به درخواست «موجود نیست یکی بسازه»، ساخت خودکار فقط جدول‌های گمشدهٔ job و indexهایشان زیر قفل SQL پیاده شد؛ تنظیمات موجود حفظ، سابقهٔ نامعلوم بدون review اجرا نمی‌شود و migrationهای تاریخی خودکار اعمال نمی‌شوند. راه‌اندازی به مجوز DDL روی دیتابیس موجود یا آماده‌سازی دستی همان schema نیاز دارد.
 
 | اولویت / مرحله | خروجی و scope | پیش‌نیاز پذیرش / rollback |
 |---|---|---|
 | P0 — همین ممیزی | معماری، ماتریس API، امنیت، دیتابیس، jobs/DNS/JSON و طرح migration؛ docs-only | بررسی شواهد و محدودیت‌ها؛ بدون merge خودکار |
 | P0 — Iteration 1 | کنترل دسترسی خطرناک، secret handling، جلوگیری از DNS unrelated، baseline contract | تعیین مصرف legacy، fixture واقعی، SQL/Cloudflare fake؛ flag و بازگشت محدودسازی |
 | P1 — Iteration 2 | validator format-aware در backend/frontend برای تمام writeها | corpus واقعی و تست صفر write در شکست، حفظ input و snapshot Android |
-| P1 — Iteration 3 | SQL job store، lease، history و native worker disabled؛ مهاجرت job به job | crash/restart/multi-instance/cancel؛ ownership یک writer و rollback |
+| P1 — Iteration 3 | پیاده‌شده روی jobs: SQL store/history، session lock و native worker؛ cutover تولید هنوز انجام نشده | تست crash/restart/multi-instance/cancel موفق؛ توقف engine قدیمی، migration و بازبینی تنظیمات پیش از فعال‌سازی تولید |
 | P1 — Iteration 4 | assignment/history و provider محدود DNS | fake zone مشترک، failure میانی، reconciling و snapshot Config؛ compensation هدفمند |
 | P2 — Iteration 5 | روابط app/group، query projection، cache و concurrency | backup restore، dual-read parity، plan SQL و حفظ داده؛ old reader |
 | P2 — Iteration 6 | پنل RTL، pagination، errors، loading و فرم امن | browser fixture، auth/CSRF/XSS و عدم تغییر API legacy |

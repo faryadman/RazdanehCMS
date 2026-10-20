@@ -1,0 +1,15 @@
+@using Project.Application.Jobs
+@{
+    Layout = "_Admin";
+}
+<div class="content-body" dir="rtl">
+    <h2>آماده‌سازی دیتابیس جاب‌ها</h2>
+    <div class="alert alert-warning" role="alert">
+        ساخت خودکار جدول‌های زمان‌بند انجام نشد؛ جاب جدیدی اجرا نمی‌شود.
+    </div>
+    <p>وجود جدول تنظیمات جاب و مجوز ساخت جدول و تغییر schema را در دیتابیس اتصال برنامه بررسی کنید. پس از اصلاح دسترسی، دوباره تلاش می‌شود.</p>
+    <p>راه جایگزین، اعمال دستی مهاجرت <bdi><code>@JobSchemaNotReadyException.MigrationId</code></bdi> روی همان دیتابیس است.</p>
+    <p>اسکریپت آماده در مخزن: <bdi><code>scripts/sql/native-job-scheduling.sql</code></bdi></p>
+    <p>مراحل و فرمان‌ها در <bdi><code>docs/testing/native-jobs.md</code></bdi> آمده‌اند. تنظیمات قبلی جاب‌ها حفظ می‌شوند.</p>
+    <a href="/Admin/Job" class="btn btn-outline-primary">بررسی دوباره</a>
+</div>

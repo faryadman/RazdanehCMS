@@ -11,6 +11,7 @@ namespace Project.Application.Features.Interfaces
         Task<List<ServerLog>> List();
         Task<ServerLogStatisticsDTO> GetAllLogsStatistics();
         Task DeleteServerLogs(int count = 100000);
+        Task DeleteServerLogsAsync(CancellationToken cancellationToken);
         Task Delete(ServerLog log);
         Task Delete(int id);
         void RestServerLogs();

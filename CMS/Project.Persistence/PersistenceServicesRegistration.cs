@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Project.Application.Contracts.Persistence;
 using Project.Persistence.Repositories;
+using Project.Application.Jobs;
+using Project.Persistence.Jobs;
 
 namespace Project.Persistence
 {
@@ -26,11 +28,11 @@ namespace Project.Persistence
             services.AddScoped<IBlackListRepository, BlackListRepository>();
             services.AddScoped<IApiLogRepository, ApiLogRepository>();
             services.AddScoped<IOperatorIdentificationRepository, OperatorIdentificationRepository>();
-            services.AddScoped<ICronJobInfoRepository, CronJobInfoRepository>();
             services.AddScoped<IDomainRepository, DomainRepository>();
-            services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<IIpRepository, IpRepository>();
             services.AddScoped<IIpConfigRepository, IpConfigRepository>();
+            services.AddScoped<IJobStore, SqlJobStore>();
+            services.AddSingleton<IJobExecutionLock>(_ => new SqlJobExecutionLock(configuration));
             return services;
         }
     }

@@ -1,12 +1,11 @@
-﻿using CloudFlare.Client;
+using CloudFlare.Client;
 using CloudFlare.Client.Api.Zones.DnsRecord;
 using Microsoft.Extensions.Options;
 using Project.Application.Exceptions;
-using Project.Domain.Entities;
 
 namespace Project.Application.Features
 {
-    public class CloudflareApiClient
+    public class CloudflareApiClient : ICloudflareApiClient
     {
         private readonly string _apiKey;
         private readonly string _email;
@@ -25,34 +24,11 @@ namespace Project.Application.Features
         {
             return new CloudFlareClient(_email, _apiKey);
         }
-        public async Task<bool> IsExistCnameRecord(string zoneId, CloudFlare.Client.Enumerators.DnsRecordType type, CancellationToken ct)
-        {
-            try
-            {
-                using var client = CreateClient();
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
-                var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
-                foreach (var dnsRecord in dnsRecords.Result)
-                {
-                    if (dnsRecord.Type == type)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-
-                throw new NotFoundException("Record not found.");
-            }
-        }
         public async Task<CnameRecord> GetCnameRecord(string zoneId, CloudFlare.Client.Enumerators.DnsRecordType type, CancellationToken ct)
         {
             try
             {
                 using var client = CreateClient();
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
                 var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
                 foreach (var dnsRecord in dnsRecords.Result)
                 {
@@ -68,6 +44,7 @@ namespace Project.Application.Features
                 }
                 return null;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
 
@@ -84,7 +61,6 @@ namespace Project.Application.Features
             {
                 using var client = CreateClient();
 
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
                 var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
                 foreach (var dnsRecord in dnsRecords.Result)
                 {
@@ -129,7 +105,6 @@ namespace Project.Application.Features
         {
             using var client = CreateClient();
 
-            var zones = await client.Zones.GetAsync(cancellationToken: ct);
             var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
             foreach (var dnsRecord in dnsRecords.Result)
             {
@@ -174,27 +149,7 @@ namespace Project.Application.Features
                 }).ToList();
 
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw new NotFoundException("Failed to get DNS records.");
-            }
-        }
-        public async Task<IList<CnameRecord>> GetAllZonesAsync(CancellationToken ct)
-        {
-            try
-            {
-                using var client = CreateClient();
-
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
-                return zones.Result.Select(zone => new CnameRecord
-                {
-                    id = zone.Id,
-                    name = zone.Name,
-                    content = zone.Status.ToString()
-                }).ToList();
-
-            }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -207,7 +162,6 @@ namespace Project.Application.Features
             {
                 using var client = CreateClient();
 
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
                 var dnsRecords = await client.Zones.DnsRecords.GetAsync(zoneId, cancellationToken: ct);
                 return dnsRecords.Result.Select(record => new CnameRecord
                 {
@@ -216,6 +170,7 @@ namespace Project.Application.Features
                     content = record.Content
                 }).ToList();
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -229,10 +184,10 @@ namespace Project.Application.Features
 
                 using var client = CreateClient();
 
-                var zones = await client.Zones.GetAsync(cancellationToken: ct);
                 var dnsRecords = await client.Zones.DnsRecords.DeleteAsync(zoneId, recordToDeleteId, cancellationToken: ct);
                 return;
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
@@ -252,9 +207,5 @@ namespace Project.Application.Features
 
         }
 
-        public class ResultInfo
-        {
-            public int Count { get; set; }
-        }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using Project.Application.DTOs.Domain;
-using Project.Application.Exceptions;
-using Serilog;
 
 namespace Project.Application.Features.Interfaces
 {

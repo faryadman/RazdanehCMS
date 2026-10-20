@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Project.Application.Jobs;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.IpConfig;
 using Project.Application.Features.Interfaces;
@@ -9,16 +10,19 @@ namespace Project.Application.Features.Services
     public class IpConfigService : IIPConfigService
     {
         private readonly IIpConfigRepository _ipConfigRepository;
+        private readonly JobExecutionScope executionScope;
+        private CancellationToken ExecutionToken => executionScope?.CancellationToken ?? CancellationToken.None;
         private readonly IDomainService _domainService;
         private readonly IServerService _serverService;
         private readonly IMapper _mapper;
 
-        public IpConfigService(IDomainService domainService, IIpConfigRepository ipConfigRepository, IMapper mapper, IServerService serverService)
+        public IpConfigService(IDomainService domainService, IIpConfigRepository ipConfigRepository, IMapper mapper, IServerService serverService, JobExecutionScope executionScope = null)
         {
             _domainService = domainService;
             _ipConfigRepository = ipConfigRepository;
             _mapper = mapper;
             _serverService = serverService;
+            this.executionScope = executionScope;
         }
 
         public IPConfigEntity Get(int? id)
@@ -73,20 +77,23 @@ namespace Project.Application.Features.Services
 
         public async Task UpdateIpServers(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var server = await _serverService.Detail(serverId);
             if (server is null) return;
-            var newIp = Get((int?)null);
+            var newIp = (await _ipConfigRepository.GetAll()).FirstOrDefault();
             if (newIp is null) return;
 
             var config = server.Config;
             var newConfig = _domainService.SetServerAddressStrings(config, newIp.IP);
             server.Config = newConfig.ToString();
+            ExecutionToken.ThrowIfCancellationRequested();
             await _serverService.UpdateServer(server);
 
             var ip = _domainService.GetServerAddressStrings(config);
-            var oldIP = Get(ip);
+            var oldIP = (await _ipConfigRepository.GetAll()).SingleOrDefault(item => item.IP == ip);
             if (oldIP != null)
             {
+                ExecutionToken.ThrowIfCancellationRequested();
                 await Inactive(oldIP.Id);
             }
 

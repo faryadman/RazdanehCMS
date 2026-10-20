@@ -1,5 +1,3 @@
-using Hangfire;
-using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -8,7 +6,7 @@ using Project.Application.Middlewares;
 using Project.Domain.Entities;
 using Project.Persistence;
 using Project.Web.AndroidAppsProject.Configuration;
-using Project.Web.AndroidAppsProject.CronJob;
+using Project.Web.AndroidAppsProject.Jobs;
 using Serilog;
 using System.IO.Compression;
 using System.Text.Encodings.Web;
@@ -21,7 +19,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureApplicationServices(builder.Configuration);
 builder.Services.ConfigurePersistenceServices(builder.Configuration);
 
-builder.Services.AddSingleton<ICronJobService, CronJobService>();
+builder.Services.AddNativeJobs(builder.Configuration);
 builder.Services.AddMemoryCache();
 builder.Services.AddMemoryCache(options =>
 {
@@ -74,11 +72,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddHangfire(opts =>
-{
-    opts.UseMemoryStorage();
-});
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "YourAppCookieName";
@@ -122,34 +115,6 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 
-
-app.UseHangfireServer();
-app.UseHangfireDashboard();
-
-RecurringJob.AddOrUpdate(
-    "logDeleterJob",
-    () => app.Services.GetService<ICronJobService>()!.ResetServerLog(),
-Cron.MinuteInterval(10));
-
-//RecurringJob.AddOrUpdate(
-//    "SubDomainJob",
-//    () => app.Services.GetService<ICronJobService>()!.ResetServerSubDomain(),
-//    Cron.MinuteInterval(30));
-
-//RecurringJob.AddOrUpdate(
-//    "DomainJob",
-//    () => app.Services.GetService<ICronJobService>()!.ResetServerDomain(),
-//    Cron.MinuteInterval(2));
-
-RecurringJob.AddOrUpdate(
-    "CheckZoneId",
-    () => app.Services.GetService<ICronJobService>()!.CheckZoneId(),
-     Cron.MinuteInterval(45));
-//RecurringJob.AddOrUpdate(
-
-//"DeleteDnsJob",
-//() => app.Services.GetService<ICronJobService>()!.ResetServerDns(),
-//Cron.MinuteInterval(10));
 
 app.UseCookiePolicy();
 

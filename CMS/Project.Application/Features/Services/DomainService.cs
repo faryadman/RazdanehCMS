@@ -1,105 +1,64 @@
-﻿using AutoMapper;
-using CloudFlare.Client.Client.Zones;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using AutoMapper;
+using Project.Application.Jobs;
 using Newtonsoft.Json.Linq;
 using Project.Application.Contracts.Persistence;
 using Project.Application.DTOs.Domain;
 using Project.Application.DTOs.Server;
 using Project.Application.Exceptions;
-using Project.Application.Extensions;
 using Project.Application.Features.Interfaces;
-using Project.Domain.Entities;
 using Serilog;
-using System.Xml.Linq;
+using System.Security.Cryptography;
 
 namespace Project.Application.Features.Services
 {
     public class DomainService : IDomainService
     {
         private readonly IDomainRepository _domainRepository;
+        private readonly JobExecutionScope executionScope;
+        private CancellationToken ExecutionToken => executionScope?.CancellationToken ?? CancellationToken.None;
         private readonly IMapper _mapper;
         private readonly IServerService _serverService;
-        private readonly IConfiguration _configuration;
-        private readonly CloudflareApiClient _cloudflareApiClient;
-        // دیکشنری لوکال برای ذخیره زون‌ها با استفاده از نام دامنه به عنوان کلید
-        private static readonly Dictionary<string, string> zoneDictionary = new Dictionary<string, string>();
+        private readonly ICloudflareApiClient _cloudflareApiClient;
 
-        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, IConfiguration configuration, CloudflareApiClient cloudflareApiClient)
+        public DomainService(IMapper mapper, IDomainRepository domainRepository, IServerService serverService, ICloudflareApiClient cloudflareApiClient, JobExecutionScope executionScope = null)
         {
             _mapper = mapper;
             _domainRepository = domainRepository;
             _serverService = serverService;
-            _configuration = configuration;
             _cloudflareApiClient = cloudflareApiClient;
+            this.executionScope = executionScope;
         }
 
         public async Task InitZoneId()
         {
-            var domains = await GetAll();
-            foreach (var domain in from domain in domains where domain != null where domain.IsActive != false where string.IsNullOrEmpty(domain.ZoneId) select domain)
-            {
-                domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
-                if (string.IsNullOrEmpty(domain.ZoneId))
-                {
-                    Log.Error($"ZoneId not found for domain: {domain.DomainName}");
-                    throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
-                }
-                await Update(domain);
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            foreach (var domain in await _domainRepository.ListMissingZoneAsync(ExecutionToken))
+                await ResolveZoneAsync(domain);
         }
-        public async Task CheckZoneId()
-        {
-            var queryable = _domainRepository.FindQueryable(a => string.IsNullOrEmpty(a.ZoneId) && a.IsActive == true).Select(
-                d => new DomainDTO()
-                {
-                    IsActive = true,
-                    ZoneId = null,
-                    DomainName = d.DomainName,
-                    FileName = d.FileName,
-                    Id = d.Id,
-                    IsDeleted = false,
-                    UpdatedAt = DateTime.Now
-                });
-            var domains = await queryable.ToListAsync();
-            foreach (var domain in domains)
-            {
-                domain.ZoneId = await GetCloudflareZoneId(domain.DomainName);
-                if (string.IsNullOrEmpty(domain.ZoneId))
-                {
-                    Log.Error($"ZoneId not found for domain: {domain.DomainName}");
-                    throw new NotFoundException($"ZoneId not found for domain: {domain.DomainName}");
-                }
-                await Update(domain);
-            }
 
-        }
+        public Task CheckZoneId() => InitZoneId();
 
         public async Task<List<DomainDTO>> GetAll()
         {
-            var list = await _domainRepository.GetAll();
-            var model = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(list.Where(x => x.IsDeleted == false && x.IsActive == true));
-            return model;
+            ExecutionToken.ThrowIfCancellationRequested();
+            return _mapper.Map<List<DomainDTO>>(await _domainRepository.ListAsync(true, ExecutionToken));
         }
 
-        public async Task<List<DomainDTO>> GetByFilter(int filter)
-        {
-            var query = _domainRepository.GetAllQueryable();
-            query = filter == 1 ? query.Where(x => x.IsActive == true && x.IsDeleted == false) : query.Where(x => x.IsActive == true && x.IsDeleted == false);
-            var data = await query.ToListAsync();
-            var list = _mapper.Map<IEnumerable<Domain.Entities.Domain>, List<DomainDTO>>(data);
-            return list;
-        }
+        // Legacy callers use both 0 and 1 for the active list; the inactive endpoint has its own query.
+        public Task<List<DomainDTO>> GetByFilter(int filter) => GetAll();
 
         public async Task Create(CreateDomainDTO input)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var model = _mapper.Map<Domain.Entities.Domain>(input);
+            ExecutionToken.ThrowIfCancellationRequested();
             await _domainRepository.Add(model);
         }
 
         public async Task<List<DomainDTO>> ListInactiveDomain()
         {
-            return await GetByFilter(0);
+            ExecutionToken.ThrowIfCancellationRequested();
+            return _mapper.Map<List<DomainDTO>>(await _domainRepository.ListAsync(false, ExecutionToken));
         }
 
         public JObject SetServerAddressStrings(string config, string newAddress)
@@ -117,113 +76,69 @@ namespace Project.Application.Features.Services
 
         public async Task<string> ChangeDomain(string serverId)
         {
-            try
-            {
-                var newDomainDto = await GetNewDomain();
-                if (newDomainDto == null || string.IsNullOrEmpty(newDomainDto.DomainName) || !newDomainDto.IsActive || newDomainDto.IsDeleted)
-                    throw new NotFoundException();
-                var server = await _serverService.Detail(serverId);
-                var zoneId = newDomainDto.ZoneId;
-                var config = server.Config;
-                var newDomain = newDomainDto.DomainName;
-                var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
-
-                UpdateServerConfig(server, config, cnameValue, newDomain, newDomain);
-
-                await _serverService.UpdateServer(server);
-                await Delete(newDomainDto.Id);
-                return "انجام شد.";
-            }
-            catch (NotFoundException)
-            {
-                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions here
-                throw new NotFoundException("سرور یافت نشد");
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            var server = await GetRequiredServerAsync(serverId);
+            var domain = await GetNewDomain();
+            var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, domain.ZoneId);
+            UpdateServerConfig(server, server.Config, cnameValue, domain.DomainName, domain.DomainName);
+            server.ZoneId = domain.ZoneId;
+            ExecutionToken.ThrowIfCancellationRequested();
+            await _serverService.UpdateServer(server);
+            await Delete(domain.Id);
+            return "انجام شد.";
         }
+
         public async Task<string> ChangeTcp(string serverId)
         {
-            try
-            {
-
-                var server = await _serverService.Detail(serverId);
-                if (server == null)
-                    throw new NotFoundException("سرور یافت نشد");
-                var config = server.Config;
-                var domain = await GetNewDomain();
-                if (domain == null || domain.DomainName == null || !domain.IsActive || domain.IsDeleted)
-                    throw new NotFoundException();
-                var zoneId = domain.ZoneId;
-                var newDomain = domain.DomainName;
-                var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId);
-
-                UpdateTcpServerConfig(server, config, newDomain, cnameValue);
-
-                await _serverService.UpdateServer(server);
-                await Delete(domain.Id);
-                return "انجام شد.";
-            }
-            catch (NotFoundException)
-            {
-                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions here
-                throw new NotFoundException("دامنه یافت نشد");
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            var server = await GetRequiredServerAsync(serverId);
+            var domain = await GetNewDomain();
+            var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, domain.ZoneId);
+            UpdateTcpServerConfig(server, server.Config, domain.DomainName, cnameValue);
+            server.ZoneId = domain.ZoneId;
+            ExecutionToken.ThrowIfCancellationRequested();
+            await _serverService.UpdateServer(server);
+            await Delete(domain.Id);
+            return "انجام شد.";
         }
+
+        private async Task<ServerDTO> GetRequiredServerAsync(string serverId) =>
+            await _serverService.Detail(serverId) ?? throw new NotFoundException("سرور یافت نشد");
+
         public async Task<string> ChangeSubDomain(string serverId)
         {
-            try
-            {
-
-                var server = await _serverService.Detail(serverId);
-                if (server == null)
-                    throw new NotFoundException("سرور یافت نشد");
-                var config = server.Config;
-                var jsonObject = JObject.Parse(config);
-                var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString().Split(".");
-                var hostString = jsonObject["outbounds"]![0]!["streamSettings"]!["wsSettings"]!["headers"]!["Host"]?.ToString().Split(".");
-                var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
-                var hostName = $"{hostString?[1]}.{hostString?[2]}";
-                var domainDto = await GetDomain(serverName);
-                if (domainDto == null || string.IsNullOrEmpty(domainDto.DomainName) || !domainDto.IsActive || domainDto.IsDeleted)
-                    throw new NotFoundException();
-                var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, domainDto.ZoneId, true);
-                if (cnameValue != "fail")
-                {
-                    UpdateServerConfig(server, config, cnameValue, serverName, hostName);
-                }
-
-                await _serverService.UpdateServer(server);
-                await Delete(domainDto.Id);
-                return "Done successfully";
-            }
-            catch (NotFoundException)
-            {
-                throw new NotFoundException("دامنه غیرفعال یا حذف شده است.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                // Handle exceptions here
-                throw new NotFoundException("سرور یافت نشد");
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            var server = await GetRequiredServerAsync(serverId);
+            var config = JObject.Parse(server.Config);
+            var serverName = config.SelectToken("outbounds[0].streamSettings.tlsSettings.serverName")?.Value<string>()?.TrimEnd('.');
+            var hostName = config.SelectToken("outbounds[0].streamSettings.wsSettings.headers.Host")?.Value<string>()?.TrimEnd('.');
+            if (string.IsNullOrWhiteSpace(serverName) || string.IsNullOrWhiteSpace(hostName))
+                throw new BadRequestException("تنظیمات سرور نام دامنه و Host معتبر برای تغییر زیردامنه ندارد.");
+            var domain = await _domainRepository.GetRegisteredByHostAsync(serverName, ExecutionToken)
+                ?? throw new NotFoundException("دامنهٔ ثبت‌شدهٔ سرور پیدا نشد یا حذف شده است.");
+            if (!string.Equals(hostName, domain.DomainName, StringComparison.OrdinalIgnoreCase)
+                && !hostName.EndsWith("." + domain.DomainName, StringComparison.OrdinalIgnoreCase))
+                throw new BadRequestException("نام دامنه و Host سرور به یک دامنهٔ ثبت‌شده تعلق ندارند.");
+            if (string.IsNullOrWhiteSpace(domain.ZoneId))
+                domain = await ResolveZoneAsync(domain)
+                    ?? throw new NotFoundException("دامنه هنگام واکشی زون غیرفعال یا حذف شده است.");
+            var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, domain.ZoneId, true);
+            UpdateServerConfig(server, server.Config, cnameValue, domain.DomainName, domain.DomainName);
+            server.ZoneId = domain.ZoneId;
+            ExecutionToken.ThrowIfCancellationRequested();
+            await _serverService.UpdateServer(server);
+            if (domain.IsActive) await Delete(domain.Id);
+            return "Done successfully";
         }
+
         public async Task<string> DeleteDnsAsync(string serverId, string expireTime)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 if (serverId != null)
                 {
-                    var cfZoneId = ServerDto(serverId, out var server, out var serverName);
+                    var (cfZoneId, server, serverName) = await ReadServerAsync(serverId);
                     await DeleteDnsRecord(cfZoneId);
                     await ChangeSubDomain(server.Id.ToString());
                 }
@@ -238,15 +153,16 @@ namespace Project.Application.Features.Services
 
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                // Handle exceptions here
                 throw new NotFoundException("سرور یافت نشد");
             }
         }
         public async Task<string> DeleteTcpDnsAsync(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 if (serverId != null)
@@ -263,6 +179,7 @@ namespace Project.Application.Features.Services
             {
                 throw new NotFoundException("سروری یافت نشد");
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
@@ -270,7 +187,7 @@ namespace Project.Application.Features.Services
             }
         }
 
-        public void UpdateServerConfig(ServerDTO server, string config, string newCnameValue, string newServerName, string newHostName)
+        private static void UpdateServerConfig(ServerDTO server, string config, string newCnameValue, string newServerName, string newHostName)
         {
             var cnameValue1 = $"{newCnameValue}.{newServerName}";
             var cnameValue2 = $"{newCnameValue}.{newHostName}";
@@ -282,41 +199,39 @@ namespace Project.Application.Features.Services
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
             server.ZoneIdLastSynced = DateTime.UtcNow;
-            server.ZoneId = server.ZoneId;
         }
-        public void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress, string newCnameValue)
+        private static void UpdateTcpServerConfig(ServerDTO server, string config, string newAddress, string newCnameValue)
         {
-            var cnameValue1 = $"{newCnameValue}.{newAddress}";
-            var cnameValue2 = $"{newCnameValue}.{newAddress}";
-            var AddressValue = $"{newCnameValue}.{newAddress}";
-
+            var address = $"{newCnameValue}.{newAddress}";
             var configJson = JObject.Parse(config);
-            UpdateAddressJsonValues(configJson, AddressValue, cnameValue1, cnameValue2);
+            UpdateAddressJsonValues(configJson, address);
             server.Config = configJson.ToString();
             server.IsNewDomain = true;
             server.DomainDateTime = DateTime.UtcNow;
             server.ZoneIdLastSynced = DateTime.UtcNow;
-            server.ZoneId = GetDomain(newAddress).Result.ZoneId;
         }
         public async Task<string> CreateDnsAsync(string serverId)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
-                var zoneId = ServerDto(serverId, out var server, out var serverName);
+                var (zoneId, server, serverName) = await ReadServerAsync(serverId);
                 var cnameValue = await ChangeCnameDomain(server.CurrentDomainValue, zoneId, true);
                 UpdateServerConfig(server, server.Config, cnameValue, serverName, serverName);
+                ExecutionToken.ThrowIfCancellationRequested();
                 await _serverService.UpdateServer(server);
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
-                // Handle exceptions here
                 Log.Error(ex.Message);
                 throw new NotFoundException("سرور یافت نشد");
             }
         }
         public async Task ChangeSubDomain()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -325,6 +240,7 @@ namespace Project.Application.Features.Services
         }
         public async Task ChangeDomain()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -333,6 +249,7 @@ namespace Project.Application.Features.Services
         }
         public async Task ChangeTcp()
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             var serverIds = await _serverService.GetActiveIds();
             foreach (var id in serverIds)
             {
@@ -341,15 +258,16 @@ namespace Project.Application.Features.Services
         }
         public async Task<string> GenerateDnsAsync(string serverId, string expireMinuteOn)
         {
+            ExecutionToken.ThrowIfCancellationRequested();
             try
             {
                 await DeleteAndCheckDnsAsync(serverId, expireMinuteOn);
                 await CreateDnsAsync(serverId);
                 return "Done successfully";
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
-                // Handle exceptions here
                 Log.Error(ex.Message);
                 throw new NotFoundException("سرور یافت نشد");
             }
@@ -357,7 +275,8 @@ namespace Project.Application.Features.Services
 
         public async Task<bool> DeleteDnsRecord(string cfZoneId)
         {
-            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId, CancellationToken.None);
+            ExecutionToken.ThrowIfCancellationRequested();
+            var records = await _cloudflareApiClient.GetAllRecords(cfZoneId, ExecutionToken);
 
             if (records.Count == 0)
                 return true;
@@ -367,78 +286,68 @@ namespace Project.Application.Features.Services
                 await _cloudflareApiClient.DeleteCnameRecords(
                     cfZoneId,
                     record.id,
-                    CancellationToken.None);
+                    ExecutionToken);
             }
 
             return true;
         }
         public async Task Delete(int id)
         {
-            await _domainRepository.Delete(id);
+            ExecutionToken.ThrowIfCancellationRequested();
+            await _domainRepository.SetInactiveAsync(id, ExecutionToken);
         }
+
         public async Task Remove()
         {
-            var query = _domainRepository.GetAllQueryable();
-            query = query.Where(x => !x.IsActive);
-            var list = query.ToList();
-            foreach (var domain in list)
-            {
-                await _domainRepository.RemoveWithoutSaveChange(domain);
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            await _domainRepository.DeleteInactiveAsync(ExecutionToken);
+        }
 
-            await _domainRepository.SaveChangesTask();
-        }
-        private async Task<DomainDTO> GetDomain(string name)
-        {
-            var domains = await GetAll();
-            if (domains.Count == 0)
-            {
-                return null;
-            }
-            var domain = domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive && x.DomainName == name);
-            return domain;
-        }
         private async Task<DomainDTO> GetNewDomain()
         {
-            var domains = await GetAll();
-            if (domains.Count == 0)
+            var domain = await _domainRepository.GetNextActiveAsync(ExecutionToken)
+                ?? throw new NotFoundException("دامنهٔ فعال و قابل‌استفاده‌ای موجود نیست؛ فهرست دامنه‌ها را بررسی کنید.");
+            if (string.IsNullOrWhiteSpace(domain.ZoneId))
+                domain = await ResolveZoneAsync(domain)
+                    ?? throw new NotFoundException("دامنه هنگام واکشی زون غیرفعال یا حذف شده است.");
+            return _mapper.Map<DomainDTO>(domain);
+        }
+
+        private async Task<Domain.Entities.Domain> ResolveZoneAsync(Domain.Entities.Domain domain)
+        {
+            ExecutionToken.ThrowIfCancellationRequested();
+            var zoneId = await GetCloudflareZoneId(domain.DomainName);
+            if (string.IsNullOrWhiteSpace(zoneId))
+                throw new NotFoundException($"شناسهٔ زون برای دامنهٔ {domain.DomainName} در حساب Cloudflare پیدا نشد.");
+            if (await _domainRepository.TrySetZoneAsync(domain.Id, domain.DomainName, zoneId, ExecutionToken))
             {
-                return null;
+                domain.ZoneId = zoneId;
+                return domain;
             }
-            return domains.FirstOrDefault(x => !x.IsDeleted && x.IsActive);
+            // A concurrent admin edit must win over this lookup; never restore a disabled domain or overwrite its zone.
+            var current = await _domainRepository.GetActiveByIdAsync(domain.Id, ExecutionToken);
+            if (current == null) return null;
+            if (string.IsNullOrWhiteSpace(current.ZoneId))
+                throw new NotFoundException("تنظیمات دامنه هنگام واکشی زون تغییر کرده است؛ دوباره بررسی کنید.");
+            return current;
         }
 
         private async Task<string> ChangeCnameDomain(string currentDomain, string zoneId, bool isActiveSubDomain = false)
         {
-            try
-            {
-                var newCnameValue = GenerateWordExtention.GenerateWords(5)[0];
-                var cnameValue = $"{newCnameValue}";
-
-                if (isActiveSubDomain)
-                {
-                    await CreateDnsRecord(zoneId, newCnameValue, currentDomain);
-                }
-                else
-                {
-                    await UpdateDnsRecord(zoneId, newCnameValue, currentDomain);
-                }
-
-                return cnameValue;
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions here
-                throw new NotFoundException("سرور یافت نشد");
-            }
+            ExecutionToken.ThrowIfCancellationRequested();
+            var cnameValue = RandomNumberGenerator.GetString("abcdefghijklmnopqrstuvwxyz", 5);
+            if (isActiveSubDomain) await CreateDnsRecord(zoneId, cnameValue, currentDomain);
+            else await UpdateDnsRecord(zoneId, cnameValue, currentDomain);
+            return cnameValue;
         }
+
         private async Task<string> DeleteAndCheckDnsAsync(string serverId, string minuteTimeOn)
         {
             try
             {
-                var cfZoneId = ServerDto(serverId, out var server, out var serverName);
+                var (cfZoneId, server, serverName) = await ReadServerAsync(serverId);
                 var cloudflare = _cloudflareApiClient;
-                var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, CancellationToken.None);
+                var recordsToDelete = await cloudflare.GetAllRecords(cfZoneId, ExecutionToken);
                 foreach (var record in recordsToDelete)
                 {
                     if (!string.IsNullOrEmpty(record.content))
@@ -451,33 +360,35 @@ namespace Project.Application.Features.Services
                         var timeDifference = currentTime - modifiedDateTime;
                         if (timeDifference >= expireTimeSpan)
                         {
-                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, CancellationToken.None);
+                            await cloudflare.DeleteCnameRecords(cfZoneId, record.id, ExecutionToken);
                         }
                     }
                 }
                 return "Done successfully";
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) { throw; }
+            catch (Exception)
             {
                 throw new NotFoundException("اشکال در اتصال به کلودفلر");
             }
         }
 
-        private string ServerDto(string serverId, out ServerDTO server, out string serverName)
+        private async Task<(string ZoneId, ServerDTO Server, string ServerName)> ReadServerAsync(string serverId)
         {
             try
             {
-                server = _serverService.Detail(serverId).GetAwaiter().GetResult();
+                var server = await _serverService.Detail(serverId);
+                ExecutionToken.ThrowIfCancellationRequested();
                 var config = server.Config;
                 var jsonObject = JObject.Parse(config);
                 var serverNameString = jsonObject["outbounds"]![0]!["streamSettings"]!["tlsSettings"]!["serverName"]?.ToString()
                     .Split(".");
-                serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
-                return server.ZoneId;
+                var serverName = $"{serverNameString?[1]}.{serverNameString?[2]}";
+                return (server.ZoneId, server, serverName);
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) { throw; }
+            catch (Exception)
             {
-                // Handle exceptions here
                 throw new NotFoundException("سرور یافت نشد");
             }
         }
@@ -491,55 +402,31 @@ namespace Project.Application.Features.Services
             config.SelectToken(serverNamePath)?.Replace($"{newServerName}");
             config.SelectToken(hostPath)?.Replace($"{newHost}");
         }
-        private static void UpdateAddressJsonValues(JObject config, string newAddress, string newServerName, string newHost)
+        private static void UpdateAddressJsonValues(JObject config, string newAddress)
         {
-            const string serverNamePath = "outbounds[0].streamSettings.tlsSettings.serverName";
-            const string hostPath = "outbounds[0].streamSettings.wsSettings.headers.Host";
             const string address = "outbounds[0].settings.vnext[0].address";
-            config.SelectToken(address)?.Replace($"{newAddress}");
-            config.SelectToken(serverNamePath)?.Replace($"{newServerName}");
-            config.SelectToken(hostPath)?.Replace($"{newHost}");
+            config.SelectToken(address)?.Replace(newAddress);
+            UpdateJsonValues(config, newAddress, newAddress);
         }
 
 
 
-        private async Task<string> GetCloudflareZoneId(string cfDomain)
+        private async Task<string> GetCloudflareZoneId(string domainName)
         {
-            var cfClient1 = _cloudflareApiClient;
-            var zones = await cfClient1.GetAllZonesAsync(cfDomain, CancellationToken.None);
-            foreach (var zone1 in zones)
-            {
-                return zone1.id;
-            }
-            return null; // اگر زون پیدا نشد، null بازگردانید
+            var zones = await _cloudflareApiClient.GetAllZonesAsync(domainName, ExecutionToken);
+            return zones.FirstOrDefault(zone => string.Equals(zone.name, domainName, StringComparison.OrdinalIgnoreCase))?.id;
         }
 
-        private async Task UpdateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
+        private async Task UpdateDnsRecord(string zoneId, string newCnameValue, string cnameContent)
         {
-            var cfClient = _cloudflareApiClient;
-            var cnameRecord = await cfClient.GetCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, CancellationToken.None);
-            if (cnameRecord != null && await cfClient.IsExistCnameRecord(cfZoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, CancellationToken.None))
-            {
-                await cfClient.UpdateDnsRecordAsync(cfZoneId, cnameRecord.id, newCnameValue.Trim(), cnameContent.Trim(), CancellationToken.None);
-            }
+            var record = await _cloudflareApiClient.GetCnameRecord(zoneId, CloudFlare.Client.Enumerators.DnsRecordType.Cname, ExecutionToken);
+            if (record != null)
+                await _cloudflareApiClient.UpdateDnsRecordAsync(zoneId, record.id, newCnameValue.Trim(), cnameContent.Trim(), ExecutionToken);
             else
-            {
-                await cfClient.CreateDnsRecordAsync(cfZoneId, newCnameValue, cnameContent, CancellationToken.None);
-            }
+                await _cloudflareApiClient.CreateDnsRecordAsync(zoneId, newCnameValue, cnameContent, ExecutionToken);
         }
 
-        private async Task CreateDnsRecord(string cfZoneId, string newCnameValue, string cnameContent)
-        {
-            var cloudflare = _cloudflareApiClient;
-            await cloudflare.CreateDnsRecordAsync(cfZoneId, newCnameValue.Trim(), cnameContent.Trim(), CancellationToken.None);
-        }
-
-        private async Task Update(DomainDTO domain)
-        {
-            var model = await _domainRepository.SingleOrDefaultAsync(x => x.Id == domain.Id);
-            model.DomainName = domain.DomainName;
-            model.ZoneId = domain.ZoneId;
-            await _domainRepository.Update(model);
-        }
+        private Task CreateDnsRecord(string zoneId, string newCnameValue, string cnameContent) =>
+            _cloudflareApiClient.CreateDnsRecordAsync(zoneId, newCnameValue.Trim(), cnameContent.Trim(), ExecutionToken);
     }
 }
