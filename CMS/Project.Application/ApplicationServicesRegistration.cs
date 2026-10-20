@@ -40,7 +40,7 @@ namespace Project.Application
                 services.AddScoped<IJobHandler, JobHandler>();
                 services.TryAddSingleton(TimeProvider.System);
                 services.Configure<CloudflareSettings>(configuration.GetSection("CloudflareData"));
-                services.AddSingleton<CloudflareApiClient>();
+                services.AddSingleton<ICloudflareApiClient, CloudflareApiClient>();
                 return services;
             }
         }

@@ -1,8 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
 using Project.Application.Contracts.Persistence;
@@ -89,39 +87,22 @@ public sealed class AdminDeletionLifetimeTests
     private static TaskCompletionSource NewCompletion() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     [Fact]
-    public async Task Domain_service_finishes_each_removal_and_save_before_completing()
+    public async Task Domain_service_waits_for_the_database_cleanup_to_finish()
     {
         var repository = Substitute.For<IDomainRepository>();
-        var inactive = new Project.Domain.Entities.Domain { Id = 1, IsActive = false };
-        var active = new Project.Domain.Entities.Domain { Id = 2, IsActive = true };
-        repository.GetAllQueryable().Returns(new[] { inactive, active }.AsQueryable());
-        var removal = NewCompletion();
-        var saveStarted = NewCompletion();
-        var save = NewCompletion();
-        repository.RemoveWithoutSaveChange(inactive).Returns(removal.Task);
-        repository.SaveChangesTask().Returns(_ => { saveStarted.SetResult(); return save.Task; });
-        var cloudflare = new CloudflareApiClient(Options.Create(new CloudflareSettings
-            { Email = "synthetic@example.invalid", ApiKey = "synthetic-test-key" }));
+        var delete = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        repository.DeleteInactiveAsync(Arg.Any<CancellationToken>()).Returns(delete.Task);
         var service = new DomainService(Substitute.For<IMapper>(), repository, Substitute.For<IServerService>(),
-            new ConfigurationBuilder().Build(), cloudflare);
+            Substitute.For<ICloudflareApiClient>());
         var work = service.Remove();
         try
         {
             Assert.False(work.IsCompleted);
-            Assert.False(saveStarted.Task.IsCompleted);
-            removal.SetResult();
-            await saveStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            Assert.False(work.IsCompleted);
-            save.SetResult();
+            delete.SetResult(2);
             await work;
-            await repository.DidNotReceive().RemoveWithoutSaveChange(active);
-            await repository.Received(1).SaveChangesTask();
+            await repository.Received(1).DeleteInactiveAsync(Arg.Any<CancellationToken>());
         }
-        finally
-        {
-            removal.TrySetResult();
-            save.TrySetResult();
-        }
+        finally { delete.TrySetResult(0); }
     }
 
     private static void AssertSuccess(IActionResult result) => Assert.True(JToken.DeepEquals(
